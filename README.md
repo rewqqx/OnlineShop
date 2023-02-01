@@ -4,11 +4,11 @@
 
 Для дампа бд используйте:
 
-`docker exec -i <container_name> /bin/bash -c "PGPASSWORD=<pgpassword> pg_dump --username <pgusername> <dbname>" > /desired/path/on/your/machine/dump.sql`
+`docker exec -i containername /bin/bash -c "PGPASSWORD=pgpassword pg_dump --username pgusername dbname" > /desired/path/on/your/machine/dump.sql`
 
 Для рестора бд используйте:
 
-`docker exec -i <container_name> /bin/bash -c "PGPASSWORD=<pgpassword> psql --username <pgusername> <dbname>" < /desired/path/on/your/machine/dump.sql`
+`docker exec -i containername /bin/bash -c "PGPASSWORD=pgpassword psql --username pgusername dbname" < /desired/path/on/your/machine/dump.sql`
 
 ## [Описание прецедентов](https://github.com/rewqqx/OnlineShop/blob/main/uml/PrecedentDescr.pdf)
 
