@@ -2,13 +2,17 @@
 
 ## Деплой
 
+Контейнер:
+
+`docker run --name online_shop -p 5432:5432 -e POSTGRES_USER=pguser -e POSTGRES_PASSWORD=pgpass -e POSTGRES_DB=postgres -d postgres:latest`
+
 Для дампа бд используйте:
 
-`docker exec -i containername /bin/bash -c "PGPASSWORD=pgpassword pg_dump --username pgusername dbname" > /desired/path/on/your/machine/dump.sql`
+`docker exec -i online_shop /bin/bash -c "PGPASSWORD=pgpass pg_dump --username pguser postgres" > dump.sql`
 
 Для рестора бд используйте:
 
-`docker exec -i containername /bin/bash -c "PGPASSWORD=pgpassword psql --username pgusername dbname" < /desired/path/on/your/machine/dump.sql`
+`docker exec -i online_shop /bin/bash -c "PGPASSWORD=pgpass psql --username pguser postgres" < dump.sql`
 
 ## [Описание прецедентов](https://github.com/rewqqx/OnlineShop/blob/main/uml/PrecedentDescr.pdf)
 
