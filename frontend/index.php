@@ -1,4 +1,7 @@
 <?php
+
+include "./src/elements/DOM.inc";
+/*
 $dbHost = 'localhost';
 $dbPort = 49153;
 $user = 'postgres';
@@ -11,5 +14,10 @@ $sql = "SELECT * FROM test.test_1";
 $pg_query = pg_query($dbConn, $sql);
 
 $arr = pg_fetch_all($pg_query);
-print_r($arr);
+print_r($arr);*/
+
+$div = new DOM();
+echo $div->setText("hello")->setID("test")->setAttribute("background", "yellow")->setAttribute("height", "100px")->getDOM();
+
+
 ?>
