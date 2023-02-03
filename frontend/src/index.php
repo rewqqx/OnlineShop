@@ -1,6 +1,8 @@
+<link href='styles/DOM.css' rel='stylesheet' type='text/css'>
+
 <?php
 
-include "./src/elements/DOM.inc";
+include "./elements/DOM.inc";
 /*
 $dbHost = 'localhost';
 $dbPort = 49153;
@@ -17,7 +19,9 @@ $arr = pg_fetch_all($pg_query);
 print_r($arr);*/
 
 $div = new DOM();
-echo $div->setText("hello")->setID("test")->setAttribute("background", "yellow")->setAttribute("height", "100px")->getDOM();
+$button = new Button("Click me!");
+
+echo $div->setText("hello")->setID("test")->setAttribute("background", "yellow")->setAttribute("height", "100px")->append($button)->getDOM();
 
 
 ?>

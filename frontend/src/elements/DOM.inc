@@ -24,7 +24,7 @@ class DOM
 
     public function setStyle(string $style)
     {
-        $this->$style = $style;
+        $this->style = $style;
         return $this;
     }
 
@@ -88,6 +88,28 @@ class DOM
         return $result;
     }
 
+}
+
+
+class Text extends DOM
+{
+    function __construct($text)
+    {
+        $this->text = $text;
+        $this->setTag();
+    }
+}
+
+
+class Button extends DOM
+{
+    function __construct($text)
+    {
+        $textElement = new Text($text);
+        $textElement->setStyle("button-text");
+        $this->setStyle("button");
+        $this->append($textElement);
+    }
 }
 
 ?>
