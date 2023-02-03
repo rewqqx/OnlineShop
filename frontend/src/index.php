@@ -1,4 +1,5 @@
 <link href='styles/DOM.css' rel='stylesheet' type='text/css'>
+<link href='styles/Default.css' rel='stylesheet' type='text/css'>
 
 <?php
 
@@ -18,10 +19,17 @@ $pg_query = pg_query($dbConn, $sql);
 $arr = pg_fetch_all($pg_query);
 print_r($arr);*/
 
-$div = new DOM();
-$button = new Button("Click me!");
+$header = new DOM();
+$header->setStyle("header")->setText("Online Shop");
 
-echo $div->setText("hello")->setID("test")->setAttribute("background", "yellow")->setAttribute("height", "100px")->append($button)->getDOM();
+$toolbar = new DOM();
+$toolbar->setStyle("toolbar");
 
+$container = new DOM();
+$container->setStyle("container")->append($toolbar);
+
+
+echo $header->getDOM();
+echo $container->getDOM();
 
 ?>
