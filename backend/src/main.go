@@ -6,11 +6,18 @@ import (
 )
 
 func main() {
-	schemasHandler := http.HandlerFunc(utils.SchemasList)
-	http.Handle("/schemas", schemasHandler)
 
-	tablesHandler := http.HandlerFunc(utils.TablesList)
-	http.Handle("/tables/", tablesHandler)
+	database := utils.DBConnect{Ip: "localhost", Port: "5432", Password: "pgpass", User: "postgres", Database: "postgres"}
+	err := database.Open()
+
+	if (err != nil) {
+		panic(err)
+	}
+
+	utils.SetDatabase(&database)
+
+	userHandler := http.HandlerFunc(utils.GetUser)
+	http.Handle("/users/", userHandler)
 
 	pingHandler := http.HandlerFunc(utils.Ping)
 	http.Handle("/", pingHandler)

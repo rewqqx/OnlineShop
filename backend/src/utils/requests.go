@@ -4,11 +4,18 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
+var database *DBConnect
+
 type StatusResponse struct {
 	Status string `json:"status"`
+}
+
+func SetDatabase(connection *DBConnect) {
+	database = connection
 }
 
 func setSuccessHeader(w http.ResponseWriter) {
@@ -24,7 +31,7 @@ func makeResponse(w http.ResponseWriter, status string) error {
 	jsonBody, err := json.Marshal(response)
 
 	if err != nil {
-		http.Error(w, "{'status':'failure'}", http.StatusBadRequest)
+		http.Error(w, "{\"status\":\"failure\"}", http.StatusBadRequest)
 		return errors.New("Can't parse JSON")
 	}
 
@@ -37,111 +44,54 @@ func Ping(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
-	http.Error(w, "{'status':'success'}", http.StatusOK)
+	http.Error(w, "{\"status\":\"Success\"}", http.StatusOK)
 }
 
-func TablesList(w http.ResponseWriter, r *http.Request) {
+func GetUser(w http.ResponseWriter, r *http.Request) {
 	setSuccessHeader(w)
 
 	path := r.URL.Path[1:]
 	dirs := strings.Split(path, "/")
 
 	if len(dirs) < 2 {
-		makeResponse(w, "failure")
+		makeResponse(w, "Bad Path")
 		return
 	}
 
-	if dirs[0] != "tables" {
-		makeResponse(w, "wrong path")
+	if dirs[0] != "users" {
+		makeResponse(w, "Bad Path")
 		return
 	}
 
-	parentSchema := dirs[1]
+	val, err := strconv.Atoi(dirs[1])
 
-	var connect DBConnect
+	if err != nil {
+		makeResponse(w, "Bad ID")
+		return
+	}
+
+	var token AuthToken
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
 
-	err := decoder.Decode(&connect)
+	err = decoder.Decode(&token)
 
 	if err != nil {
-		makeResponse(w, "failure")
+		makeResponse(w, "Bad Body")
 		return
 	}
 
-	err = connect.Open()
+	token.ID = val
 
-	if err != nil {
-		makeResponse(w, "connection refused")
+	userDatabaseAdapter := UserDatabase{database: database}
+	ok, err := userDatabaseAdapter.checkToken(token)
+
+	if err != nil || !ok {
+		makeResponse(w, "Bad Auth")
 		return
 	}
 
-	tables, err := connect.GetTables(parentSchema)
-
-	if err != nil {
-		makeResponse(w, "failure")
-		return
-	}
-
-	defer connect.Close()
-
-	response := "{\"status\":\"success\",\"tables\": ["
-
-	for i, el := range tables {
-		response += "\"" + el + "\""
-
-		if i != len(tables)-1 {
-			response += ","
-		}
-	}
-
-	response += "]}"
-
-	w.Write([]byte(response))
-}
-
-func SchemasList(w http.ResponseWriter, r *http.Request) {
-	setSuccessHeader(w)
-
-	var connect DBConnect
-
-	decoder := json.NewDecoder(r.Body)
-	decoder.DisallowUnknownFields()
-
-	err := decoder.Decode(&connect)
-
-	if err != nil {
-		makeResponse(w, "failure")
-		return
-	}
-
-	err = connect.Open()
-
-	if err != nil {
-		makeResponse(w, "connection refused")
-		return
-	}
-
-	defer connect.Close()
-
-	schemas, err := connect.GetSchemas()
-
-	if err != nil {
-		makeResponse(w, "request failed")
-	}
-
-	response := "{\"status\":\"success\",\"schemas\": ["
-
-	for i, el := range schemas {
-		response += "\"" + el + "\""
-
-		if i != len(schemas)-1 {
-			response += ","
-		}
-	}
-
-	response += "]}"
-
+	response := "{\"status\":\"success\"}"
 	w.Write([]byte(response))
 }

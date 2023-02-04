@@ -15,7 +15,7 @@ type DBConnect struct {
 	Password string `json:"password"`
 	Database string `json:"database"`
 
-	db *sqlx.DB
+	Connection *sqlx.DB
 }
 
 func InitConnection(tunnel SSH) {
@@ -42,17 +42,17 @@ func (client *DBConnect) Open() error {
 		return err
 	}
 
-	client.db = db
+	client.Connection = db
 	return nil
 }
 
 func (client *DBConnect) Close() {
-	client.db.Close()
+	client.Connection.Close()
 }
 
 func (client *DBConnect) GetTables(schema string) ([]string, error) {
 	var res []string
-	rows, err := client.db.Query("SELECT table_name FROM information_schema.tables WHERE table_schema = $1;", schema)
+	rows, err := client.Connection.Query("SELECT table_name FROM information_schema.tables WHERE table_schema = $1;", schema)
 	if err != nil {
 		return nil, err
 	}
@@ -72,7 +72,7 @@ func (client *DBConnect) GetTables(schema string) ([]string, error) {
 }
 func (client *DBConnect) GetSchemas() ([]string, error) {
 	var res []string
-	rows, err := client.db.Query("SELECT schema_name FROM information_schema.schemata;")
+	rows, err := client.Connection.Query("SELECT schema_name FROM information_schema.schemata;")
 
 	if err != nil {
 		return nil, err
