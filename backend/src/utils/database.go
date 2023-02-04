@@ -3,7 +3,7 @@ package utils
 import (
 	"database/sql"
 	"fmt"
-	"github.com/jmoiron/sqlx"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var sshTunnel SSH
@@ -15,7 +15,7 @@ type DBConnect struct {
 	Password string `json:"password"`
 	Database string `json:"database"`
 
-	Connection *sqlx.DB
+	Connection *sql.DB
 }
 
 func InitConnection(tunnel SSH) {
@@ -31,7 +31,7 @@ func (client *DBConnect) Open() error {
 		sql.Register(driver, &ViaSSHDialer{sshTunnel.client})
 	}
 
-	db, err := sqlx.Open(driver, fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=disable", client.User, client.Password, client.Ip, client.Port, client.Database))
+	db, err := sql.Open(driver, fmt.Sprintf("postgres://%s:%s@%s:%s/%s?parseTime=true&sslmode=disable", client.User, client.Password, client.Ip, client.Port, client.Database))
 	if err != nil {
 		return err
 	}

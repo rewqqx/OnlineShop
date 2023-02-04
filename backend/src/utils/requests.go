@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -92,6 +93,20 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := "{\"status\":\"Success\"}"
+	user, err := userDatabaseAdapter.getUser(token.ID)
+
+	if err != nil {
+		makeResponse(w, "Bad User ID")
+		return
+	}
+
+	json, err := json.Marshal(user)
+
+	if err != nil {
+		makeResponse(w, "Bad JSON")
+		return
+	}
+
+	response := fmt.Sprintf("{\"status\":\"Success\", \"user\" : %v}", string(json))
 	w.Write([]byte(response))
 }
