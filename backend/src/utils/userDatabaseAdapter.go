@@ -1,7 +1,5 @@
 package utils
 
-import "time"
-
 type UserDatabase struct {
 	database *DBConnect
 }
@@ -12,7 +10,7 @@ type User struct {
 	Surname    string    `json:"user_surname" db:"user_surname"`
 	Patronymic string    `json:"user_patronymic" db:"user_patronymic"`
 	Phone      string    `json:"phone" db:"phone"`
-	Birthdate  time.Time `json:"birthdate" db:"birthdate"`
+	Birthdate  Timestamp `json:"birthdate" db:"birthdate"`
 	Password   string    `json:"password_hash" db:"password_hash"`
 	Mail       string    `json:"mail" db:"mail"`
 	RoleId     int       `json:"role_id" db:"role_id"`
@@ -26,13 +24,7 @@ type AuthToken struct {
 
 func (adapter *UserDatabase) getUser(id int) (user User, err error) {
 	user = User{}
-	res, err := adapter.database.Connection.Query("SELECT * FROM online_shop.users WHERE id=$1", id)
-
-	if res.Next() {
-		if err = res.Scan(&user); err != nil {
-			return user, err
-		}
-	}
+	err = adapter.database.Connection.Get(&user, "SELECT * FROM online_shop.users WHERE id=$1", id)
 
 	return
 }
@@ -45,18 +37,7 @@ func (adapter *UserDatabase) createUser(user User) (id int64, err error) {
 
 func (adapter *UserDatabase) checkToken(token AuthToken) (ok bool, err error) {
 	compareToken := AuthToken{}
-	res, err := adapter.database.Connection.Query("SELECT token FROM online_shop.users WHERE id=$1", token.ID)
-
-	if err != nil {
-		return false, err
-	}
-
-	if res.Next() {
-		if err = res.Scan(&compareToken); err != nil {
-			return false, err
-		}
-	}
-
+	err = adapter.database.Connection.Get(&compareToken, "SELECT token FROM online_shop.users WHERE id=$1", token.ID)
 	ok = compareToken.Token == token.Token
 	return ok, nil
 }
