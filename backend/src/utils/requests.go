@@ -31,7 +31,7 @@ func makeResponse(w http.ResponseWriter, status string) error {
 	jsonBody, err := json.Marshal(response)
 
 	if err != nil {
-		http.Error(w, "{\"status\":\"failure\"}", http.StatusBadRequest)
+		http.Error(w, "{\"status\":\"Failure\"}", http.StatusBadRequest)
 		return errors.New("Can't parse JSON")
 	}
 
@@ -92,6 +92,6 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := "{\"status\":\"success\"}"
+	response := "{\"status\":\"Success\"}"
 	w.Write([]byte(response))
 }
