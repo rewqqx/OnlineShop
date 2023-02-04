@@ -233,7 +233,8 @@ CREATE TABLE online_shop.users (
     birthdate timestamp without time zone,
     password_hash character varying,
     mail character varying,
-    role_id integer
+    role_id integer,
+    token character varying
 );
 
 
@@ -354,7 +355,8 @@ COPY online_shop.orders (id, display_number, user_id, status_id, cancel_reason, 
 -- Data for Name: users; Type: TABLE DATA; Schema: online_shop; Owner: postgres
 --
 
-COPY online_shop.users (id, user_name, user_surname, user_patronymic, phone, birthdate, password_hash, mail, role_id) FROM stdin;
+COPY online_shop.users (id, user_name, user_surname, user_patronymic, phone, birthdate, password_hash, mail, role_id, token) FROM stdin;
+1	admin	admin	admin	89000000000	\N	nhabgnkasgnbkiasg	admin@mail.ru	1	dfasdnmgfasdngfadsjkfg
 \.
 
 
@@ -397,7 +399,7 @@ SELECT pg_catalog.setval('online_shop.orders_id_seq', 1, false);
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: online_shop; Owner: postgres
 --
 
-SELECT pg_catalog.setval('online_shop.users_id_seq', 1, false);
+SELECT pg_catalog.setval('online_shop.users_id_seq', 1, true);
 
 
 --
