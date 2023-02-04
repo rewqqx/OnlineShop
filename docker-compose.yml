@@ -1,6 +1,18 @@
 version: '3.7'
 
 services:
+  server:
+    build: ./backend
+    restart: always
+    ports:
+      - 80:8080
+    depends_on:
+      - postgres
+    environment:
+      - WAIT_HOSTS=postgres:5432
+      - POSTGRES_HOST=postgres
+      - PORT=8080
+      - DBFLAG=true
   postgres:
     restart: always
     hostname: online-shop
