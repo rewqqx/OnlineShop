@@ -1,0 +1,41 @@
+.collapse {
+    display: flex;
+    flex-direction: column;
+}
+
+.collapse-item {
+    border-top: solid 1px #E9E9E9;
+    padding: 4px;
+    align-items: center;
+}
+
+.button {
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    width: max-content;
+}
+
+.button-text {
+    font-family: "Calibri Light", sans-serif;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.unselectable {
+    font-family: "Calibri", sans-serif;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.button:hover {
+    background: #EEEEEE;
+}

@@ -1,0 +1,35 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    background: #F9F9F9;
+    height: 100vh;
+}
+
+.container {
+    display: flex;
+    height: calc(100vh - 60px);
+}
+
+.header {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    height: 64px;
+    background: #2E2E2E;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 36px;
+    padding-left: 20px;
+}
+
+.toolbar {
+    display: flex;
+    flex-direction: column;
+
+    background: white;
+
+    border-right: 1px solid #eee;
+    width: 300px;
+
+    padding: 10px;
+}
