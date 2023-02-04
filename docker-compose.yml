@@ -1,17 +1,6 @@
 version: '3.7'
 
 services:
-  postgres:
-    restart: always
-    hostname: online-shop
-    image: postgres:latest
-    volumes:
-      - ./datagrip/dump.sql:/docker-entrypoint-initdb.d/init.sql
-    environment:
-      - POSTGRES_PASSWORD=pgpass
-    ports:
-      - 5432:5432
-
   server:
     build: ./backend
     restart: always
@@ -24,3 +13,14 @@ services:
       - POSTGRES_HOST=postgres
       - PORT=8080
       - DBFLAG=true
+
+  postgres:
+    restart: always
+    hostname: online-shop
+    image: postgres:latest
+    volumes:
+      - ./datagrip/dump.sql:/docker-entrypoint-initdb.d/init.sql
+    environment:
+      - POSTGRES_PASSWORD=pgpass
+    ports:
+      - 5432:5432
