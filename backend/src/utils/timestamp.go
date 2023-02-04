@@ -25,7 +25,11 @@ func (ts *Timestamp) UnmarshalJSON(data []byte) error {
 }
 
 func (ts *Timestamp) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("%q", time.Time((*ts).Time).Format(timeFormat))), nil
+	if ts.Valid {
+		return []byte(fmt.Sprintf("%q", time.Time((*ts).Time).Format(timeFormat))), nil
+	} else {
+		return []byte(""), nil
+	}
 }
 
 func (ts Timestamp) Value() (driver.Value, error) {
