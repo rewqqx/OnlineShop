@@ -111,6 +111,58 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(response))
 }
 
+func CreateUser(w http.ResponseWriter, r *http.Request) {
+	setSuccessHeader(w)
+
+	path := r.URL.Path[1:]
+	dirs := strings.Split(path, "/")
+
+	if len(dirs) < 2 {
+		makeResponse(w, "Bad Path")
+		return
+	}
+
+	if dirs[0] != "users" {
+		makeResponse(w, "Bad Path")
+		return
+	}
+
+	if dirs[1] != "create" {
+		makeResponse(w, "Bad Path")
+		return
+	}
+
+	createUser := User{}
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+
+	err := decoder.Decode(&createUser)
+
+	if err != nil {
+		makeResponse(w, "Bad Body")
+		return
+	}
+
+	userDatabaseAdapter := UserDatabase{database: database}
+	token, err := userDatabaseAdapter.createUser(&createUser)
+
+	if err != nil {
+		makeResponse(w, "Bad Auth")
+		return
+	}
+
+	json, err := json.Marshal(token)
+
+	if err != nil {
+		makeResponse(w, "Bad JSON")
+		return
+	}
+
+	response := fmt.Sprintf("{\"status\":\"Success\", \"token\" : %v}", string(json))
+	w.Write([]byte(response))
+}
+
 func GetToken(w http.ResponseWriter, r *http.Request) {
 	setSuccessHeader(w)
 

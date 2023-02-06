@@ -356,7 +356,7 @@ COPY online_shop.orders (id, display_number, user_id, status_id, cancel_reason, 
 --
 
 COPY online_shop.users (id, user_name, user_surname, user_patronymic, phone, birthdate, password_hash, mail, role_id, token) FROM stdin;
-1	admin	admin	admin	89000000000	\N	nhabgnkasgnbkiasg	admin@mail.ru	1	dfasdnmgfasdngfadsjkfg
+1	admin	admin	admin	89000000000	\N	d033e22ae348aeb5660fc2140aec35850c4da997	admin@mail.ru	1	ad982aae8df2f23e96d04f039c35e258ad0506a547e6a09b2f7c9500fcab9961
 \.
 
 

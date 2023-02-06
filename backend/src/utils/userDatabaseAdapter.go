@@ -34,10 +34,9 @@ func (adapter *UserDatabase) getUser(id int) (user *User, err error) {
 	return
 }
 
-func (adapter *UserDatabase) createUser(user *User) (id int64, err error) {
-	res, err := adapter.database.Connection.Exec("INSERT INTO online_shop.users (user_name, user_surname,user_patronymic, phone, birthdate, password_hash, mail, role_id) VALUES ($1, $2, $3, $4, $5, $6, $7, #8)", user.Name, user.Surname, user.Patronymic, user.Phone, user.Birthdate, hashPassword(user.Password), user.Mail, user.RoleId)
-	id, err = res.LastInsertId()
-	return
+func (adapter *UserDatabase) createUser(user *User) (token AuthToken, err error) {
+	_, err = adapter.database.Connection.Exec("INSERT INTO online_shop.users (user_name, user_surname,user_patronymic, phone, birthdate, password_hash, mail, role_id, token) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", user.Name, user.Surname, user.Patronymic, user.Phone, user.Birthdate, hashPassword(user.Password), user.Mail, user.RoleId, user.Token)
+	return adapter.authUser(AuthData{Mail: user.Mail, Password: user.Password})
 }
 
 func (adapter *UserDatabase) checkToken(token AuthToken) (ok bool, err error) {

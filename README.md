@@ -8,7 +8,7 @@
 
 Для дампа бд используйте:
 
-`docker exec -i online_shop /bin/bash -c "PGPASSWORD=pgpass pg_dump --username pguser postgres" > dump.sql`
+`docker exec -i onlineshop-postgres-1 /bin/bash -c "PGPASSWORD=pgpass pg_dump --username postgres postgres" > dump.sql`
 
 
 ## [Описание прецедентов](https://github.com/rewqqx/OnlineShop/blob/main/uml/PrecedentDescr.pdf)
