@@ -110,3 +110,44 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	response := fmt.Sprintf("{\"status\":\"Success\", \"user\" : %v}", string(json))
 	w.Write([]byte(response))
 }
+
+func GetToken(w http.ResponseWriter, r *http.Request) {
+	setSuccessHeader(w)
+
+	path := r.URL.Path[1:]
+
+	if path != "auth" {
+		makeResponse(w, "Bad Path")
+		return
+	}
+
+	authData := AuthData{}
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+
+	err := decoder.Decode(&authData)
+
+	if err != nil {
+		makeResponse(w, "Bad Body")
+		return
+	}
+
+	userDatabaseAdapter := UserDatabase{database: database}
+	token, err := userDatabaseAdapter.authUser(authData)
+
+	if err != nil {
+		makeResponse(w, "Bad Auth")
+		return
+	}
+
+	json, err := json.Marshal(token)
+
+	if err != nil {
+		makeResponse(w, "Bad JSON")
+		return
+	}
+
+	response := fmt.Sprintf("{\"status\":\"Success\", \"token\" : %v}", string(json))
+	w.Write([]byte(response))
+}

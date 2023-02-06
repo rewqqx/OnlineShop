@@ -19,7 +19,12 @@ type User struct {
 
 type AuthToken struct {
 	ID    int
-	Token string `json:"token"`
+	Token string `json:"token" db:"token"`
+}
+
+type AuthData struct {
+	Mail     string `json:"mail" db:"mail"`
+	Password string `json:"password" db:"password_hash"`
 }
 
 func (adapter *UserDatabase) getUser(id int) (user *User, err error) {
@@ -30,7 +35,7 @@ func (adapter *UserDatabase) getUser(id int) (user *User, err error) {
 }
 
 func (adapter *UserDatabase) createUser(user *User) (id int64, err error) {
-	res, err := adapter.database.Connection.Exec("INSERT INTO online_shop.users (user_name, user_surname,user_patronymic, phone, birthdate, password_hash, mail, role_id) VALUES ($1, $2, $3, $4, $5, $6, $7, #8)", user.Name, user.Surname, user.Patronymic, user.Phone, user.Birthdate, user.Password, user.Mail, user.RoleId)
+	res, err := adapter.database.Connection.Exec("INSERT INTO online_shop.users (user_name, user_surname,user_patronymic, phone, birthdate, password_hash, mail, role_id) VALUES ($1, $2, $3, $4, $5, $6, $7, #8)", user.Name, user.Surname, user.Patronymic, user.Phone, user.Birthdate, hashPassword(user.Password), user.Mail, user.RoleId)
 	id, err = res.LastInsertId()
 	return
 }
@@ -40,4 +45,18 @@ func (adapter *UserDatabase) checkToken(token AuthToken) (ok bool, err error) {
 	err = adapter.database.Connection.Get(&compareToken, "SELECT token FROM online_shop.users WHERE id=$1", token.ID)
 	ok = compareToken.Token == token.Token
 	return ok, nil
+}
+
+func (adapter *UserDatabase) authUser(data AuthData) (token AuthToken, err error) {
+	err = adapter.database.Connection.Get(&token, "SELECT id, token FROM online_shop.users WHERE mail=$1 AND password_hash=$2", data.Mail, hashPassword(data.Password))
+
+	if err != nil {
+		return
+	}
+
+	token.Token = generateToken(32)
+
+	_, err = adapter.database.Connection.Exec("UPDATE online_shop.users SET token = $1 WHERE id = $2", token.Token, token.ID)
+
+	return
 }

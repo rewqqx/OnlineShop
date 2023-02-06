@@ -28,6 +28,9 @@ func main() {
 	userHandler := http.HandlerFunc(utils.GetUser)
 	http.Handle("/users/", userHandler)
 
+	authHandler := http.HandlerFunc(utils.GetToken)
+	http.Handle("/auth", authHandler)
+
 	pingHandler := http.HandlerFunc(utils.Ping)
 	http.Handle("/", pingHandler)
 
