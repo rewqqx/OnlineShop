@@ -1,6 +1,6 @@
 <?php
 
-include "../toolbar/Toolbar.inc";
+include "./app/toolbar/Toolbar.inc";
 class Container extends DOM
 {
     protected Toolbar $toolbar;

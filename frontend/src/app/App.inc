@@ -1,6 +1,7 @@
 <?php
-include "./container/Container.inc";
-include "./header/Header.inc";
+include "./elements/DOM.inc";
+include "./app/container/Container.inc";
+include "./app/header/Header.inc";
 
 class App extends DOM
 {
@@ -13,7 +14,7 @@ class App extends DOM
         $this->header = new Header();
         $this->container = new Container();
 
-        $this->append($this->header)->append($this . $this->container);
+        $this->append($this->header)->append($this->container);
 
         return $this;
     }
