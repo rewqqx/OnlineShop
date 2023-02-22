@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
 .collapse {
     display: flex;
     flex-direction: column;
@@ -17,7 +19,27 @@
 }
 
 .button-text {
-    font-family: "Calibri Light", sans-serif;
+    color: white;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 300;
+    font-size: 16px;
+    line-height: calc(125%);
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.input-header {
+    color: #2E2E2E;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: calc(125%);
+
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -27,7 +49,9 @@
 }
 
 .unselectable {
-    font-family: "Calibri", sans-serif;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 300;
+
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -37,5 +61,17 @@
 }
 
 .button:hover {
-    background: #EEEEEE;
+    opacity: 50%;
+}
+
+.input {
+    height: 32px;
+    background: #FFFFFF;
+    padding-left: 8px;
+    border: #D7D7D7 solid 1px;
+}
+
+.input:hover {
+    background: #FFFFFF;
+    border: #2D2D2D solid 1px;
 }
