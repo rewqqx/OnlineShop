@@ -17,7 +17,11 @@
 }
 
 .button-text {
-    font-family: "Calibri Light", sans-serif;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+    line-height: calc(125%);
+
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;

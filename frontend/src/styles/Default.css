@@ -12,14 +12,22 @@ html, body {
 
 .header {
     display: flex;
-    width: 100%;
+    width: calc(100%);
     align-items: center;
     height: 64px;
     background: #2E2E2E;
     color: white;
     font-family: Arial, sans-serif;
     font-size: 36px;
+    line-height: calc(125%);
+}
+
+.header-text {
     padding-left: 20px;
+    color: white;
+    font-family: Arial, sans-serif;
+    font-size: 36px;
+    line-height: calc(125%);
 }
 
 .toolbar {

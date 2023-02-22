@@ -20,13 +20,13 @@ class DOM
 
     protected function createElement()
     {
-        $this->setTag();
+        $this->setTag("div");
         return $this;
     }
 
-    protected function setTag()
+    protected function setTag(string $tag)
     {
-        $this->tag = "div";
+        $this->tag = $tag;
     }
 
     public function setStyle(string $style)
@@ -103,7 +103,7 @@ class Text extends DOM
     function __construct($text)
     {
         $this->text = $text;
-        $this->setTag();
+        $this->createElement();
     }
 }
 
