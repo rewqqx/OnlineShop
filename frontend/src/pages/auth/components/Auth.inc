@@ -21,7 +21,9 @@ class Auth extends DOM
      */
     protected function createElement()
     {
+        $this->setTag("form");
         $this->setStyle("auth-page");
+        $this->setMethod("POST");
 
         $this->title = new Text("Login");
         $this->title->setStyle("header-text")->setAttribute("color", "#2E2E2E");
@@ -34,17 +36,16 @@ class Auth extends DOM
         $this->loginHeader->setStyle("input-header");
 
         $this->login = new Input();
-        $this->login->setStyle("input")->setAttribute("margin-bottom","20px");
+        $this->login->setStyle("input")->setAttribute("margin-bottom", "20px");
 
         $this->passwordHeader = new Text("PASSWORD");
         $this->passwordHeader->setStyle("input-header");
 
         $this->password = new Input();
-        $this->password->setStyle("input")->setAttribute("margin-bottom","20px");
+        $this->password->setStyle("input")->setAttribute("margin-bottom", "20px");
 
         $this->confirm = new Button("SIGN IN");
         $this->confirm->setAttribute("align-self", "center");
-        $this->confirm->textElement->setAttribute("color", "#2D2D2D");
 
         $this->container->append($this->title)->append($this->loginHeader)->append($this->login);
         $this->container->append($this->passwordHeader)->append($this->password)->append($this->confirm);

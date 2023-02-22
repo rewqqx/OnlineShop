@@ -64,6 +64,18 @@
     opacity: 50%;
 }
 
+input {
+    height: 32px;
+    background: #FFFFFF;
+    padding-left: 8px;
+    border: #D7D7D7 solid 0px;
+}
+
+input:hover {
+    background: #FFFFFF;
+    border: #2D2D2D solid 0px;
+}
+
 .input {
     height: 32px;
     background: #FFFFFF;

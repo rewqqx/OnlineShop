@@ -4,30 +4,55 @@
 class DOM
 {
 
+    protected ?string $uid = null;
     protected string $tag = "div";
     protected ?string $id = null;
     protected ?string $href = null;
     protected ?string $type = null;
     protected ?string $style = null;
+    protected ?string $value = null;
+
+    protected ?string $method = null;
+
+    protected ?string $name = null;
     protected ?string $text = null;
     protected array $attributes = [];
     protected array $children = [];
 
     function __construct()
     {
+        $this->setTag("div");
         $this->createElement();
     }
 
 
     protected function createElement()
     {
-        $this->setTag("div");
         return $this;
     }
 
     protected function setTag(string $tag)
     {
+        $this->uid = uniqid($this->tag . "_");
         $this->tag = $tag;
+    }
+
+    protected function setValue(string $value)
+    {
+        $this->value = $value;
+        return $this;
+    }
+
+    protected function setMethod(string $method)
+    {
+        $this->method = $method;
+        return $this;
+    }
+
+    protected function setName(string $name)
+    {
+        $this->name = $this->tag . "_" . strtolower(strtr($name, array(' ' => '_')));
+        return $this;
     }
 
     public function setStyle(string $style)
@@ -81,6 +106,18 @@ class DOM
             $result = $result . ' id = "' . $this->id . '"';
         }
 
+        if (!is_null($this->name)) {
+            $result = $result . ' name = "' . $this->name . '"';
+        }
+
+        if (!is_null($this->method)) {
+            $result = $result . ' method = "' . $this->method . '"';
+        }
+
+        if (!is_null($this->value)) {
+            $result = $result . ' value = "' . $this->value . '"';
+        }
+
         if (!is_null($this->href)) {
             $result = $result . ' href = "' . $this->href . '"';
         }
@@ -121,25 +158,62 @@ class DOM
 
 class Text extends DOM
 {
-    function __construct($text)
+    function __construct($text = "")
     {
+        $this->setTag("div");
         $this->text = $text;
         $this->createElement();
     }
 }
 
 
-class Button extends DOM
+class Link extends DOM
 {
     public Text $textElement;
-    function __construct($text)
+
+    function __construct($text = "")
     {
+        $this->setTag("a");
+
         $this->textElement = new Text($text);
         $this->textElement->setStyle("button-text");
 
-        $this->setTag("a");
         $this->setStyle("button");
         $this->append($this->textElement);
+    }
+}
+
+class Button extends DOM
+{
+
+    function __construct($text = "")
+    {
+        $this->setTag("input");
+        $this->setValue($text);
+        $this->setName($text);
+
+        $this->createElement();
+    }
+
+    protected function createElement()
+    {
+        $this->setType("submit");
+        $this->setStyle("button");
+        $this->processClickEvent();
+
+        return $this;
+    }
+
+    function processClickEvent()
+    {
+        if (array_key_exists($this->name, $_POST)) {
+            $this->clickEvent();
+        }
+    }
+
+    function clickEvent()
+    {
+        echo 'Name [' . $this->name . "] is clicked";
     }
 }
 
