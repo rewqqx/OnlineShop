@@ -131,14 +131,24 @@ class Text extends DOM
 
 class Button extends DOM
 {
+    public Text $textElement;
     function __construct($text)
     {
-        $textElement = new Text($text);
-        $textElement->setStyle("button-text");
+        $this->textElement = new Text($text);
+        $this->textElement->setStyle("button-text");
 
         $this->setTag("a");
         $this->setStyle("button");
-        $this->append($textElement);
+        $this->append($this->textElement);
+    }
+}
+
+class Input extends DOM
+{
+    function __construct()
+    {
+        $this->setTag("input");
+        $this->setStyle("input");
     }
 }
 

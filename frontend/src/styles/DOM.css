@@ -43,3 +43,16 @@
 .button:hover {
     opacity: 50%;
 }
+
+.input {
+    height: 32px;
+    background: #FFFFFF;
+    border-radius: 5px;
+    padding-left: 8px;
+    border: #D7D7D7 solid 1px;
+}
+
+.input:hover {
+    background: #FFFFFF;
+    border: #2D2D2D solid 1px;
+}
