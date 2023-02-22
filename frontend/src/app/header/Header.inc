@@ -14,6 +14,7 @@ class Header extends DOM
         $this->profile = new Button("Profile");
         $this->profile->setAttribute("margin-left", "auto");
         $this->profile->setAttribute("margin-right", "20px");
+        $this->profile->setLink("./pages/auth/AuthPage.inc");
 
         $this->setStyle("header");
 

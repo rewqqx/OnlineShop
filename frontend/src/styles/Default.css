@@ -5,6 +5,10 @@ html, body {
     height: 100vh;
 }
 
+a, u {
+    text-decoration: none;
+}
+
 .container {
     display: flex;
     height: calc(100vh - 60px);

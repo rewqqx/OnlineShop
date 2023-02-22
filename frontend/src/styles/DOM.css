@@ -41,5 +41,5 @@
 }
 
 .button:hover {
-    background: #EEEEEE;
+    opacity: 50%;
 }
