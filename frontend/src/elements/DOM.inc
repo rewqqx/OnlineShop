@@ -186,6 +186,10 @@ class Link extends DOM
 class Button extends DOM
 {
 
+    // TODO: Попробуй пришить тут лямбду функцию.
+    // Если не получится можно сделать объект Command и метод Execute у него переопределять и подавать его на вход
+    public ?Closure $action = null;
+
     function __construct($text = "")
     {
         $this->setTag("input");
@@ -204,16 +208,21 @@ class Button extends DOM
         return $this;
     }
 
-    function processClickEvent()
+    protected function processClickEvent()
     {
         if (array_key_exists($this->name, $_POST)) {
             $this->clickEvent();
         }
     }
 
-    function clickEvent()
+    private function clickEvent()
     {
-        echo 'Name [' . $this->name . "] is clicked";
+        echo 'action: ' . $this->action;
+        if ($this->action == null) {
+            echo 'Name [' . $this->name . "] is clicked";
+        } else {
+            $this->action();
+        }
     }
 }
 

@@ -46,6 +46,10 @@ class Auth extends DOM
 
         $this->confirm = new Button("SIGN IN");
         $this->confirm->setAttribute("align-self", "center");
+        $this->confirm->action = function () {
+            echo "SIGN IN EXAMPLE";
+        };
+
 
         $this->container->append($this->title)->append($this->loginHeader)->append($this->login);
         $this->container->append($this->passwordHeader)->append($this->password)->append($this->confirm);
@@ -53,6 +57,7 @@ class Auth extends DOM
 
         return $this;
     }
+
 }
 
 
