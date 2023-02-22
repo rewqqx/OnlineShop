@@ -14,7 +14,14 @@ class DOM
 
     function __construct()
     {
+        $this->createElement();
+    }
+
+
+    protected function createElement()
+    {
         $this->setTag();
+        return $this;
     }
 
     protected function setTag()
