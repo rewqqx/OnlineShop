@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
+
 .collapse {
     display: flex;
     flex-direction: column;
@@ -18,7 +20,8 @@
 
 .button-text {
     color: white;
-    font-family: Arial, sans-serif;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 300;
     font-size: 16px;
     line-height: calc(125%);
 
@@ -30,8 +33,25 @@
     user-select: none;
 }
 
+.input-header {
+    color: #2E2E2E;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 300;
+    font-size: 12px;
+    line-height: calc(125%);
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 .unselectable {
-    font-family: "Calibri", sans-serif;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 300;
+
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -47,7 +67,6 @@
 .input {
     height: 32px;
     background: #FFFFFF;
-    border-radius: 5px;
     padding-left: 8px;
     border: #D7D7D7 solid 1px;
 }

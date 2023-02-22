@@ -23,27 +23,27 @@ class Auth extends DOM
     {
         $this->setStyle("auth-page");
 
-        $this->title = new Text("Authentication");
-        $this->title->setStyle("header-text")->setAttribute("color", "#2D2D2D");
+        $this->title = new Text("Login");
+        $this->title->setStyle("header-text")->setAttribute("color", "#2E2E2E");
         $this->title->setAttribute("text-align", "center")->setAttribute("padding", "10px");
 
         $this->container = new DOM();
         $this->container->setStyle("auth-container");
 
-        $this->loginHeader = new Text("Login");
-        $this->loginHeader->setStyle("button-text")->setAttribute("color", "#2D2D2D")->setAttribute("margin-left", "16px");
+        $this->loginHeader = new Text("LOGIN");
+        $this->loginHeader->setStyle("input-header");
 
         $this->login = new Input();
-        $this->login->setStyle("input")->setAttribute("margin-left", "15px")->setAttribute("margin-right", "15px");
+        $this->login->setStyle("input")->setAttribute("margin-bottom","20px");
 
-        $this->passwordHeader = new Text("Password");
-        $this->passwordHeader->setStyle("button-text")->setAttribute("color", "#2D2D2D")->setAttribute("margin-left", "16px");
+        $this->passwordHeader = new Text("PASSWORD");
+        $this->passwordHeader->setStyle("input-header");
 
         $this->password = new Input();
-        $this->password->setStyle("input")->setAttribute("margin-left", "15px")->setAttribute("margin-right", "15px");
+        $this->password->setStyle("input")->setAttribute("margin-bottom","20px");
 
-        $this->confirm = new Button("Sign in");
-        $this->confirm->setAttribute("margin-left", "auto")->setAttribute("margin-right", "20px");
+        $this->confirm = new Button("SIGN IN");
+        $this->confirm->setAttribute("align-self", "center");
         $this->confirm->textElement->setAttribute("color", "#2D2D2D");
 
         $this->container->append($this->title)->append($this->loginHeader)->append($this->login);
