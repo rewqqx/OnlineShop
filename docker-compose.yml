@@ -16,7 +16,7 @@ services:
 
   postgres:
     restart: always
-    hostname: online-shop
+    hostname: postgres
     image: postgres:latest
     volumes:
       - ./datagrip/dump.sql:/docker-entrypoint-initdb.d/init.sql

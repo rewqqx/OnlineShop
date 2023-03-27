@@ -9,6 +9,8 @@ import (
 
 func main() {
 
+	fmt.Println("Start Service:")
+
 	host := os.Getenv("POSTGRES_HOST")
 	if host == "" {
 		host = "127.0.0.1"
@@ -20,8 +22,11 @@ func main() {
 	err := database.Open()
 
 	if err != nil {
+		fmt.Println("<---- Can't Open Database ---->")
 		panic(err)
 	}
+
+	fmt.Println("<---- Success Open Database ---->")
 
 	utils.SetDatabase(&database)
 
