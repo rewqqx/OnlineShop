@@ -1,52 +1,15 @@
-package utils
+package requests
 
 import (
+	"backend/src/utils/adapter"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
 )
 
-var database *DBConnect
-
-type StatusResponse struct {
-	Status string `json:"status"`
-}
-
-func SetDatabase(connection *DBConnect) {
-	database = connection
-}
-
-func setSuccessHeader(w http.ResponseWriter) {
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-}
-
-func makeResponse(w http.ResponseWriter, status string) error {
-	response := StatusResponse{Status: status}
-
-	jsonBody, err := json.Marshal(response)
-
-	if err != nil {
-		http.Error(w, "{\"status\":\"Failure\"}", http.StatusBadRequest)
-		return errors.New("Can't parse JSON")
-	}
-
-	w.Write(jsonBody)
-
-	return nil
-}
-
-func Ping(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-
-	http.Error(w, "{\"status\":\"Success\"}", http.StatusOK)
-}
+const USERS_COLLECTION = "users"
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	setSuccessHeader(w)
@@ -59,7 +22,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if dirs[0] != "users" {
+	if dirs[0] != USERS_COLLECTION {
 		makeResponse(w, "Bad Path")
 		return
 	}
@@ -72,17 +35,17 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	tokenBody := r.Header.Get("token")
-	token := AuthToken{ID: val, Token: tokenBody}
+	token := adapter.AuthToken{ID: val, Token: tokenBody}
 
-	userDatabaseAdapter := UserDatabase{database: database}
-	ok, err := userDatabaseAdapter.checkToken(token)
+	userDatabaseAdapter := adapter.CreateUserDatabaseAdapter(database)
+	ok, err := userDatabaseAdapter.CheckToken(token)
 
 	if err != nil || !ok {
 		makeResponse(w, "Bad Auth")
 		return
 	}
 
-	user, err := userDatabaseAdapter.getUser(token.ID)
+	user, err := userDatabaseAdapter.GetUser(token.ID)
 
 	if err != nil {
 		makeResponse(w, "Bad User ID")
@@ -111,17 +74,17 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if dirs[0] != "users" {
+	if dirs[0] != USERS_COLLECTION {
 		makeResponse(w, "Bad Path")
 		return
 	}
 
-	if dirs[1] != "create" {
+	if dirs[1] != CREATE_ACTION {
 		makeResponse(w, "Bad Path")
 		return
 	}
 
-	createUser := User{}
+	createUser := adapter.User{}
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
@@ -133,8 +96,8 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userDatabaseAdapter := UserDatabase{database: database}
-	token, err := userDatabaseAdapter.createUser(&createUser)
+	userDatabaseAdapter := adapter.CreateUserDatabaseAdapter(database)
+	token, err := userDatabaseAdapter.CreateUser(&createUser)
 
 	if err != nil {
 		makeResponse(w, "Bad Auth")
@@ -162,7 +125,7 @@ func GetToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	authData := AuthData{}
+	authData := adapter.AuthData{}
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
@@ -174,8 +137,8 @@ func GetToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userDatabaseAdapter := UserDatabase{database: database}
-	token, err := userDatabaseAdapter.authUser(authData)
+	userDatabaseAdapter := adapter.CreateUserDatabaseAdapter(database)
+	token, err := userDatabaseAdapter.AuthUser(authData)
 
 	if err != nil {
 		makeResponse(w, "Bad Auth")
