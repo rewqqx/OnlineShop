@@ -2,6 +2,7 @@ package main
 
 import (
 	"backend/src/utils"
+	"backend/src/utils/requests"
 	"fmt"
 	"net/http"
 	"os"
@@ -28,18 +29,27 @@ func main() {
 
 	fmt.Println("<---- Success Open Database ---->")
 
-	utils.SetDatabase(&database)
+	requests.SetDatabase(&database)
 
-	userHandler := http.HandlerFunc(utils.GetUser)
+	// Bind Users
+
+	userHandler := http.HandlerFunc(requests.GetUser)
 	http.Handle("/users/", userHandler)
 
-	authHandler := http.HandlerFunc(utils.GetToken)
+	authHandler := http.HandlerFunc(requests.GetToken)
 	http.Handle("/auth", authHandler)
 
-	createHandler := http.HandlerFunc(utils.CreateUser)
+	createHandler := http.HandlerFunc(requests.CreateUser)
 	http.Handle("/users/create", createHandler)
 
-	pingHandler := http.HandlerFunc(utils.Ping)
+	// Bind Items
+
+	itemHandler := http.HandlerFunc(requests.GetItem)
+	http.Handle("/items/", itemHandler)
+
+	// Bind Ping
+
+	pingHandler := http.HandlerFunc(requests.Ping)
 	http.Handle("/", pingHandler)
 
 	http.ListenAndServe(":8080", nil)
