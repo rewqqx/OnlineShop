@@ -31,6 +31,8 @@ func main() {
 
 	requests.SetDatabase(&database)
 
+	// Bind Users
+
 	userHandler := http.HandlerFunc(requests.GetUser)
 	http.Handle("/users/", userHandler)
 
@@ -39,6 +41,13 @@ func main() {
 
 	createHandler := http.HandlerFunc(requests.CreateUser)
 	http.Handle("/users/create", createHandler)
+
+	// Bind Items
+
+	itemHandler := http.HandlerFunc(requests.GetItem)
+	http.Handle("/items/", itemHandler)
+
+	// Bind Ping
 
 	pingHandler := http.HandlerFunc(requests.Ping)
 	http.Handle("/", pingHandler)
