@@ -71,19 +71,8 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var token AuthToken
-
-	decoder := json.NewDecoder(r.Body)
-	decoder.DisallowUnknownFields()
-
-	err = decoder.Decode(&token)
-
-	if err != nil {
-		makeResponse(w, "Bad Body")
-		return
-	}
-
-	token.ID = val
+	tokenBody := r.Header.Get("token")
+	token := AuthToken{ID: val, Token: tokenBody}
 
 	userDatabaseAdapter := UserDatabase{database: database}
 	ok, err := userDatabaseAdapter.checkToken(token)
