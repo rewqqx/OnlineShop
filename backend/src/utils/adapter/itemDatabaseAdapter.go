@@ -3,6 +3,7 @@ package adapter
 import (
 	"backend/src/utils"
 	"fmt"
+	"github.com/lib/pq"
 )
 
 type ItemDatabase struct {
@@ -12,11 +13,11 @@ type ItemDatabase struct {
 const ITEMS_TABLE_NAME = "items"
 
 type Item struct {
-	ID          int    `json:"id" db:"id"`
-	Name        string `json:"name" db:"item_name"`
-	Price       int    `json:"price" db:"price"`
-	Description string `json:"description" db:"description"`
-	ImageIDS    []int  `json:"image_ids" db:"image_ids"`
+	ID          int           `json:"id" db:"id"`
+	Name        string        `json:"name" db:"item_name"`
+	Price       int           `json:"price" db:"price"`
+	Description string        `json:"description" db:"description"`
+	ImageIDS    pq.Int64Array `json:"image_ids" db:"image_ids"`
 }
 
 func CreateItemDatabaseAdapter(database *utils.DBConnect) *ItemDatabase {
