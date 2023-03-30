@@ -34,32 +34,23 @@ func GetItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokenBody := r.Header.Get("token")
-	token := adapter.AuthToken{ID: val, Token: tokenBody}
+	itemDatabaseAdapter := adapter.CreateItemDatabaseAdapter(database)
 
-	userDatabaseAdapter := adapter.CreateUserDatabaseAdapter(database)
-	ok, err := userDatabaseAdapter.CheckToken(token)
-
-	if err != nil || !ok {
-		makeResponse(w, "Bad Auth")
-		return
-	}
-
-	user, err := userDatabaseAdapter.GetUser(token.ID)
+	item, err := itemDatabaseAdapter.GetItem(val)
 
 	if err != nil {
-		makeResponse(w, "Bad User ID")
+		makeResponse(w, "Bad Item ID")
 		return
 	}
 
-	json, err := json.Marshal(user)
+	json, err := json.Marshal(item)
 
 	if err != nil {
 		makeResponse(w, "Bad JSON")
 		return
 	}
 
-	response := fmt.Sprintf("{\"status\":\"Success\", \"user\" : %v}", string(json))
+	response := fmt.Sprintf("{\"status\":\"Success\", \"item\" : %v}", string(json))
 	w.Write([]byte(response))
 }
 

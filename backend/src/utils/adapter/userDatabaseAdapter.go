@@ -1,10 +1,15 @@
 package adapter
 
-import "backend/src/utils"
+import (
+	"backend/src/utils"
+	"fmt"
+)
 
 type UserDatabase struct {
 	database *utils.DBConnect
 }
+
+const USER_TABLE_NAME = "users"
 
 type User struct {
 	ID         int              `json:"id" db:"id"`
@@ -36,25 +41,30 @@ func CreateUserDatabaseAdapter(database *utils.DBConnect) *UserDatabase {
 
 func (adapter *UserDatabase) GetUser(id int) (user *User, err error) {
 	user = &User{}
-	err = adapter.database.Connection.Get(user, "SELECT * FROM online_shop.users WHERE id=$1", id)
+	err = adapter.database.Connection.Get(user, fmt.Sprintf("SELECT * FROM online_shop.%v WHERE id=$1", USER_TABLE_NAME), id)
 
 	return
 }
 
+func (adapter *ItemDatabase) DeleteUser(id int) (err error) {
+	_, err = adapter.database.Connection.Exec(fmt.Sprintf("DELETE FROM online_shop.%v WHERE id=$1", USER_TABLE_NAME), id)
+	return
+}
+
 func (adapter *UserDatabase) CreateUser(user *User) (token AuthToken, err error) {
-	_, err = adapter.database.Connection.Exec("INSERT INTO online_shop.users (user_name, user_surname,user_patronymic, phone, birthdate, password_hash, mail, role_id, token) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", user.Name, user.Surname, user.Patronymic, user.Phone, user.Birthdate, utils.HashPassword(user.Password), user.Mail, user.RoleId, user.Token)
+	_, err = adapter.database.Connection.Exec(fmt.Sprintf("INSERT INTO online_shop.%v (user_name, user_surname,user_patronymic, phone, birthdate, password_hash, mail, role_id, token) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", USER_TABLE_NAME), user.Name, user.Surname, user.Patronymic, user.Phone, user.Birthdate, utils.HashPassword(user.Password), user.Mail, user.RoleId, user.Token)
 	return adapter.AuthUser(AuthData{Mail: user.Mail, Password: user.Password})
 }
 
 func (adapter *UserDatabase) CheckToken(token AuthToken) (ok bool, err error) {
 	compareToken := AuthToken{}
-	err = adapter.database.Connection.Get(&compareToken, "SELECT token FROM online_shop.users WHERE id=$1", token.ID)
+	err = adapter.database.Connection.Get(&compareToken, fmt.Sprintf("SELECT token FROM online_shop.%v WHERE id=$1", USER_TABLE_NAME), token.ID)
 	ok = compareToken.Token == token.Token
 	return ok, nil
 }
 
 func (adapter *UserDatabase) AuthUser(data AuthData) (token AuthToken, err error) {
-	err = adapter.database.Connection.Get(&token, "SELECT id, token FROM online_shop.users WHERE mail=$1 AND password_hash=$2", data.Mail, utils.HashPassword(data.Password))
+	err = adapter.database.Connection.Get(&token, fmt.Sprintf("SELECT id, token FROM online_shop.%v WHERE mail=$1 AND password_hash=$2", USER_TABLE_NAME), data.Mail, utils.HashPassword(data.Password))
 
 	if err != nil {
 		return
@@ -62,7 +72,7 @@ func (adapter *UserDatabase) AuthUser(data AuthData) (token AuthToken, err error
 
 	token.Token = utils.GenerateToken(32)
 
-	_, err = adapter.database.Connection.Exec("UPDATE online_shop.users SET token = $1 WHERE id = $2", token.Token, token.ID)
+	_, err = adapter.database.Connection.Exec(fmt.Sprintf("UPDATE online_shop.%v SET token = $1 WHERE id = $2", USER_TABLE_NAME), token.Token, token.ID)
 
 	return
 }
