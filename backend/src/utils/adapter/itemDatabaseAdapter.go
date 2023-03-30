@@ -2,6 +2,7 @@ package adapter
 
 import (
 	"backend/src/utils"
+	"database/sql"
 	"fmt"
 	"github.com/lib/pq"
 )
@@ -20,17 +21,51 @@ type Item struct {
 	ImageIDS    pq.Int64Array `json:"image_ids" db:"image_ids"`
 }
 
+type Pagination struct {
+	Offset int `json:"offset" db:"offset"`
+	Limit  int `json:"limit" db:"limit"`
+}
+
 func CreateItemDatabaseAdapter(database *utils.DBConnect) *ItemDatabase {
 	adapter := &ItemDatabase{database: database}
 	return adapter
 }
 
-func (adapter *ItemDatabase) GetItems(count int, page int) (items []*Item, err error) {
+func (adapter *ItemDatabase) GetItems() (items []*Item, err error) {
 	rows, err := adapter.database.Connection.Query(fmt.Sprintf("SELECT * FROM online_shop.%v", ITEMS_TABLE_NAME))
 
+	if err != nil {
+		return
+	}
+
+	return parseItemsFromRows(rows)
+}
+
+func (adapter *ItemDatabase) GetItemsRange(pagination Pagination) (items []*Item, err error) {
+	rows, err := adapter.database.Connection.Query(fmt.Sprintf("SELECT * FROM online_shop.%v OFFSET $1 ROWS FETCH NEXT $2 ROWS ONLY;", ITEMS_TABLE_NAME), pagination.Offset, pagination.Limit)
+
+	if err != nil {
+		return
+	}
+
+	return parseItemsFromRows(rows)
+}
+
+func parseItemsFromRows(rows *sql.Rows) (items []*Item, err error) {
 	for rows.Next() {
-		item := &Item{}
-		err = rows.Scan(item)
+		var id int
+		var item_name string
+		var price int
+		var desc string
+		var imageIds pq.Int64Array
+
+		err = rows.Scan(&id, &item_name, &price, &desc, &imageIds)
+
+		if err != nil {
+			return
+		}
+
+		item := &Item{id, item_name, price, desc, imageIds}
 		items = append(items, item)
 	}
 
