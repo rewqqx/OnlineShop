@@ -3,8 +3,8 @@
 class Token
 {
 
-    public $id;
-    public $token;
+    private $id;
+    private $token;
 
 
     function __construct($data)
@@ -20,6 +20,15 @@ class Token
         return json_encode($array);
     }
 
+    function getID(): int
+    {
+        return $this->id;
+    }
+
+    function getToken(): string
+    {
+        return $this->token;
+    }
 
 }
 
