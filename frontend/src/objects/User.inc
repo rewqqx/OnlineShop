@@ -1,7 +1,5 @@
 <?php
 
-namespace user;
-
 class User
 {
     public $id;
@@ -15,7 +13,8 @@ class User
     public $role_id;
 
 
-    function __construct($data){
+    function __construct($data)
+    {
         $this->id = $data['id'] ?? "";
         $this->user_name = $data['name'] ?? "";
         $this->user_surname = $data['user_surname'] ?? "";
@@ -94,8 +93,7 @@ class User
     }
 
 
-
-    public function toJson($array) : string
+    public function toJson($array): string
     {
         return json_encode($array);
     }
