@@ -1,6 +1,6 @@
 <?php
 
-namespace OnlineShop\user;
+namespace user;
 
 class User
 {
@@ -102,3 +102,5 @@ class User
 
 
 }
+
+?>
