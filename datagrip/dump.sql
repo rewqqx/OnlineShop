@@ -317,6 +317,16 @@ COPY online_shop.deliveries (id, order_id, address_id, target_date, type_id) FRO
 --
 
 COPY online_shop.items (id, item_name, price, description, image_ids) FROM stdin;
+1	Apple	1	Sweee Apple	{1,2}
+2	Orange	1	Soar Orange	{3,4}
+3	Computer	1	Powerful Computer	{5}
+4	Sweeter	15	Usual One	{6,7,8}
+5	Ford	30	Very Fast Car	{9,10}
+6	Book	50	Can Be Useful	{11}
+7	Candy	60	Berry Candy	{12}
+8	Iphone	90	The Last Iphone	{13,14}
+9	Pizza	40	Still Hot	{15}
+10	Pencil	30	Blue Pencil	{16}
 \.
 
 
