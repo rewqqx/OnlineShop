@@ -4,12 +4,13 @@
 
 <?php
 include "./app/App.inc";
+include "./requests/Requests.inc";
 
-$url = "http://127.0.0.1:8080/items/";
-$q   = array("q"=>"PHP HTTP request");
-$page = file_get_contents($url . '?' . http_build_query($q));
+echo Request::POSTRequest("http://127.0.0.1:8080/auth/", "{
+    \"mail\": \"admin@mail.ru\",
+    \"password\": \"admin\"}");
+echo Request::GETRequest("http://127.0.0.1:8080/items/");
 
-echo $page;
 
 $app = new App();
 echo $app->getDOM();
