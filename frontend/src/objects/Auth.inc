@@ -1,7 +1,5 @@
 <?php
 
-namespace user;
-
 class Auth
 {
 
