@@ -40,11 +40,10 @@ class Request
 
     public static function POSTRequestSpecifyHeaders($url, $body, $headers)
     {
-        $q = array("q" => $body);
         $options = array('http' => array(
             'method' => "POST",
             'header' => $headers,
-            'content' => http_build_query($q)
+            'content' => $body
         ));
         $context = stream_context_create($options);
         $response = file_get_contents($url, false, $context);
