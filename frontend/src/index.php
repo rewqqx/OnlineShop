@@ -9,7 +9,8 @@ include "./objects/Auth.inc";
 include "./requests/adapters/UserDatabaseAdapter.inc";
 
 $auth = new Auth("admin@mail.ru", "admin");
-echo GetUserToken($auth)->toJson();
+$token = GetUserToken($auth);
+echo GetUser($token)->toJson();
 //echo Request::GETRequest("http://127.0.0.1:8080/items/");
 
 
