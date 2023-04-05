@@ -1,28 +1,29 @@
 <?php
 
-namespace OnlineShop\db;
 
-class DB
+namespace database;
+class Database
 {
-    private $connect;
 
+    private static self|null $instance = null;
+    private $connect;
     private $ip;
     private $port;
     private $user;
     private $password;
     private $dbname;
 
-    public function __construct()
+    private function __construct()
     {
-        $this->connect = $this->getDatabase();
         $this->ip = "localhost";
         $this->port = 5432;
         $this->user = "pguser";
         $this->password = "pgpass";
         $this->dbname = "postgres";
+        $this->connect = $this->getConnection();
     }
 
-    private function getDatabase(): false|\PgSql\Connection
+    private function getConnection(): false|Connection
     {
         return pg_connect("host=" . $this->ip . " port=" . $this->port . " dbname=" . $this->dbname . " user=" . $this->user . " password=" . $this->password);
     }
@@ -36,6 +37,15 @@ class DB
         return $result_query_api;
     }
 
+    public static function getDatabase(): Database
+    {
+        if (is_null(self::$instance)) {
+            self::$instance = new Database();
+        }
+
+        return self::$instance;
+    }
+
     public function query($sql, $params = []): array
     {
         $stmt = pg_query_params($this->connect, $sql, $params);
@@ -43,3 +53,5 @@ class DB
     }
 
 }
+
+?>
