@@ -1,21 +1,22 @@
 <?php
 
-namespace OnlineShop\user;
-
 class User
 {
-    public $id;
-    public $user_name;
-    public $user_surname;
-    public $user_patronymic;
-    public $phone;
-    public $birthdate;
-    public $password_hash;
-    public $mail;
-    public $role_id;
+    private $id;
+    private $user_name;
+    private $user_surname;
+    private $user_patronymic;
+    private $phone;
+    private $birthdate;
+    private $password_hash;
+    private $mail;
+    private $role_id;
+
+    private $token;
 
 
-    function __construct($data){
+    function __construct($data)
+    {
         $this->id = $data['id'] ?? "";
         $this->user_name = $data['name'] ?? "";
         $this->user_surname = $data['user_surname'] ?? "";
@@ -24,6 +25,7 @@ class User
         $this->birthdate = $data['birthdate'] ?? "";
         $this->password_hash = $data['password_hash'] ?? "";
         $this->mail = $data['mail'] ?? "";
+        $this->token = $data['token'] ?? "";
         $this->role_id = $data['role_id'] ?? "";
     }
 
@@ -94,11 +96,23 @@ class User
     }
 
 
-
-    public function toJson($array) : string
+    public function toJson(): string
     {
+        $array["id"] = $this->id;
+        $array["user_name"] = $this->user_name;
+        $array["user_surname"] = $this->user_surname;
+        $array["user_patronymic"] = $this->user_patronymic;
+        $array["phone"] = $this->phone;
+        $array["birthday"] = $this->birthdate;
+        $array["mail"] = $this->mail;
+        $array["role_id"] = $this->role_id;
+        $array["password_hash"] = $this->password_hash;
+        $array["token"] = $this->token;
+
         return json_encode($array);
     }
 
 
 }
+
+?>

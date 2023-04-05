@@ -4,7 +4,7 @@
 
 Для запуска используйте
 
-`docker compose up`
+`docker-compose up --force-recreate`
 
 Для дампа бд используйте:
 
