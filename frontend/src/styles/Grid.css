@@ -1,0 +1,18 @@
+.grid {
+    margin: 64px;
+    padding: 64px;
+    background: #fafafa;
+    width: calc(100% - 300px);
+
+    max-height: calc(100vh - 50px - 256px);
+    height: calc(100vh - 50px);
+    border-radius: 15px;
+
+    place-self: center;
+
+    display: grid;
+
+    grid-template-columns: repeat(auto-fill, minmax(196px, 1fr));
+    grid-row-gap: .5em;
+    grid-column-gap: 1em;
+}
