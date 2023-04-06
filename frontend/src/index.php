@@ -7,11 +7,17 @@ include "./app/App.inc";
 include "./requests/Requests.inc";
 include "./objects/Auth.inc";
 include "./requests/adapters/UserDatabaseAdapter.inc";
+include "./requests/adapters/ItemDatabaseAdapter.inc";
 
 $auth = new Auth("admin@mail.ru", "admin");
 $token = GetUserToken($auth);
 echo GetUser($token)->toJson();
-//echo Request::GETRequest("http://127.0.0.1:8080/items/");
+/*
+foreach (GetItems() as $item) {
+    echo $item->toJson();
+}*/
+
+echo GetItem(2)->toJson();
 
 
 $app = new App();
