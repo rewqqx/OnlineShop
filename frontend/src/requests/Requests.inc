@@ -14,7 +14,7 @@ function HeadersJSON(): array
 
 function GETRequest($url)
 {
-    return RequestSpecifyHeaders($url, "{}", HeadersJSON(), "GET");
+    return RequestSpecifyHeaders($url, "", HeadersJSON(), "GET");
 }
 
 function POSTRequest($url, $body)
