@@ -43,6 +43,8 @@ func (adapter *UserDatabase) GetUser(id int) (user *User, err error) {
 	user = &User{}
 	err = adapter.database.Connection.Get(user, fmt.Sprintf("SELECT * FROM online_shop.%v WHERE id=$1", USER_TABLE_NAME), id)
 
+	user.password = ""
+
 	return
 }
 

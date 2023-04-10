@@ -1,6 +1,4 @@
-create type sex_users as ENUM ('male', 'female');
-
-create table online_shop.users
+create table online_shop.tags
 (
     id              serial  not null,
     user_name       varchar,
@@ -17,8 +15,6 @@ create table online_shop.users
     constraint users_mail unique (mail)
 );
 
-alter table online_shop.users
+alter table online_shop.tags
     owner to postgres;
-
-ALTER TABLE online_shop.users ADD COLUMN token varchar;
 

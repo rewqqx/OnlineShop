@@ -19,7 +19,7 @@ func main() {
 
 	fmt.Println("Postgres Host: " + host)
 
-	database := utils.DBConnect{Ip: host, Port: "5432", Password: "pgpass", User: "postgres", Database: "postgres"}
+	database := utils.DBConnect{Ip: host, Port: "5433", Password: "pgpass", User: "postgres", Database: "postgres"}
 	err := database.Open()
 
 	if err != nil {
