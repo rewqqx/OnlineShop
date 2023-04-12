@@ -11,7 +11,15 @@ class Header extends DOM
         $this->title = new Text("Online shop");
         $this->title->setStyle("header-text");
 
-        $this->profile = new Link("Profile");
+        $token = getTokenFromCookie();
+
+        $buttonName = "Sign In";
+
+        if ($token->isValid()) {
+            $buttonName = "Profile";
+        }
+
+        $this->profile = new Link($buttonName);
         $this->profile->setAttribute("margin-left", "auto");
         $this->profile->setAttribute("margin-right", "20px");
         $this->profile->setLink("./pages/auth/AuthPage.inc");
