@@ -4,6 +4,7 @@ import (
 	"backend/src/utils"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 )
 
@@ -26,13 +27,16 @@ func setSuccessHeader(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusOK)
 }
 
+func makeErrorResponse(w http.ResponseWriter, body string, status int) {
+	http.Error(w, fmt.Sprintf("{\"status\":\"%v\"}", body), status)
+}
 func makeResponse(w http.ResponseWriter, status string) error {
 	response := StatusResponse{Status: status}
 
 	jsonBody, err := json.Marshal(response)
 
 	if err != nil {
-		http.Error(w, "{\"status\":\"Failure\"}", http.StatusBadRequest)
+		makeErrorResponse(w, http.StatusBadRequest)
 		return errors.New("Can't parse JSON")
 	}
 
