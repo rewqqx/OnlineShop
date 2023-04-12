@@ -3,7 +3,9 @@ package utils
 import (
 	"encoding/hex"
 	"github.com/stretchr/testify/require"
+	"reflect"
 	"testing"
+	"time"
 )
 
 func TestHashPassword(t *testing.T) {
@@ -33,4 +35,70 @@ func TestGenerateToken(t *testing.T) {
 		require.NotEqual(t, newGenerateToken, token, "Repeating identical tokens")
 	}
 
+}
+
+func TestTimestamp_UnmarshalJSON(t *testing.T) {
+	timestamp := Timestamp{Time: time.Now(), Valid: true}
+
+	data := []byte("2006-01-02 15:04:05")
+	err := timestamp.UnmarshalJSON(data)
+
+	require.Equal(t, err, nil, "Expected that func UnmarshalJSON() will not return an error")
+}
+
+func TestTimestamp_UnmarshalJSONWithError(t *testing.T) {
+	timestamp := Timestamp{Time: time.Now(), Valid: true}
+
+	invalidData := []byte("\"\\x01\"")
+	err := timestamp.UnmarshalJSON(invalidData)
+
+	if err == nil {
+		t.Error("Expected that func UnmarshalJSON() will return an error")
+	}
+}
+
+func TestTimestamp_MarshalJSONWithValidTime(t *testing.T) {
+	timestamp := &Timestamp{Time: time.Now(), Valid: true}
+
+	JSON, err := timestamp.MarshalJSON()
+	if err != nil {
+		t.Errorf("Unexpected error in MarshalJSON(): %v", err)
+	}
+	require.Equal(t, string(JSON), time.Now().Format("\"2006-01-02 15:04:05\""))
+}
+
+func TestTimestamp_MarshalJSONWithUnValidTime(t *testing.T) {
+	timestamp := &Timestamp{Time: time.Now(), Valid: false}
+
+	JSON, err := timestamp.MarshalJSON()
+	if err != nil {
+		t.Errorf("Unexpected error in MarshalJSON(): %v", err)
+	}
+	require.Equal(t, string(JSON), "")
+}
+
+func TestTimestamp_Value(t *testing.T) {
+	timestamp := Timestamp{Time: time.Now(), Valid: true}
+
+	value, err := timestamp.Value()
+	if err != nil {
+		t.Error("Return unexpected error in Value():", err)
+	}
+
+	actuallyValueType := reflect.TypeOf(value)
+	expectedType := reflect.TypeOf(time.Time{})
+	require.Equal(t, actuallyValueType, expectedType, "Value expected %s, actually %s", expectedType, actuallyValueType)
+}
+
+func TestTimestamp_Scan(t *testing.T) {
+	//_ := Timestamp{Time: time.Now(), Valid: true}
+	// Create a sample Timestamp object with an initial invalid value
+	sampleTimestamp := Timestamp{Valid: false}
+
+	// Create a sample time.Time object to use as input for Scan
+	inputTime := time.Date(2023, 4, 12, 14, 30, 0, 0, time.UTC)
+
+	// Call the Scan method with the input time.Time value
+	err := sampleTimestamp.Scan(inputTime)
+	require.Equal(t, err, nil, "Returned unexpected err: %s", err)
 }
