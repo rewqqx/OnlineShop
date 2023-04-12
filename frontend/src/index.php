@@ -5,12 +5,13 @@
 <link href='styles/Grid.css' rel='stylesheet' type='text/css'>
 
 <?php
-include "./app/App.inc";
-include "./requests/Requests.inc";
-include "./objects/Auth.inc";
-include "./widgets/ItemCard.inc";
-include "./requests/adapters/UserDatabaseAdapter.inc";
-include "./requests/adapters/ItemDatabaseAdapter.inc";
+require_once("./app/App.inc");
+require_once("./requests/Requests.inc");
+require_once("./objects/Auth.inc");
+require_once("./widgets/ItemCard.inc");
+require_once("./requests/adapters/UserDatabaseAdapter.inc");
+require_once("./requests/adapters/ItemDatabaseAdapter.inc");
+require_once($_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" . "\\cookie\CookieStorage.inc");
 
 //echo GetUser($token)->toJson();
 

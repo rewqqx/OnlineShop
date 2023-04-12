@@ -1,7 +1,7 @@
 <?php
 
-include $_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" . "\objects\Token.inc";
-include $_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" . "\objects\User.inc";
+require_once($_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" . "\objects\Token.inc");
+require_once($_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" . "\objects\User.inc");
 function GetUserToken($auth): ?Token
 {
     $response = POSTRequest("http://127.0.0.1:8080/auth", $auth->toJSON());

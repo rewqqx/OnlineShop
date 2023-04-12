@@ -3,12 +3,13 @@
 <link href='../../styles/Auth.css' rel='stylesheet' type='text/css'>
 
 <?php
-include $_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" ."\\requests\Requests.inc";
-include $_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" . "\\objects\Auth.inc";
-include $_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" . "\\elements\DOM.inc";
-include $_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" . "\\requests\adapters\UserDatabaseAdapter.inc";
+require_once($_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" . "\\requests\Requests.inc");
+require_once($_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" . "\\objects\Auth.inc");
+require_once($_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" . "\\elements\DOM.inc");
+require_once($_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" . "\\cookie\CookieStorage.inc");
+require_once($_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" . "\\requests\adapters\UserDatabaseAdapter.inc");
 
-include "./components/AuthComponent.inc";
+require_once("./components/AuthComponent.inc");
 
 $auth = new AuthComponent();
 echo $auth->getDOM();
