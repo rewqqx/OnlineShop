@@ -54,7 +54,7 @@ class AuthComponent extends DOM
             $password = $_POST[$parent->password->name];
             $auth = new Auth($login,  $password);
             $token = GetUserToken($auth);
-            echo $token;
+            echo $token->toJson();
         });
 
 
