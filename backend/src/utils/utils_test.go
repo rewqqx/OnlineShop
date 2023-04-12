@@ -3,6 +3,7 @@ package utils
 import (
 	"encoding/hex"
 	"github.com/stretchr/testify/require"
+	"os"
 	"reflect"
 	"testing"
 	"time"
@@ -98,4 +99,27 @@ func TestTimestamp_Scan(t *testing.T) {
 
 	err := sampleTimestamp.Scan(inputTime)
 	require.Equal(t, err, nil, "Returned unexpected err: %s", err)
+}
+
+func TestOpen(t *testing.T) {
+	host := os.Getenv("POSTGRES_HOST")
+	if host == "" {
+		host = "127.0.0.1"
+	}
+
+	dbConnection := &DBConnect{
+		Ip:       host,
+		Port:     "5432",
+		User:     "postgres",
+		Password: "pgpass",
+		Database: "postgres",
+	}
+
+	go func() {
+		err := dbConnection.Open()
+		require.Equal(t, err, nil)
+
+		err = dbConnection.Connection.Close()
+		require.Equal(t, err, nil)
+	}()
 }
