@@ -2,6 +2,7 @@ package requests
 
 import (
 	"backend/src/utils/adapter"
+	"backend/src/utils/database"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -9,9 +10,17 @@ import (
 	"strings"
 )
 
+type UserServer struct {
+	Database *database.DBConnect
+}
+
+func NewUserServer(database *database.DBConnect) *UserServer {
+	return &UserServer{Database: database}
+}
+
 const USERS_COLLECTION = "users"
 
-func GetUser(w http.ResponseWriter, r *http.Request) {
+func (server *UserServer) GetUser(w http.ResponseWriter, r *http.Request) {
 	setSuccessHeader(w)
 
 	path := r.URL.Path[1:]
@@ -37,7 +46,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	tokenBody := r.Header.Get("token")
 	token := adapter.AuthToken{ID: val, Token: tokenBody}
 
-	userDatabaseAdapter := adapter.CreateUserDatabaseAdapter(database)
+	userDatabaseAdapter := adapter.CreateUserDatabaseAdapter(server.Database)
 	ok, err := userDatabaseAdapter.CheckToken(token)
 
 	if err != nil || !ok {
@@ -63,7 +72,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(response))
 }
 
-func CreateUser(w http.ResponseWriter, r *http.Request) {
+func (server *UserServer) CreateUser(w http.ResponseWriter, r *http.Request) {
 	setSuccessHeader(w)
 
 	path := r.URL.Path[1:]
@@ -96,7 +105,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userDatabaseAdapter := adapter.CreateUserDatabaseAdapter(database)
+	userDatabaseAdapter := adapter.CreateUserDatabaseAdapter(server.Database)
 	token, err := userDatabaseAdapter.CreateUser(&createUser)
 
 	if err != nil {
@@ -115,7 +124,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(response))
 }
 
-func GetToken(w http.ResponseWriter, r *http.Request) {
+func (server *UserServer) GetToken(w http.ResponseWriter, r *http.Request) {
 	setSuccessHeader(w)
 
 	path := r.URL.Path[1:]
@@ -137,7 +146,7 @@ func GetToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userDatabaseAdapter := adapter.CreateUserDatabaseAdapter(database)
+	userDatabaseAdapter := adapter.CreateUserDatabaseAdapter(server.Database)
 	token, err := userDatabaseAdapter.AuthUser(authData)
 
 	if err != nil {

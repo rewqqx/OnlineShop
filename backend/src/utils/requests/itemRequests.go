@@ -2,6 +2,7 @@ package requests
 
 import (
 	"backend/src/utils/adapter"
+	"backend/src/utils/database"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -11,7 +12,15 @@ import (
 
 const ITEM_COLLECTION = "items"
 
-func GetItem(w http.ResponseWriter, r *http.Request) {
+type ItemServer struct {
+	Database *database.DBConnect
+}
+
+func NewItemServer(database *database.DBConnect) *ItemServer {
+	return &ItemServer{Database: database}
+}
+
+func (server *ItemServer) GetItem(w http.ResponseWriter, r *http.Request) {
 	setSuccessHeader(w)
 
 	path := r.URL.Path[1:]
@@ -30,11 +39,11 @@ func GetItem(w http.ResponseWriter, r *http.Request) {
 	val, err := strconv.Atoi(dirs[1])
 
 	if err != nil {
-		GetItems(w, r)
+		server.GetItems(w, r)
 		return
 	}
 
-	itemDatabaseAdapter := adapter.CreateItemDatabaseAdapter(database)
+	itemDatabaseAdapter := adapter.CreateItemDatabaseAdapter(server.Database)
 
 	item, err := itemDatabaseAdapter.GetItem(val)
 
@@ -54,7 +63,7 @@ func GetItem(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(response))
 }
 
-func GetItems(w http.ResponseWriter, r *http.Request) {
+func (server *ItemServer) GetItems(w http.ResponseWriter, r *http.Request) {
 	setSuccessHeader(w)
 
 	path := r.URL.Path[1:]
@@ -70,7 +79,7 @@ func GetItems(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	itemDatabaseAdapter := adapter.CreateItemDatabaseAdapter(database)
+	itemDatabaseAdapter := adapter.CreateItemDatabaseAdapter(server.Database)
 
 	pagination := adapter.Pagination{}
 
@@ -103,7 +112,7 @@ func GetItems(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(response))
 }
 
-func CreateItem(w http.ResponseWriter, r *http.Request) {
+func (server *ItemServer) CreateItem(w http.ResponseWriter, r *http.Request) {
 	setSuccessHeader(w)
 
 	path := r.URL.Path[1:]
