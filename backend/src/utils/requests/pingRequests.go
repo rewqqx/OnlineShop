@@ -24,7 +24,6 @@ func setSuccessHeader(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
 }
 
 func makeErrorResponse(w http.ResponseWriter, body string, status int) {
@@ -42,6 +41,7 @@ func makeResponse(w http.ResponseWriter, status string) error {
 	}
 
 	w.Write(jsonBody)
+	w.WriteHeader(http.StatusOK)
 
 	return nil
 }
