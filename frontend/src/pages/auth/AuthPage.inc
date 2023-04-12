@@ -3,9 +3,13 @@
 <link href='../../styles/Auth.css' rel='stylesheet' type='text/css'>
 
 <?php
-include "../../elements/DOM.inc";
-include "./components/Auth.inc";
+include $_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" ."\\requests\Requests.inc";
+include $_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" . "\\objects\Auth.inc";
+include $_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" . "\\elements\DOM.inc";
+include $_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" . "\\requests\adapters\UserDatabaseAdapter.inc";
 
-$auth = new Auth();
+include "./components/AuthComponent.inc";
+
+$auth = new AuthComponent();
 echo $auth->getDOM();
 ?>

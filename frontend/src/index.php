@@ -12,8 +12,6 @@ include "./widgets/ItemCard.inc";
 include "./requests/adapters/UserDatabaseAdapter.inc";
 include "./requests/adapters/ItemDatabaseAdapter.inc";
 
-//$auth = new Auth("admin@mail.ru", "admin");
-//$token = GetUserToken($auth);
 //echo GetUser($token)->toJson();
 
 //echo $itemCard->getDOM();

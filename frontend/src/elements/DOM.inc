@@ -80,6 +80,7 @@ class DOM
         return $this;
     }
 
+
     public function append(DOM $child)
     {
         array_push($this->children, $child);
@@ -203,6 +204,13 @@ class Button extends DOM
     {
         $this->setType("submit");
         $this->setStyle("button");
+
+        return $this;
+    }
+
+    public function setAction($action)
+    {
+        $this->action = $action;
         $this->processClickEvent();
 
         return $this;
@@ -217,20 +225,20 @@ class Button extends DOM
 
     private function clickEvent()
     {
-        echo 'action: ' . $this->action;
         if ($this->action == null) {
             echo 'Name [' . $this->name . "] is clicked";
         } else {
-            $this->action();
+            ($this->action)();
         }
     }
 }
 
 class Input extends DOM
 {
-    function __construct()
+    function __construct($text = "")
     {
         $this->setTag("input");
+        $this->setName($text);
         $this->setStyle("input");
     }
 }
