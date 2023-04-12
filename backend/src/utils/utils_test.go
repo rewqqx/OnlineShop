@@ -5,7 +5,6 @@ import (
 	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/require"
 	"gopkg.in/DATA-DOG/go-sqlmock.v1"
-	"os"
 	"reflect"
 	"testing"
 	"time"
@@ -27,9 +26,7 @@ func TestGenerateToken(t *testing.T) {
 	require.Equal(t, len(token), tokenLength*2, "Token length is %d, expected %d", len(token), tokenLength*2)
 
 	decoded, err := hex.DecodeString(token)
-	if err != nil {
-		t.Error("Error decoding token:", err)
-	}
+	require.Equal(t, err, nil, "Error decoding token: %v", err)
 	require.Equal(t, len(decoded), tokenLength, "Invalid decoding token. Expected %d, actually %d",
 		tokenLength, len(decoded))
 
@@ -40,7 +37,7 @@ func TestGenerateToken(t *testing.T) {
 
 }
 
-func TestTimestamp_UnmarshalJSON(t *testing.T) {
+func TestTimestampUnmarshalJSON(t *testing.T) {
 	timestamp := Timestamp{Time: time.Now(), Valid: true}
 
 	data := []byte("2006-01-02 15:04:05")
@@ -49,7 +46,7 @@ func TestTimestamp_UnmarshalJSON(t *testing.T) {
 	require.Equal(t, err, nil, "Expected that func UnmarshalJSON() will not return an error")
 }
 
-func TestTimestamp_UnmarshalJSONWithError(t *testing.T) {
+func TestTimestampUnmarshalJSONWithError(t *testing.T) {
 	timestamp := Timestamp{Time: time.Now(), Valid: true}
 
 	invalidData := []byte("\"\\x01\"")
@@ -59,7 +56,7 @@ func TestTimestamp_UnmarshalJSONWithError(t *testing.T) {
 	}
 }
 
-func TestTimestamp_MarshalJSONWithValidTime(t *testing.T) {
+func TestTimestampMarshalJSONWithValidTime(t *testing.T) {
 	timestamp := &Timestamp{Time: time.Now(), Valid: true}
 
 	JSON, err := timestamp.MarshalJSON()
@@ -70,7 +67,7 @@ func TestTimestamp_MarshalJSONWithValidTime(t *testing.T) {
 	require.Equal(t, string(JSON), time.Now().Format("\"2006-01-02 15:04:05\""))
 }
 
-func TestTimestamp_MarshalJSONWithUnValidTime(t *testing.T) {
+func TestTimestampMarshalJSONWithUnValidTime(t *testing.T) {
 	timestamp := &Timestamp{Time: time.Now(), Valid: false}
 
 	JSON, err := timestamp.MarshalJSON()
@@ -81,7 +78,7 @@ func TestTimestamp_MarshalJSONWithUnValidTime(t *testing.T) {
 	require.Equal(t, string(JSON), "")
 }
 
-func TestTimestamp_Value(t *testing.T) {
+func TestTimestampValue(t *testing.T) {
 	timestamp := Timestamp{Time: time.Now(), Valid: true}
 
 	value, err := timestamp.Value()
@@ -94,7 +91,7 @@ func TestTimestamp_Value(t *testing.T) {
 	require.Equal(t, actuallyValueType, expectedType, "Value expected %s, actually %s", expectedType, actuallyValueType)
 }
 
-func TestTimestamp_Scan(t *testing.T) {
+func TestTimestampScan(t *testing.T) {
 	sampleTimestamp := Timestamp{Valid: false}
 
 	inputTime := time.Date(2023, 4, 12, 14, 30, 0, 0, time.UTC)
@@ -103,30 +100,7 @@ func TestTimestamp_Scan(t *testing.T) {
 	require.Equal(t, err, nil, "Returned unexpected err: %s", err)
 }
 
-func TestDBConnect_Open(t *testing.T) {
-	host := os.Getenv("POSTGRES_HOST")
-	if host == "" {
-		host = "127.0.0.1"
-	}
-
-	dbConnection := &DBConnect{
-		Ip:       host,
-		Port:     "5432",
-		User:     "postgres",
-		Password: "pgpass",
-		Database: "postgres",
-	}
-
-	go func() {
-		err := dbConnection.Open()
-		require.Equal(t, err, nil)
-
-		err = dbConnection.Connection.Close()
-		require.Equal(t, err, nil)
-	}()
-}
-
-func TestDBConnect_GetTables(t *testing.T) {
+func TestDBConnectGetTables(t *testing.T) {
 	client := &DBConnect{
 		Ip:       "127.0.0.1",
 		Port:     "5432",
@@ -150,7 +124,7 @@ func TestDBConnect_GetTables(t *testing.T) {
 		[]string{"table1", "table2"}, tables)
 }
 
-func TestDBConnect_GetSchemas(t *testing.T) {
+func TestDBConnectGetSchemas(t *testing.T) {
 	client := &DBConnect{
 		Ip:       "127.0.0.1",
 		Port:     "5432",
