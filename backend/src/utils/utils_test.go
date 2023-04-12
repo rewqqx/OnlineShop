@@ -2,7 +2,9 @@ package utils
 
 import (
 	"encoding/hex"
+	"github.com/jmoiron/sqlx"
 	"github.com/stretchr/testify/require"
+	"gopkg.in/DATA-DOG/go-sqlmock.v1"
 	"os"
 	"reflect"
 	"testing"
@@ -101,7 +103,7 @@ func TestTimestamp_Scan(t *testing.T) {
 	require.Equal(t, err, nil, "Returned unexpected err: %s", err)
 }
 
-func TestOpen(t *testing.T) {
+func TestDBConnect_Open(t *testing.T) {
 	host := os.Getenv("POSTGRES_HOST")
 	if host == "" {
 		host = "127.0.0.1"
@@ -122,4 +124,52 @@ func TestOpen(t *testing.T) {
 		err = dbConnection.Connection.Close()
 		require.Equal(t, err, nil)
 	}()
+}
+
+func TestDBConnect_GetTables(t *testing.T) {
+	client := &DBConnect{
+		Ip:       "127.0.0.1",
+		Port:     "5432",
+		User:     "postgres",
+		Password: "pgpass",
+		Database: "postgres",
+	}
+
+	db, mock, err := sqlmock.New()
+	require.Equal(t, err, nil, "Failed of creating DB: %v", err)
+
+	client.Connection = sqlx.NewDb(db, "postgres")
+
+	rows := sqlmock.NewRows([]string{"table_name"}).AddRow("table1").AddRow("table2")
+	mock.ExpectQuery("SELECT table_name FROM information_schema.tables").WithArgs("test_schema").WillReturnRows(rows)
+
+	tables, err := client.GetTables("test_schema")
+	require.Equal(t, err, nil, "Unexpected error: %v", err)
+	require.Equal(t, len(tables), 2, "Expected %d, actually %d raws in tables", 2, len(tables))
+	require.EqualValues(t, tables, []string{"table1", "table2"}, "Expected %s, got %s",
+		[]string{"table1", "table2"}, tables)
+}
+
+func TestDBConnect_GetSchemas(t *testing.T) {
+	client := &DBConnect{
+		Ip:       "127.0.0.1",
+		Port:     "5432",
+		User:     "postgres",
+		Password: "pgpass",
+		Database: "postgres",
+	}
+
+	db, mock, err := sqlmock.New()
+	require.Equal(t, err, nil, "Failed of creating DB: %v", err)
+
+	client.Connection = sqlx.NewDb(db, "postgres")
+
+	rows := sqlmock.NewRows([]string{"schema_name"}).AddRow("public").AddRow("test_schema").AddRow("testTwo")
+	mock.ExpectQuery("SELECT schema_name FROM information_schema.schemata").WillReturnRows(rows)
+
+	schemas, err := client.GetSchemas()
+	require.Equal(t, err, nil, "Error in GetSchemas(): %v", err)
+	require.Equal(t, len(schemas), 3, "Expected %d, got %d rows in schemas", 3, len(schemas))
+	require.EqualValues(t, schemas, []string{"public", "test_schema", "testTwo"}, "Expected %s, got %s",
+		[]string{"public", "test_schema", "testTwo"}, schemas)
 }
