@@ -36,7 +36,7 @@ func makeResponse(w http.ResponseWriter, status string) error {
 	jsonBody, err := json.Marshal(response)
 
 	if err != nil {
-		makeErrorResponse(w, http.StatusBadRequest)
+		makeErrorResponse(w, "Failure", http.StatusBadRequest)
 		return errors.New("Can't parse JSON")
 	}
 
