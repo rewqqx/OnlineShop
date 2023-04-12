@@ -51,7 +51,6 @@ func TestTimestamp_UnmarshalJSONWithError(t *testing.T) {
 
 	invalidData := []byte("\"\\x01\"")
 	err := timestamp.UnmarshalJSON(invalidData)
-
 	if err == nil {
 		t.Error("Expected that func UnmarshalJSON() will return an error")
 	}
@@ -64,6 +63,7 @@ func TestTimestamp_MarshalJSONWithValidTime(t *testing.T) {
 	if err != nil {
 		t.Errorf("Unexpected error in MarshalJSON(): %v", err)
 	}
+
 	require.Equal(t, string(JSON), time.Now().Format("\"2006-01-02 15:04:05\""))
 }
 
@@ -74,6 +74,7 @@ func TestTimestamp_MarshalJSONWithUnValidTime(t *testing.T) {
 	if err != nil {
 		t.Errorf("Unexpected error in MarshalJSON(): %v", err)
 	}
+
 	require.Equal(t, string(JSON), "")
 }
 
@@ -91,14 +92,10 @@ func TestTimestamp_Value(t *testing.T) {
 }
 
 func TestTimestamp_Scan(t *testing.T) {
-	//_ := Timestamp{Time: time.Now(), Valid: true}
-	// Create a sample Timestamp object with an initial invalid value
 	sampleTimestamp := Timestamp{Valid: false}
 
-	// Create a sample time.Time object to use as input for Scan
 	inputTime := time.Date(2023, 4, 12, 14, 30, 0, 0, time.UTC)
 
-	// Call the Scan method with the input time.Time value
 	err := sampleTimestamp.Scan(inputTime)
 	require.Equal(t, err, nil, "Returned unexpected err: %s", err)
 }
