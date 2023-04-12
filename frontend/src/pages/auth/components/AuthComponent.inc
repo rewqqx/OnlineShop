@@ -52,9 +52,11 @@ class AuthComponent extends DOM
         $this->confirm->setAction(function () use ($parent) {
             $login = $_POST[$parent->login->name];
             $password = $_POST[$parent->password->name];
-            $auth = new Auth($login,  $password);
+            $auth = new Auth($login, $password);
             $token = GetUserToken($auth);
-            echo $token->toJson();
+            if ($token != null) {
+                echo $token->toJson();
+            }
         });
 
 
