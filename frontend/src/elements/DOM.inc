@@ -241,6 +241,7 @@ class Input extends DOM
         $this->setName($text);
         $this->setStyle("input");
     }
+
 }
 
 ?>

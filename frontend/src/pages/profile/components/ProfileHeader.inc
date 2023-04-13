@@ -11,12 +11,8 @@ class ProfileHeader extends DOM
         $this->title = new Text("Profile");
         $this->title->setStyle("header-text");
 
-        $token = getTokenFromCookie();
-
         $buttonName = "Shop";
         $link = "../../index.php";
-
-
 
         $this->profile = new Link($buttonName);
         $this->profile->setAttribute("margin-left", "auto");
