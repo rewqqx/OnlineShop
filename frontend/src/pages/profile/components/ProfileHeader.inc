@@ -1,6 +1,6 @@
 <?php
 
-class Header extends DOM
+class ProfileHeader extends DOM
 {
 
     private Link $profile;
@@ -8,18 +8,11 @@ class Header extends DOM
 
     protected function createElement()
     {
-        $this->title = new Text("Online shop");
+        $this->title = new Text("Profile");
         $this->title->setStyle("header-text");
 
-        $token = getTokenFromCookie();
-
-        $buttonName = "Sign In";
-        $link = "./pages/auth/AuthPage.inc";
-
-        if ($token->isValid()) {
-            $buttonName = "Profile";
-            $link = "./pages/profile/ProfilePage.inc";
-        }
+        $buttonName = "Shop";
+        $link = "../../index.php";
 
         $this->profile = new Link($buttonName);
         $this->profile->setAttribute("margin-left", "auto");

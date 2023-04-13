@@ -14,6 +14,12 @@ class App extends DOM
         $this->header = new Header();
         $this->container = new Container();
 
+        $toolbar = new Toolbar();
+        $this->container->append($toolbar);
+
+        $grid = new ItemGrid();
+        $this->container->append($grid);
+
         $this->append($this->header)->append($this->container);
 
         return $this;
