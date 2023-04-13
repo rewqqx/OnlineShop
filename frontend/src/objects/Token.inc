@@ -23,7 +23,13 @@ class Token
 
     public function isValid(): bool
     {
-        return $this->valid;
+        if (!$this->valid) {
+            return false;
+        }
+
+        $user = GetUser($this);
+
+        return $user != null;
     }
 
     public function toJson(): string
