@@ -1,14 +1,14 @@
 package adapter
 
 import (
-	"backend/src/utils"
+	"backend/src/utils/database"
 	"database/sql"
 	"fmt"
 	"github.com/lib/pq"
 )
 
 type ItemDatabase struct {
-	database *utils.DBConnect
+	database *database.DBConnect
 }
 
 const ITEMS_TABLE_NAME = "items"
@@ -26,7 +26,7 @@ type Pagination struct {
 	Limit  int `json:"limit" db:"limit"`
 }
 
-func CreateItemDatabaseAdapter(database *utils.DBConnect) *ItemDatabase {
+func CreateItemDatabaseAdapter(database *database.DBConnect) *ItemDatabase {
 	adapter := &ItemDatabase{database: database}
 	return adapter
 }

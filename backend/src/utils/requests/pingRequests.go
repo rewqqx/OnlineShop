@@ -1,7 +1,6 @@
 package requests
 
 import (
-	"backend/src/utils"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -10,14 +9,8 @@ import (
 
 const CREATE_ACTION = "create"
 
-var database *utils.DBConnect
-
 type StatusResponse struct {
 	Status string `json:"status"`
-}
-
-func SetDatabase(connection *utils.DBConnect) {
-	database = connection
 }
 
 func setSuccessHeader(w http.ResponseWriter) {
