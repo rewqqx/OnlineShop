@@ -1,4 +1,4 @@
-package utils
+package timestamp
 
 import (
 	"database/sql/driver"

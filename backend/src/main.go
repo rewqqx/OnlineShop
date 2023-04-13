@@ -2,9 +2,8 @@ package main
 
 import (
 	"backend/src/utils"
-	"backend/src/utils/requests"
+	"backend/src/utils/database"
 	"fmt"
-	"net/http"
 	"os"
 )
 
@@ -19,7 +18,8 @@ func main() {
 
 	fmt.Println("Postgres Host: " + host)
 
-	database := utils.DBConnect{Ip: host, Port: "5433", Password: "pgpass", User: "postgres", Database: "postgres"}
+	database := database.DBConnect{Ip: host, Port: "5432", Password: "pgpass", User: "postgres", Database: "postgres"}
+
 	err := database.Open()
 
 	if err != nil {
@@ -29,28 +29,7 @@ func main() {
 
 	fmt.Println("<---- Success Open Database ---->")
 
-	requests.SetDatabase(&database)
+	server := utils.New(&database)
+	server.Start(8080)
 
-	// Bind Users
-
-	userHandler := http.HandlerFunc(requests.GetUser)
-	http.Handle("/users/", userHandler)
-
-	authHandler := http.HandlerFunc(requests.GetToken)
-	http.Handle("/auth", authHandler)
-
-	createHandler := http.HandlerFunc(requests.CreateUser)
-	http.Handle("/users/create", createHandler)
-
-	// Bind Items
-
-	itemHandler := http.HandlerFunc(requests.GetItem)
-	http.Handle("/items/", itemHandler)
-
-	// Bind Ping
-
-	pingHandler := http.HandlerFunc(requests.Ping)
-	http.Handle("/", pingHandler)
-
-	http.ListenAndServe(":8080", nil)
 }
