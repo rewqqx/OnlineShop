@@ -27,12 +27,12 @@ func (server *UserServer) GetUser(w http.ResponseWriter, r *http.Request) {
 	dirs := strings.Split(path, "/")
 
 	if len(dirs) < 2 {
-		makeResponse(w, "Bad Path")
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
 		return
 	}
 
 	if dirs[0] != USERS_COLLECTION {
-		makeResponse(w, "Bad Path")
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
 		return
 	}
 
@@ -50,21 +50,21 @@ func (server *UserServer) GetUser(w http.ResponseWriter, r *http.Request) {
 	ok, err := userDatabaseAdapter.CheckToken(token)
 
 	if err != nil || !ok {
-		makeResponse(w, "Bad Auth")
+		makeErrorResponse(w, "bad auth", http.StatusBadRequest)
 		return
 	}
 
 	user, err := userDatabaseAdapter.GetUser(token.ID)
 
 	if err != nil {
-		makeResponse(w, "Bad User ID")
+		makeErrorResponse(w, "bad user id", http.StatusInternalServerError)
 		return
 	}
 
 	json, err := json.Marshal(user)
 
 	if err != nil {
-		makeResponse(w, "Bad JSON")
+		makeErrorResponse(w, "can't parse json", http.StatusInternalServerError)
 		return
 	}
 
@@ -79,17 +79,17 @@ func (server *UserServer) CreateUser(w http.ResponseWriter, r *http.Request) {
 	dirs := strings.Split(path, "/")
 
 	if len(dirs) < 2 {
-		makeResponse(w, "Bad Path")
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
 		return
 	}
 
 	if dirs[0] != USERS_COLLECTION {
-		makeResponse(w, "Bad Path")
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
 		return
 	}
 
 	if dirs[1] != CREATE_ACTION {
-		makeResponse(w, "Bad Path")
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
 		return
 	}
 
@@ -101,7 +101,7 @@ func (server *UserServer) CreateUser(w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&createUser)
 
 	if err != nil {
-		makeResponse(w, "Bad Body")
+		makeErrorResponse(w, "can't parse json", http.StatusBadRequest)
 		return
 	}
 
@@ -109,14 +109,14 @@ func (server *UserServer) CreateUser(w http.ResponseWriter, r *http.Request) {
 	token, err := userDatabaseAdapter.CreateUser(&createUser)
 
 	if err != nil {
-		makeResponse(w, "Bad Auth")
+		makeErrorResponse(w, "bad auth", http.StatusBadRequest)
 		return
 	}
 
 	json, err := json.Marshal(token)
 
 	if err != nil {
-		makeResponse(w, "Bad JSON")
+		makeErrorResponse(w, "can't parse json", http.StatusInternalServerError)
 		return
 	}
 
@@ -130,7 +130,7 @@ func (server *UserServer) GetToken(w http.ResponseWriter, r *http.Request) {
 	path := r.URL.Path[1:]
 
 	if path != "auth" {
-		makeResponse(w, "Bad Path")
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
 		return
 	}
 
@@ -142,7 +142,7 @@ func (server *UserServer) GetToken(w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&authData)
 
 	if err != nil {
-		makeResponse(w, "Bad Body")
+		makeErrorResponse(w, "can't parse json", http.StatusBadRequest)
 		return
 	}
 
@@ -150,14 +150,14 @@ func (server *UserServer) GetToken(w http.ResponseWriter, r *http.Request) {
 	token, err := userDatabaseAdapter.AuthUser(authData)
 
 	if err != nil {
-		makeResponse(w, "Bad Auth")
+		makeErrorResponse(w, "bad auth", http.StatusBadRequest)
 		return
 	}
 
 	json, err := json.Marshal(token)
 
 	if err != nil {
-		makeResponse(w, "Bad JSON")
+		makeErrorResponse(w, "can't parse json", http.StatusInternalServerError)
 		return
 	}
 

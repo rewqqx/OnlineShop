@@ -27,12 +27,12 @@ func (server *ItemServer) GetItem(w http.ResponseWriter, r *http.Request) {
 	dirs := strings.Split(path, "/")
 
 	if len(dirs) < 2 {
-		makeResponse(w, "Bad Path")
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
 		return
 	}
 
 	if dirs[0] != ITEM_COLLECTION {
-		makeResponse(w, "Bad Path")
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
 		return
 	}
 
@@ -48,14 +48,14 @@ func (server *ItemServer) GetItem(w http.ResponseWriter, r *http.Request) {
 	item, err := itemDatabaseAdapter.GetItem(val)
 
 	if err != nil {
-		makeResponse(w, "Bad Item ID")
+		makeErrorResponse(w, "bad item id", http.StatusInternalServerError)
 		return
 	}
 
 	json, err := json.Marshal(item)
 
 	if err != nil {
-		makeResponse(w, "Bad JSON")
+		makeErrorResponse(w, "can't parse json", http.StatusInternalServerError)
 		return
 	}
 
@@ -70,12 +70,12 @@ func (server *ItemServer) GetItems(w http.ResponseWriter, r *http.Request) {
 	dirs := strings.Split(path, "/")
 
 	if len(dirs) < 2 {
-		makeResponse(w, "Bad Path")
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
 		return
 	}
 
 	if dirs[0] != ITEM_COLLECTION {
-		makeResponse(w, "Bad Path")
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
 		return
 	}
 
@@ -97,14 +97,14 @@ func (server *ItemServer) GetItems(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err != nil {
-		makeResponse(w, "Bad Request")
+		makeErrorResponse(w, "can't find items", http.StatusInternalServerError)
 		return
 	}
 
 	json, err := json.Marshal(items)
 
 	if err != nil {
-		makeResponse(w, "Bad JSON")
+		makeErrorResponse(w, "can't parse json", http.StatusInternalServerError)
 		return
 	}
 
@@ -119,17 +119,17 @@ func (server *ItemServer) CreateItem(w http.ResponseWriter, r *http.Request) {
 	dirs := strings.Split(path, "/")
 
 	if len(dirs) < 2 {
-		makeResponse(w, "Bad Path")
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
 		return
 	}
 
 	if dirs[0] != ITEM_COLLECTION {
-		makeResponse(w, "Bad Path")
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
 		return
 	}
 
 	if dirs[1] != CREATE_ACTION {
-		makeResponse(w, "Bad Path")
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
 		return
 	}
 }

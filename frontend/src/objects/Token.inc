@@ -3,14 +3,27 @@
 class Token
 {
 
-    private $id;
-    private $token;
+    private $id = "";
+    private $token = "";
+
+    private $valid = false;
 
 
     function __construct($data)
     {
-        $this->id = $data["ID"];
-        $this->token = $data["token"];
+        if (array_key_exists("ID", $data)) {
+            $this->id = $data["ID"];
+        }
+
+        if (array_key_exists("token", $data)) {
+            $this->token = $data["token"];
+            $this->valid = true;
+        }
+    }
+
+    public function isValid(): bool
+    {
+        return $this->valid;
     }
 
     public function toJson(): string
