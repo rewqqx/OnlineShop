@@ -28,5 +28,25 @@ class ItemComponent extends DOM
         $itemHeader = new DOM();
         $itemHeader->setStyle("item-header")->setText($item->getName());
         $panel->append($itemHeader);
+
+        $horizontalContainer = new DOM();
+        $horizontalContainer->setStyle("container-horizontal");
+        $panel->append($horizontalContainer);
+
+        $verticalItemLeft = new DOM();
+        $verticalItemLeft->setStyle("container-vertical");
+        $horizontalContainer->append($verticalItemLeft);
+
+        $icon = new DOM();
+        $icon->setStyle("item-image-big");
+        $verticalItemLeft->append($icon);
+
+        $price = new DOM();
+        $price->setText("Price: " . $item->getPrice() . "$")->setStyle("item-price");
+        $verticalItemLeft->append($price);
+
+        $verticalItemRight = new DOM();
+        $verticalItemRight->setStyle("container-vertical");
+        $horizontalContainer->append($verticalItemRight);
     }
 }

@@ -16,6 +16,21 @@ a, u {
     height: calc(100vh - 60px);
 }
 
+.container-vertical {
+    display: flex;
+    flex-direction: column;
+    height: calc(100%);
+    width: calc(100%);
+}
+
+.container-horizontal {
+    display: flex;
+    flex-direction: row;
+    height: calc(100%);
+    width: calc(100%);
+}
+
+
 .header {
     display: flex;
     width: calc(100%);

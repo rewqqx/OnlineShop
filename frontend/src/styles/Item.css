@@ -24,6 +24,19 @@
     border-radius: 5px;
 }
 
+.item-image-big {
+    margin-top: 20px;
+
+    background: #E8F8F0;
+
+    width: 320px;
+    height: 320px;
+    min-width: 320px;
+    min-height: 320px;
+
+    border-radius: 5px;
+}
+
 .item-desc {
 
     margin-left: 16px;
@@ -76,4 +89,17 @@
     font-weight: 600;
     font-size: 36px;
     line-height: calc(125%);
+}
+
+.item-price {
+
+    margin-top: 24px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 125%;
+
+    color: #434343;
 }
