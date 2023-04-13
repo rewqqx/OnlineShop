@@ -24,6 +24,7 @@ type User struct {
 	Mail       string               `json:"mail" db:"mail"`
 	RoleId     int                  `json:"role_id" db:"role_id"`
 	Token      string               `json:"token" db:"token"`
+	Sex        string               `json:"sex" db:"sex"`
 }
 
 type AuthToken struct {
