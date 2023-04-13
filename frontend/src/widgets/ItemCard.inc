@@ -8,7 +8,7 @@ class ItemCard extends DOM
     public function __construct($item)
     {
         $this->item = $item;
-        $this->setTag("div");
+        $this->setTag("a");
         $this->createElement();
     }
 
