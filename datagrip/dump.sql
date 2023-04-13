@@ -463,7 +463,7 @@ COPY online_shop.payments (id, payment_value, type_id, status_id, creation_date)
 --
 
 COPY online_shop.users (id, user_name, user_surname, user_patronymic, phone, birthdate, sex, password_hash, mail, role_id, token) FROM stdin;
-1	Bogdan	Madzhuga	Andreevich		\N	\N	da3814786f99c0c3bb53b36bd85599398a37d8f8	madzhuga@mail.ru	1	680ee3efa31e13b750bcb34874b9e89390b8a5de5b633bc9e086a306cae54d33
+1	Bogdan	Madzhuga	Andreevich		\N	\N	da3814786f99c0c3bb53b36bd85599398a37d8f8	0	madzhuga@mail.ru	1	680ee3efa31e13b750bcb34874b9e89390b8a5de5b633bc9e086a306cae54d33
 \.
 
 
