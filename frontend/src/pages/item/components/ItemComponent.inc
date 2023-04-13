@@ -48,5 +48,14 @@ class ItemComponent extends DOM
         $verticalItemRight = new DOM();
         $verticalItemRight->setStyle("container-vertical");
         $horizontalContainer->append($verticalItemRight);
+
+        $parent = $this;
+
+        $confirm = new Button("ADD TO CART");
+        $confirm->setAttribute("align-self", "center")->setAttribute("background", "#fafafa")->setAttribute("margin-top", "auto")->setAttribute("margin-bottom", "16px");
+        $confirm->setAction(function () use ($parent) {
+
+        });
+        $horizontalContainer->append($confirm);
     }
 }
