@@ -1,6 +1,6 @@
 <?php
 
-require_once($_SERVER['DOCUMENT_ROOT'] . "\\frontend\src" . "\\objects\Token.inc");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/objects/Token.inc");
 
 $KEY = "shop_token";
 $DAY = 60 * 60 * 24;
