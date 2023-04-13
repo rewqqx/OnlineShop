@@ -60,6 +60,11 @@ func (adapter *UserDatabase) CreateUser(user *User) (token AuthToken, err error)
 	return adapter.AuthUser(AuthData{Mail: user.Mail, Password: user.Password})
 }
 
+func (adapter *UserDatabase) UpdateUser(user *User) (token AuthToken, err error) {
+	_, err = adapter.database.Connection.Exec(fmt.Sprintf("UPDATE online_shop.%v SET user_name = $1, user_surname = $2, user_patronymic = $3, phone = $4, birthdate = $5, password_hash = $6, mail = $7, role_id = $8 WHERE id = $9", USER_TABLE_NAME), user.Name, user.Surname, user.Patronymic, user.Phone, user.Birthdate, crypto.HashPassword(user.Password), user.Mail, user.RoleId, user.ID)
+	return adapter.AuthUser(AuthData{Mail: user.Mail, Password: user.Password})
+}
+
 func (adapter *UserDatabase) CheckToken(token AuthToken) (ok bool, err error) {
 	compareToken := AuthToken{}
 	err = adapter.database.Connection.Get(&compareToken, fmt.Sprintf("SELECT token FROM online_shop.%v WHERE id=$1", USER_TABLE_NAME), token.ID)
