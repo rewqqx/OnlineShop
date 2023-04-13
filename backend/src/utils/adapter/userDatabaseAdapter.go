@@ -24,6 +24,7 @@ type User struct {
 	Mail       string               `json:"mail" db:"mail"`
 	RoleId     int                  `json:"role_id" db:"role_id"`
 	Token      string               `json:"token" db:"token"`
+	Sex        *int                 `json:"sex" db:"sex"`
 }
 
 type AuthToken struct {
@@ -45,7 +46,7 @@ func (adapter *UserDatabase) GetUser(id int) (user *User, err error) {
 	user = &User{}
 	err = adapter.database.Connection.Get(user, fmt.Sprintf("SELECT * FROM online_shop.%v WHERE id=$1", USER_TABLE_NAME), id)
 
-	user.password = ""
+	user.Password = ""
 
 	return
 }

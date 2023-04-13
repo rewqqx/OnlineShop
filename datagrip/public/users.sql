@@ -1,5 +1,3 @@
-create type sex_users as ENUM ('male', 'female');
-
 create table online_shop.users
 (
     id              serial  not null,
@@ -8,7 +6,7 @@ create table online_shop.users
     user_patronymic varchar,
     phone           varchar not null,
     birthdate       timestamp,
-    sex             sex_users,
+    sex             integer,
     password_hash   varchar,
     mail            varchar,
     role_id         integer,

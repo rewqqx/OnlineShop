@@ -25,18 +25,6 @@ CREATE SCHEMA online_shop;
 
 ALTER SCHEMA online_shop OWNER TO postgres;
 
---
--- Name: sex_users; Type: TYPE; Schema: public; Owner: postgres
---
-
-CREATE TYPE public.sex_users AS ENUM (
-    'male',
-    'female'
-);
-
-
-ALTER TYPE public.sex_users OWNER TO postgres;
-
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -280,7 +268,7 @@ CREATE TABLE online_shop.users (
     user_patronymic character varying,
     phone character varying NOT NULL,
     birthdate timestamp without time zone,
-    sex public.sex_users,
+    sex integer,
     password_hash character varying,
     mail character varying,
     role_id integer,
