@@ -268,7 +268,7 @@ CREATE TABLE online_shop.users (
     user_patronymic character varying,
     phone character varying NOT NULL,
     birthdate timestamp without time zone,
-    sex integer,
+    sex integer default -1,
     password_hash character varying,
     mail character varying,
     role_id integer,
