@@ -1,6 +1,6 @@
 <?php
 
-class Auth extends DOM
+class AuthComponent extends DOM
 {
 
     private Text $title;
@@ -35,20 +35,30 @@ class Auth extends DOM
         $this->loginHeader = new Text("LOGIN");
         $this->loginHeader->setStyle("input-header");
 
-        $this->login = new Input();
+        $this->login = new Input("LOGIN");
         $this->login->setStyle("input")->setAttribute("margin-bottom", "20px");
 
         $this->passwordHeader = new Text("PASSWORD");
         $this->passwordHeader->setStyle("input-header");
 
-        $this->password = new Input();
+        $this->password = new Input("PASSWORD");
         $this->password->setStyle("input")->setAttribute("margin-bottom", "20px");
+
+        $parent = $this;
+
 
         $this->confirm = new Button("SIGN IN");
         $this->confirm->setAttribute("align-self", "center");
-        $this->confirm->action = function () {
-            echo "SIGN IN EXAMPLE";
-        };
+        $this->confirm->setAction(function () use ($parent) {
+            $login = $_POST[$parent->login->name];
+            $password = $_POST[$parent->password->name];
+            $auth = new Auth($login, $password);
+            $token = GetUserToken($auth);
+            if ($token != null) {
+                setTokenCookie($token);
+                header('Location: /OnlineShop/frontend/src/index.php');
+            }
+        });
 
 
         $this->container->append($this->title)->append($this->loginHeader)->append($this->login);
