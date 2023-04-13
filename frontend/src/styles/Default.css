@@ -16,6 +16,21 @@ a, u {
     height: calc(100vh - 60px);
 }
 
+.container-vertical {
+    display: flex;
+    flex-direction: column;
+    height: calc(100%);
+    width: calc(100%);
+}
+
+.container-horizontal {
+    display: flex;
+    flex-direction: row;
+    height: calc(100%);
+    width: calc(100%);
+}
+
+
 .header {
     display: flex;
     width: calc(100%);
@@ -27,7 +42,7 @@ a, u {
 .header-text {
     padding-left: 20px;
     color: white;
-    font-family: 'Quicksand', sans-serif;
+    font-family: 'Inter';
     font-weight: 400;
     font-size: 36px;
     line-height: calc(125%);
