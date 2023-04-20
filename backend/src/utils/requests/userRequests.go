@@ -202,7 +202,7 @@ func (server *UserServer) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userDatabaseAdapter := adapter.CreateUserDatabaseAdapter(server.Database)
-	_, err = userDatabaseAdapter.UpdateUser(&updateUser, numberIdOfUserToUpdate)
+	err = userDatabaseAdapter.UpdateUser(&updateUser, numberIdOfUserToUpdate)
 
 	if err != nil {
 		makeErrorResponse(w, "can not update data of user", http.StatusBadRequest)
