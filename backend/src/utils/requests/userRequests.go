@@ -164,3 +164,51 @@ func (server *UserServer) GetToken(w http.ResponseWriter, r *http.Request) {
 	response := fmt.Sprintf("{\"status\":\"Success\", \"token\" : %v}", string(json))
 	w.Write([]byte(response))
 }
+
+func (server *UserServer) UpdateUser(w http.ResponseWriter, r *http.Request) {
+	setSuccessHeader(w)
+
+	path := r.URL.Path[1:]
+	dirs := strings.Split(path, "/")
+
+	if len(dirs) < 3 {
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
+		return
+	}
+
+	if dirs[0] != USERS_COLLECTION {
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
+		return
+	}
+
+	if dirs[1] != "update" {
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
+		return
+	}
+
+	idOfUserToUpdate := strings.Split(dirs[2], "?token")[0]
+	numberIdOfUserToUpdate, err := strconv.Atoi(idOfUserToUpdate)
+
+	updateUser := adapter.User{}
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+
+	err = decoder.Decode(&updateUser)
+
+	if err != nil {
+		makeErrorResponse(w, "can't parse json", http.StatusBadRequest)
+		return
+	}
+
+	userDatabaseAdapter := adapter.CreateUserDatabaseAdapter(server.Database)
+	_, err = userDatabaseAdapter.UpdateUser(&updateUser, numberIdOfUserToUpdate)
+
+	if err != nil {
+		makeErrorResponse(w, "can not update data of user", http.StatusBadRequest)
+		return
+	}
+
+	response := fmt.Sprintf("{\"status\":\"Success\", \"updateUser\" : %v}", numberIdOfUserToUpdate)
+	w.Write([]byte(response))
+}
