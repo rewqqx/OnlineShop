@@ -9,7 +9,7 @@ services:
     depends_on:
       - postgres
     environment:
-      - WAIT_HOSTS=postgres:5433
+      - WAIT_HOSTS=postgres:5432
       - POSTGRES_HOST=postgres
       - PORT=8080
       - DBFLAG=true
@@ -22,7 +22,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=pgpass
     ports:
-      - 5433:5432
+      - 5432:5432
   frontend:
     build: ./frontend
     hostname: frontend

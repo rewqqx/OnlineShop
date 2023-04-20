@@ -25,18 +25,6 @@ CREATE SCHEMA online_shop;
 
 ALTER SCHEMA online_shop OWNER TO postgres;
 
---
--- Name: sex_users; Type: TYPE; Schema: public; Owner: postgres
---
-
-CREATE TYPE public.sex_users AS ENUM (
-    'male',
-    'female'
-);
-
-
-ALTER TYPE public.sex_users OWNER TO postgres;
-
 SET default_tablespace = '';
 
 SET default_table_access_method = heap;
@@ -280,7 +268,7 @@ CREATE TABLE online_shop.users (
     user_patronymic character varying,
     phone character varying NOT NULL,
     birthdate timestamp without time zone,
-    sex public.sex_users,
+    sex integer default 0,
     password_hash character varying,
     mail character varying,
     role_id integer,
@@ -475,7 +463,7 @@ COPY online_shop.payments (id, payment_value, type_id, status_id, creation_date)
 --
 
 COPY online_shop.users (id, user_name, user_surname, user_patronymic, phone, birthdate, sex, password_hash, mail, role_id, token) FROM stdin;
-1	Bogdan	Madzhuga	Andreevich		\N	\N	da3814786f99c0c3bb53b36bd85599398a37d8f8	madzhuga@mail.ru	1	680ee3efa31e13b750bcb34874b9e89390b8a5de5b633bc9e086a306cae54d33
+1	Bogdan	Madzhuga	Andreevich		\N	0	da3814786f99c0c3bb53b36bd85599398a37d8f8	madzhuga@mail.ru	1	680ee3efa31e13b750bcb34874b9e89390b8a5de5b633bc9e086a306cae54d33
 \.
 
 
