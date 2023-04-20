@@ -6,7 +6,7 @@ create table online_shop.orders
     status_id         integer    default 1,
     cancel_reason     varchar,
     payment_id        integer not null,
-    total_price       numeric(2) default 1.00,
+    total_price       integer default 100,
     creation_date     timestamp  default now(),
     modification_date timestamp  default now(),
     constraint orders_pkey primary key (id),

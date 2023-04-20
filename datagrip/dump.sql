@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 15.1 (Debian 15.1-1.pgdg110+1)
--- Dumped by pg_dump version 15.1 (Debian 15.1-1.pgdg110+1)
+-- Dumped from database version 15.2 (Debian 15.2-1.pgdg110+1)
+-- Dumped by pg_dump version 15.2 (Debian 15.2-1.pgdg110+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -73,10 +73,10 @@ ALTER SEQUENCE online_shop.deliveries_id_seq OWNED BY online_shop.deliveries.id;
 CREATE TABLE online_shop.items (
     id integer NOT NULL,
     item_name character varying,
-    price numeric(2,0) DEFAULT 1.00,
+    price integer DEFAULT 100,
     description character varying,
     image_ids integer[],
-    CONSTRAINT items_price CHECK ((price > 0.00))
+    CONSTRAINT items_price CHECK ((price > 0))
 );
 
 
@@ -113,11 +113,11 @@ CREATE TABLE online_shop.order_items (
     order_id integer NOT NULL,
     item_id integer NOT NULL,
     quantity integer,
-    default_price numeric(2,0) DEFAULT 1.00,
+    default_price integer DEFAULT 100,
     discount integer DEFAULT 0,
-    final_price numeric(2,0) GENERATED ALWAYS AS (((default_price * ((100 - discount))::numeric) / (100)::numeric)) STORED,
-    CONSTRAINT order_items_default_price CHECK ((default_price > 0.00)),
-    CONSTRAINT order_items_final_price CHECK ((final_price > 0.00))
+    final_price integer GENERATED ALWAYS AS (ceil((((default_price * (100 - discount)) / 100))::double precision)) STORED,
+    CONSTRAINT order_items_default_price CHECK ((default_price > 0)),
+    CONSTRAINT order_items_final_price CHECK ((final_price > 0))
 );
 
 
@@ -190,7 +190,7 @@ CREATE TABLE online_shop.orders (
     status_id integer DEFAULT 1,
     cancel_reason character varying,
     payment_id integer NOT NULL,
-    total_price numeric(2,0) DEFAULT 1.00,
+    total_price integer DEFAULT 100,
     creation_date timestamp without time zone DEFAULT now(),
     modification_date timestamp without time zone DEFAULT now()
 );
@@ -221,6 +221,43 @@ ALTER SEQUENCE online_shop.orders_id_seq OWNED BY online_shop.orders.id;
 
 
 --
+-- Name: payments; Type: TABLE; Schema: online_shop; Owner: postgres
+--
+
+CREATE TABLE online_shop.payments (
+    id integer NOT NULL,
+    payment_value integer,
+    type_id integer,
+    status_id integer,
+    creation_date timestamp without time zone
+);
+
+
+ALTER TABLE online_shop.payments OWNER TO postgres;
+
+--
+-- Name: payments_id_seq; Type: SEQUENCE; Schema: online_shop; Owner: postgres
+--
+
+CREATE SEQUENCE online_shop.payments_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE online_shop.payments_id_seq OWNER TO postgres;
+
+--
+-- Name: payments_id_seq; Type: SEQUENCE OWNED BY; Schema: online_shop; Owner: postgres
+--
+
+ALTER SEQUENCE online_shop.payments_id_seq OWNED BY online_shop.payments.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: online_shop; Owner: postgres
 --
 
@@ -231,6 +268,7 @@ CREATE TABLE online_shop.users (
     user_patronymic character varying,
     phone character varying NOT NULL,
     birthdate timestamp without time zone,
+    sex integer default 0,
     password_hash character varying,
     mail character varying,
     role_id integer,
@@ -260,6 +298,43 @@ ALTER TABLE online_shop.users_id_seq OWNER TO postgres;
 --
 
 ALTER SEQUENCE online_shop.users_id_seq OWNED BY online_shop.users.id;
+
+
+--
+-- Name: payments; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.payments (
+    id integer NOT NULL,
+    payment_value integer,
+    type_id integer,
+    status_id integer,
+    creation_date timestamp without time zone
+);
+
+
+ALTER TABLE public.payments OWNER TO postgres;
+
+--
+-- Name: payments_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.payments_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.payments_id_seq OWNER TO postgres;
+
+--
+-- Name: payments_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.payments_id_seq OWNED BY public.payments.id;
 
 
 --
@@ -298,10 +373,24 @@ ALTER TABLE ONLY online_shop.orders ALTER COLUMN id SET DEFAULT nextval('online_
 
 
 --
+-- Name: payments id; Type: DEFAULT; Schema: online_shop; Owner: postgres
+--
+
+ALTER TABLE ONLY online_shop.payments ALTER COLUMN id SET DEFAULT nextval('online_shop.payments_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: online_shop; Owner: postgres
 --
 
 ALTER TABLE ONLY online_shop.users ALTER COLUMN id SET DEFAULT nextval('online_shop.users_id_seq'::regclass);
+
+
+--
+-- Name: payments id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.payments ALTER COLUMN id SET DEFAULT nextval('public.payments_id_seq'::regclass);
 
 
 --
@@ -362,11 +451,27 @@ COPY online_shop.orders (id, display_number, user_id, status_id, cancel_reason, 
 
 
 --
+-- Data for Name: payments; Type: TABLE DATA; Schema: online_shop; Owner: postgres
+--
+
+COPY online_shop.payments (id, payment_value, type_id, status_id, creation_date) FROM stdin;
+\.
+
+
+--
 -- Data for Name: users; Type: TABLE DATA; Schema: online_shop; Owner: postgres
 --
 
-COPY online_shop.users (id, user_name, user_surname, user_patronymic, phone, birthdate, password_hash, mail, role_id, token) FROM stdin;
-1	admin	admin	admin	89000000000	\N	d033e22ae348aeb5660fc2140aec35850c4da997	admin@mail.ru	1	ad982aae8df2f23e96d04f039c35e258ad0506a547e6a09b2f7c9500fcab9961
+COPY online_shop.users (id, user_name, user_surname, user_patronymic, phone, birthdate, sex, password_hash, mail, role_id, token) FROM stdin;
+1	Bogdan	Madzhuga	Andreevich		\N	0	da3814786f99c0c3bb53b36bd85599398a37d8f8	madzhuga@mail.ru	1	680ee3efa31e13b750bcb34874b9e89390b8a5de5b633bc9e086a306cae54d33
+\.
+
+
+--
+-- Data for Name: payments; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public.payments (id, payment_value, type_id, status_id, creation_date) FROM stdin;
 \.
 
 
@@ -406,10 +511,24 @@ SELECT pg_catalog.setval('online_shop.orders_id_seq', 1, false);
 
 
 --
+-- Name: payments_id_seq; Type: SEQUENCE SET; Schema: online_shop; Owner: postgres
+--
+
+SELECT pg_catalog.setval('online_shop.payments_id_seq', 1, false);
+
+
+--
 -- Name: users_id_seq; Type: SEQUENCE SET; Schema: online_shop; Owner: postgres
 --
 
 SELECT pg_catalog.setval('online_shop.users_id_seq', 1, true);
+
+
+--
+-- Name: payments_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public.payments_id_seq', 1, false);
 
 
 --
@@ -477,6 +596,14 @@ ALTER TABLE ONLY online_shop.orders
 
 
 --
+-- Name: payments payments_pkey; Type: CONSTRAINT; Schema: online_shop; Owner: postgres
+--
+
+ALTER TABLE ONLY online_shop.payments
+    ADD CONSTRAINT payments_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: users users_mail; Type: CONSTRAINT; Schema: online_shop; Owner: postgres
 --
 
@@ -498,6 +625,14 @@ ALTER TABLE ONLY online_shop.users
 
 ALTER TABLE ONLY online_shop.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: payments payments_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.payments
+    ADD CONSTRAINT payments_pkey PRIMARY KEY (id);
 
 
 --

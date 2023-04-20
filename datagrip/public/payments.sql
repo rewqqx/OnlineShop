@@ -1,4 +1,4 @@
-create table payments
+create table online_shop.payments
 (
     id            serial
         primary key,
