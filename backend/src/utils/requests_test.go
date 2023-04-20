@@ -1,32 +1,26 @@
 package utils
 
 import (
+	"backend/src/utils/adapter"
 	"backend/src/utils/database"
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"github.com/stretchr/testify/require"
 	"io"
 	"net/http"
 	"testing"
 )
 
+const HOST = "127.0.0.1"
 const contentType = "application/json"
 const successStatus = "{\"status\":\"Success\"}\n"
-const JSONExample = "{\"status\":\"Success\", \"item\" : {\"id\":1,\"name\":\"Apple\",\"price\":1,\"description\":\"" +
-	"Sweee Apple\",\"image_ids\":[1,2]}}"
-
-type Item struct {
-	ID          int    `json:"id"`
-	Name        string `json:"name"`
-	Price       int    `json:"price"`
-	Description string `json:"description"`
-	ImageIDs    []int  `json:"image_ids"`
-}
 
 type Response struct {
-	Status string `json:"status"`
-	Items  []Item `json:"items"`
+	Status string         `json:"status"`
+	Items  []adapter.Item `json:"items"`
 }
+
 type Create struct {
 	Status string `json:"status"`
 	Token  struct {
@@ -35,80 +29,70 @@ type Create struct {
 	} `json:"token"`
 }
 
-func TestPing(t *testing.T) {
-
-	host := "127.0.0.1"
-	databaseConnection := database.DBConnect{Ip: host, Port: "5433", Password: "pgpass", User: "postgres", Database: "postgres"}
-	err := databaseConnection.Open()
-
-	require.Equal(t, nil, err, "Error in DB connection: %v", err)
-
+func startingServer() (err error, databaseConnection database.DBConnect) {
+	databaseConnection = database.DBConnect{Ip: HOST, Port: "5432", Password: "pgpass", User: "postgres", Database: "postgres"}
+	err = databaseConnection.Open()
 	server := New(&databaseConnection)
 	go server.Start(8080)
+	return
+}
 
-	resp, err := http.Get("http://" + host + ":8080/")
+func ReadBody(respCreateUser *http.Response) (bodyString string, err error) {
+	bodyBytes, err := io.ReadAll(respCreateUser.Body)
+	bodyString = string(bodyBytes)
+	return
+}
+
+func TestPing(t *testing.T) {
+	err, _ := startingServer()
+	require.Equal(t, nil, err, "Error in DB connection: %v", err)
+
+	resp, err := http.Get("http://" + HOST + ":8080/")
 
 	require.Equal(t, nil, err, "Error in request: %v", err)
 	require.Equal(t, http.StatusOK, resp.StatusCode, "Error in request: %v", http.StatusOK)
 	require.Equal(t, contentType, resp.Header.Get("Content-Type"), "Error in header Content-Type: %v",
 		err)
 
-	bodyBytes, err := io.ReadAll(resp.Body)
-	bodyString := string(bodyBytes)
+	bodyString, err := ReadBody(resp)
 	require.Equal(t, successStatus, bodyString, "Error in body of response. Expected %s actually %s",
 		successStatus, bodyString)
 }
 
 func TestGetItem(t *testing.T) {
-
-	host := "127.0.0.1"
-	databaseConnection := database.DBConnect{Ip: host, Port: "5433", Password: "pgpass", User: "postgres", Database: "postgres"}
-	err := databaseConnection.Open()
-
+	err, db := startingServer()
 	require.Equal(t, nil, err, "Error in DB connection: %v", err)
 
-	server := New(&databaseConnection)
-	go server.Start(8080)
-
-	resp, err := http.Get("http://" + host + ":8080/items/1/")
+	resp, err := http.Get("http://" + HOST + ":8080/items/1/")
 
 	require.Equal(t, nil, err, "Error in request: %v", err)
 	require.Equal(t, http.StatusOK, resp.StatusCode, "Error in request: %v", http.StatusOK)
 	require.Equal(t, contentType, resp.Header.Get("Content-Type"), "Error in header Content-Type: %v",
 		err)
 
-	bodyBytes, err := io.ReadAll(resp.Body)
-	bodyString := string(bodyBytes)
-	require.Equal(t, JSONExample, bodyString)
+	bodyString, err := ReadBody(resp)
+
+	item := &adapter.Item{}
+	err = db.Connection.Get(item, fmt.Sprintf("SELECT * FROM online_shop.items WHERE id=1"))
+	JSON, err := json.Marshal(item)
+	expected := fmt.Sprintf("{\"status\":\"Success\", \"item\" : %v}", string(JSON))
+	require.Equal(t, expected, bodyString)
 }
 
 func TestGetItemsSuccess(t *testing.T) {
-
-	host := "127.0.0.1"
-	databaseConnection := database.DBConnect{Ip: host, Port: "5433", Password: "pgpass", User: "postgres", Database: "postgres"}
-	err := databaseConnection.Open()
-
+	err, _ := startingServer()
 	require.Equal(t, nil, err, "Error in DB connection: %v", err)
 
-	server := New(&databaseConnection)
-	go server.Start(8080)
-
-	payload := map[string]int{
-		"offset": 0,
-		"limit":  5,
-	}
-
-	jsonPayload, err := json.Marshal(payload)
+	jsonPayload, err := json.Marshal(adapter.Pagination{Offset: 0, Limit: 5})
 	require.Equal(t, nil, err, "Error in Marshal: %v", err)
 
-	resp, err := http.Post("http://"+host+":8080/items/", "application/json", bytes.NewBuffer(jsonPayload))
+	resp, err := http.Post("http://"+HOST+":8080/items/", "application/json", bytes.NewBuffer(jsonPayload))
 	require.Equal(t, nil, err, "Error in request: %v", err)
 	require.Equal(t, http.StatusOK, resp.StatusCode, "Error in request: %v", http.StatusOK)
 	require.Equal(t, contentType, resp.Header.Get("Content-Type"), "Error in header Content-Type: %v",
 		err)
 
-	bodyBytes, err := io.ReadAll(resp.Body)
-	bodyString := string(bodyBytes)
+	bodyString, err := ReadBody(resp)
 
 	var response Response
 	err = json.Unmarshal([]byte(bodyString), &response)
@@ -119,32 +103,19 @@ func TestGetItemsSuccess(t *testing.T) {
 }
 
 func TestGetItemsSuccessOneItem(t *testing.T) {
-
-	host := "127.0.0.1"
-	databaseConnection := database.DBConnect{Ip: host, Port: "5433", Password: "pgpass", User: "postgres", Database: "postgres"}
-	err := databaseConnection.Open()
-
+	err, _ := startingServer()
 	require.Equal(t, nil, err, "Error in DB connection: %v", err)
 
-	server := New(&databaseConnection)
-	go server.Start(8080)
-
-	payload := map[string]int{
-		"offset": 1,
-		"limit":  1,
-	}
-
-	jsonPayload, err := json.Marshal(payload)
+	jsonPayload, err := json.Marshal(adapter.Pagination{Offset: 1, Limit: 1})
 	require.Equal(t, nil, err, "Error in Marshal: %v", err)
 
-	resp, err := http.Post("http://"+host+":8080/items/", "application/json", bytes.NewBuffer(jsonPayload))
+	resp, err := http.Post("http://"+HOST+":8080/items/", "application/json", bytes.NewBuffer(jsonPayload))
 	require.Equal(t, nil, err, "Error in request: %v", err)
 	require.Equal(t, http.StatusOK, resp.StatusCode, "Error in request: %v", http.StatusOK)
 	require.Equal(t, contentType, resp.Header.Get("Content-Type"), "Error in header Content-Type: %v",
 		err)
 
-	bodyBytes, err := io.ReadAll(resp.Body)
-	bodyString := string(bodyBytes)
+	bodyString, err := ReadBody(resp)
 
 	var response Response
 	err = json.Unmarshal([]byte(bodyString), &response)
@@ -155,57 +126,25 @@ func TestGetItemsSuccessOneItem(t *testing.T) {
 }
 
 func TestGetItemsUnsuccessful(t *testing.T) {
-
-	host := "127.0.0.1"
-	databaseConnection := database.DBConnect{Ip: host, Port: "5433", Password: "pgpass", User: "postgres", Database: "postgres"}
-	err := databaseConnection.Open()
-
+	err, _ := startingServer()
 	require.Equal(t, nil, err, "Error in DB connection: %v", err)
 
-	server := New(&databaseConnection)
-	go server.Start(8080)
-
-	payload := map[string]int{
-		"offset": 0,
-		"limit":  -1,
-	}
-
-	jsonPayload, err := json.Marshal(payload)
+	jsonPayload, err := json.Marshal(adapter.Pagination{Offset: 0, Limit: -1})
 	require.Equal(t, nil, err, "Error in Marshal: %v", err)
 
-	resp, err := http.Post("http://"+host+":8080/items/", "application/json", bytes.NewBuffer(jsonPayload))
+	resp, err := http.Post("http://"+HOST+":8080/items/", "application/json", bytes.NewBuffer(jsonPayload))
 	require.Equal(t, nil, err, "Error in request: %v", err)
 	require.Equal(t, http.StatusInternalServerError, resp.StatusCode, "Error in request: %v", http.StatusOK)
 }
 
 func TestCreateUserSuccess(t *testing.T) {
-
-	host := "127.0.0.1"
-	databaseConnection := database.DBConnect{Ip: host, Port: "5433", Password: "pgpass", User: "postgres", Database: "postgres"}
-	err := databaseConnection.Open()
-
+	err, _ := startingServer()
 	require.Equal(t, nil, err, "Error in DB connection: %v", err)
 
-	server := New(&databaseConnection)
-	go server.Start(8080)
-
-	payload := map[string]any{
-		"id":              -1,
-		"user_name":       "Bogdan",
-		"user_surname":    "Madzhuga",
-		"user_patronymic": "Andreevich",
-		"phone":           "",
-		"birthdate":       nil,
-		"mail":            "madzhuga@mail.ru",
-		"password_hash":   "bogdan0308",
-		"role_id":         2,
-		"token":           "",
-	}
-
-	jsonPayload, err := json.Marshal(payload)
+	jsonPayload, err := json.Marshal(&adapter.User{ID: -1, Name: "Bogdan", Surname: "Madzhuga", Patronymic: "Andreevich", Phone: "", Birthdate: nil, Mail: "madzhuga@mail.ru", Password: "bogdan0308", RoleId: 2, Token: "", Sex: 1})
 	require.Equal(t, nil, err, "Error in Marshal: %v", err)
 
-	resp, err := http.Post("http://"+host+":8080/users/create", "application/json", bytes.NewBuffer(jsonPayload))
+	resp, err := http.Post("http://"+HOST+":8080/users/create", "application/json", bytes.NewBuffer(jsonPayload))
 	require.Equal(t, nil, err, "Error in request: %v", err)
 	require.Equal(t, http.StatusOK, resp.StatusCode, "Error in request: %v", http.StatusOK)
 	require.Equal(t, contentType, resp.Header.Get("Content-Type"), "Error in header Content-Type: %v",
@@ -213,52 +152,30 @@ func TestCreateUserSuccess(t *testing.T) {
 }
 
 func TestCreateUserSuccessAndAuthSuccess(t *testing.T) {
-
-	host := "127.0.0.1"
-	databaseConnection := database.DBConnect{Ip: host, Port: "5433", Password: "pgpass", User: "postgres", Database: "postgres"}
-	err := databaseConnection.Open()
-
+	err, _ := startingServer()
 	require.Equal(t, nil, err, "Error in DB connection: %v", err)
 
-	server := New(&databaseConnection)
-	go server.Start(8080)
-
-	payload := map[string]any{
-		"id":              -1,
-		"user_name":       "Bogdan",
-		"user_surname":    "Madzhuga",
-		"user_patronymic": "Andreevich",
-		"phone":           "",
-		"birthdate":       nil,
-		"mail":            "madzhuga@mail.ru",
-		"password_hash":   "bogdan0308",
-		"role_id":         2,
-		"token":           "",
-	}
-
-	jsonPayload, err := json.Marshal(payload)
+	jsonPayload, err := json.Marshal(&adapter.User{ID: -1, Name: "Bogdan", Surname: "Madzhuga", Patronymic: "Andreevich", Phone: "", Birthdate: nil, Mail: "madzhuga@mail.ru", Password: "bogdan0308", RoleId: 2, Token: "", Sex: 1})
 	require.Equal(t, nil, err, "Error in Marshal: %v", err)
 
-	respCreateUser, err := http.Post("http://"+host+":8080/users/create", "application/json", bytes.NewBuffer(jsonPayload))
+	respCreateUser, err := http.Post("http://"+HOST+":8080/users/create", "application/json", bytes.NewBuffer(jsonPayload))
 	require.Equal(t, nil, err, "Error in request: %v", err)
 	require.Equal(t, http.StatusOK, respCreateUser.StatusCode, "Error in request: %v", http.StatusOK)
 	require.Equal(t, contentType, respCreateUser.Header.Get("Content-Type"), "Error in header Content-Type: %v",
 		err)
 
-	bodyBytes, err := io.ReadAll(respCreateUser.Body)
-	bodyString := string(bodyBytes)
+	bodyString, err := ReadBody(respCreateUser)
 
 	var create Create
 	err = json.Unmarshal([]byte(bodyString), &create)
 
-	respAuth, err := http.Get("http://" + host + ":8080/?token=" + create.Token.Token)
+	respAuth, err := http.Get("http://" + HOST + ":8080/?token=" + create.Token.Token)
 	require.Equal(t, nil, err, "Error in request: %v", err)
 	require.Equal(t, http.StatusOK, respAuth.StatusCode, "Error in request: %v", http.StatusOK)
 	require.Equal(t, contentType, respAuth.Header.Get("Content-Type"), "Error in header Content-Type: %v",
 		err)
 
-	bodyBytesOfAuth, err := io.ReadAll(respAuth.Body)
-	bodyStringOfAuth := string(bodyBytesOfAuth)
+	bodyStringOfAuth, err := ReadBody(respAuth)
 	require.Equal(t, successStatus, bodyStringOfAuth, "Error in body of response. Expected %s actually %s",
 		successStatus, bodyStringOfAuth)
 }
