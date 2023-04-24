@@ -62,12 +62,20 @@ func (adapter *UserDatabase) CreateUser(user *User) (token AuthToken, err error)
 }
 
 func (adapter *UserDatabase) UpdateUser(user *User, id int) (err error) {
+
 	_, err = adapter.database.Connection.Exec(fmt.Sprintf("UPDATE online_shop.%v SET user_name = $1, user_surname = $2, phone = $3, mail = $4 WHERE id = $5", USER_TABLE_NAME), user.Name, user.Surname, user.Phone, user.Mail, id)
 
-	token := crypto.GenerateToken(32)
+	return
+}
+
+func (adapter *UserDatabase) UpdateUserWithPassword(user *User, id int) (token string, err error) {
+
+	_, err = adapter.database.Connection.Exec(fmt.Sprintf("UPDATE online_shop.%v SET password_hash = $1 WHERE id = $2", USER_TABLE_NAME), crypto.HashPassword(user.Password), id)
+
+	token = crypto.GenerateToken(32)
 
 	_, err = adapter.database.Connection.Exec(fmt.Sprintf("UPDATE online_shop.%v SET token = $1 WHERE id = $2", USER_TABLE_NAME), token, id)
-	return
+	return token, err
 }
 
 func (adapter *UserDatabase) UpdatePassword(user *User) (token AuthToken, err error) {

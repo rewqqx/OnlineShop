@@ -166,6 +166,9 @@ func (server *UserServer) GetToken(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *UserServer) UpdateUser(w http.ResponseWriter, r *http.Request) {
+	var (
+		response, token string
+	)
 	setSuccessHeader(w)
 
 	path := r.URL.Path[1:]
@@ -190,25 +193,40 @@ func (server *UserServer) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	numberIdOfUserToUpdate, err := strconv.Atoi(idOfUserToUpdate)
 
 	updateUser := adapter.User{}
-
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
 
 	err = decoder.Decode(&updateUser)
-
 	if err != nil {
 		makeErrorResponse(w, "can't parse json", http.StatusBadRequest)
 		return
 	}
 
 	userDatabaseAdapter := adapter.CreateUserDatabaseAdapter(server.Database)
-	err = userDatabaseAdapter.UpdateUser(&updateUser, numberIdOfUserToUpdate)
+	switch updateUser.Password {
+	case "":
+		if updateUser.Name == "" {
+			makeErrorResponse(w, "can not set empty password", http.StatusBadRequest)
+			return
+		}
 
-	if err != nil {
-		makeErrorResponse(w, "can not update data of user", http.StatusBadRequest)
-		return
+		err = userDatabaseAdapter.UpdateUser(&updateUser, numberIdOfUserToUpdate)
+
+		if err != nil {
+			makeErrorResponse(w, "can not update data of user", http.StatusBadRequest)
+			return
+		}
+
+		response = fmt.Sprintf("{\"status\":\"Success\"}")
+	default:
+		token, err = userDatabaseAdapter.UpdateUserWithPassword(&updateUser, numberIdOfUserToUpdate)
+		if err != nil {
+			makeErrorResponse(w, "can not update data of user", http.StatusBadRequest)
+			return
+		}
+
+		response = fmt.Sprintf("{\"status\":\"Success\", \"token\" : %v}", token)
 	}
 
-	response := fmt.Sprintf("{\"status\":\"Success\", \"updateUser\" : %v}", numberIdOfUserToUpdate)
 	w.Write([]byte(response))
 }
