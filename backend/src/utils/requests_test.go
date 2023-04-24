@@ -11,7 +11,7 @@ import (
 func TestPing(t *testing.T) {
 
 	host := "127.0.0.1"
-	database := database.DBConnect{Ip: host, Port: "5432", Password: "pgpass", User: "postgres", Database: "postgres"}
+	database := database.DBConnect{Ip: host, Port: "6000", Password: "pgpass", User: "postgres", Database: "postgres"}
 	err := database.Open()
 
 	require.Equal(t, nil, err)

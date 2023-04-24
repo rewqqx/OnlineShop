@@ -8,6 +8,7 @@ class DOM
     protected string $tag = "div";
     protected ?string $id = null;
     protected ?string $href = null;
+    protected ?string $url = null;
     protected ?string $type = null;
     protected ?string $style = null;
     protected ?string $value = null;
@@ -93,6 +94,12 @@ class DOM
         return $this;
     }
 
+    public function setURL(string $link)
+    {
+        $this->url = $link;
+        return $this;
+    }
+
     public function setType(string $type)
     {
         $this->type = $type;
@@ -121,6 +128,10 @@ class DOM
 
         if (!is_null($this->href)) {
             $result = $result . ' href = "' . $this->href . '"';
+        }
+
+        if (!is_null($this->url)) {
+            $result = $result . ' src = "' . $this->url . '"';
         }
 
         if (!is_null($this->type)) {
@@ -181,6 +192,16 @@ class Link extends DOM
 
         $this->setStyle("button");
         $this->append($this->textElement);
+    }
+}
+
+class Image extends DOM
+{
+
+    function __construct($url = "")
+    {
+        $this->setTag("img");
+        $this->setURL($url);
     }
 }
 
