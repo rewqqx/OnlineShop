@@ -17,8 +17,7 @@ class ItemCard extends DOM
         parent::createElement();
 
         $this->setStyle("item-card");
-
-        $image = new DOM();
+        $image = new Image("http://localhost:8081/image/" . $this->item->getImageIDs()[0]);
         $image->setStyle("item-image");
         $this->append($image);
 

@@ -9,9 +9,19 @@ services:
     depends_on:
       - postgres
     environment:
-      - WAIT_HOSTS=postgres:5432
+      - WAIT_HOSTS=postgres:6000
       - POSTGRES_HOST=postgres
       - PORT=8080
+      - DBFLAG=true
+  image-service:
+    build: ./image-service
+    restart: always
+    ports:
+      - 8081:8081
+    depends_on:
+      - postgres
+    environment:
+      - PORT=8081
       - DBFLAG=true
   postgres:
     restart: always
@@ -22,7 +32,7 @@ services:
     environment:
       - POSTGRES_PASSWORD=pgpass
     ports:
-      - 5432:5432
+      - 6000:5432
   frontend:
     build: ./frontend
     hostname: frontend
