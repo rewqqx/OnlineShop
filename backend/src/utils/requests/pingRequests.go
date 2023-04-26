@@ -7,8 +7,6 @@ import (
 	"net/http"
 )
 
-const CREATE_ACTION = "create"
-
 type StatusResponse struct {
 	Status string `json:"status"`
 }
