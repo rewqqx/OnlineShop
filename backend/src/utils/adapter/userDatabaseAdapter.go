@@ -45,6 +45,54 @@ type AuthData struct {
 	Password string `json:"password" db:"password_hash"`
 }
 
+func UpdateUserValid(user *User) (err error) {
+	if len(user.Name) < 4 {
+		return errors.New("name must contains more than 3 symbols")
+	} else if len(user.Surname) < 4 {
+		return errors.New("surname must contains more than 3 symbols")
+	} else if len(user.Phone) < 6 || !strings.Contains(user.Phone, "+") {
+		return errors.New("phone must contains more than 5 symbols or have +")
+	} else if len(user.Mail) < 4 || !strings.Contains(user.Mail, "@") || !strings.Contains(user.Mail, ".") {
+		return errors.New("mail must contains more than 3 symbols or have @ or .*")
+	}
+
+	return nil
+}
+
+func UpdateUserWithPasswordValid(user *ChangePassword) (err error) {
+	if len(user.Password) < 8 {
+		return errors.New("password must contains more than 7 symbols")
+	}
+
+	if user.Password != user.PasswordConfirmation {
+		return errors.New("passwords must match")
+	}
+
+	return nil
+}
+
+func IsPasswordChangeRequest(updatePassword *ChangePassword) bool {
+	if updatePassword.Password != "" && updatePassword.PasswordConfirmation != "" {
+		return true
+	}
+
+	return false
+}
+
+func IsUpdateDataUserChangeRequest(user *User) bool {
+	if user.Name == "" {
+		return true
+	} else if user.Surname == "" {
+		return true
+	} else if user.Mail == "" {
+		return true
+	} else if user.Phone == "" {
+		return true
+	}
+
+	return false
+}
+
 func CreateUserDatabaseAdapter(database *database.DBConnect) *UserDatabase {
 	adapter := &UserDatabase{database: database}
 	return adapter
@@ -69,56 +117,42 @@ func (adapter *UserDatabase) CreateUser(user *User) (token AuthToken, err error)
 	return adapter.AuthUser(AuthData{Mail: user.Mail, Password: user.Password})
 }
 
-func (adapter *UserDatabase) UpdateUser(user *User, id int) (err error) {
-	if len(user.Name) < 4 {
-		return errors.New("name must contains more than 3 symbols")
+func (adapter *UserDatabase) UpdateUser(user *User, token AuthToken) (r AuthToken, err error) {
+	err = UpdateUserValid(user)
+	if err != nil {
+		return
 	}
 
-	if len(user.Surname) < 4 {
-		return errors.New("surname must contains more than 3 symbols")
-	}
+	_, err = adapter.database.Connection.Exec(fmt.Sprintf("UPDATE online_shop.%v SET user_name = $1, user_surname = $2, phone = $3, mail = $4 WHERE id = $5", USER_TABLE_NAME), user.Name, user.Surname, user.Phone, user.Mail, token.ID)
 
-	if len(user.Phone) < 6 || !strings.Contains(user.Phone, "+") {
-		return errors.New("phone must contains more than 5 symbols or have +")
-	}
-
-	if len(user.Mail) < 4 || !strings.Contains(user.Mail, "@") || !strings.Contains(user.Mail, ".") {
-		return errors.New("mail must contains more than 3 symbols or have @ or .*")
-	}
-
-	_, err = adapter.database.Connection.Exec(fmt.Sprintf("UPDATE online_shop.%v SET user_name = $1, user_surname = $2, phone = $3, mail = $4 WHERE id = $5", USER_TABLE_NAME), user.Name, user.Surname, user.Phone, user.Mail, id)
-
-	return
+	return token, nil
 }
 
-func (adapter *UserDatabase) UpdateUserWithPassword(user *ChangePassword, token AuthToken) (newToken string, err error) {
-	if len(user.Password) < 8 {
-		return "", errors.New("password must contains more than 7 symbols")
-	}
-
-	if user.Password != user.PasswordConfirmation {
-		return "", errors.New("passwords must match")
+func (adapter *UserDatabase) UpdateUserWithPassword(user *ChangePassword, token AuthToken) (r AuthToken, err error) {
+	err = UpdateUserWithPasswordValid(user)
+	if err != nil {
+		return token, err
 	}
 
 	begin, err := adapter.database.Connection.Begin()
 	if err != nil {
-		return "", err
+		return token, err
 	}
 
 	defer func(begin *sql.Tx) { _ = begin.Rollback() }(begin)
 
 	_, err = begin.Exec(fmt.Sprintf("UPDATE online_shop.%v SET password_hash = $1 WHERE id = $2", USER_TABLE_NAME), crypto.HashPassword(user.Password), token.ID)
 
-	newToken = crypto.GenerateToken(32)
+	token.Token = crypto.GenerateToken(32)
 
-	_, err = begin.Exec(fmt.Sprintf("UPDATE online_shop.%v SET token = $1 WHERE id = $2", USER_TABLE_NAME), token, token.ID)
+	_, err = begin.Exec(fmt.Sprintf("UPDATE online_shop.%v SET token = $1 WHERE id = $2", USER_TABLE_NAME), token.Token, token.ID)
 
 	err = begin.Commit()
 	if err != nil {
-		return "", err
+		return token, err
 	}
 
-	return newToken, err
+	return token, err
 }
 
 func (adapter *UserDatabase) UpdatePassword(user *User) (token AuthToken, err error) {

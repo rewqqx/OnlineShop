@@ -152,8 +152,9 @@ func (server *UserServer) GetToken(w http.ResponseWriter, r *http.Request) {
 
 func (server *UserServer) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	var (
-		newToken string
 		request  UpdateUserRequest
+		newToken adapter.AuthToken
+		JSON     []byte
 	)
 
 	setSuccessHeader(w)
@@ -190,24 +191,35 @@ func (server *UserServer) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	updateUser := request.User
 	updatePassword := request.ChangePassword
 
-	if updatePassword.Password != "" && updatePassword.PasswordConfirmation != "" {
+	if adapter.IsPasswordChangeRequest(&updatePassword) {
 		newToken, err = userDatabaseAdapter.UpdateUserWithPassword(&updatePassword, token)
 		if err != nil {
 			makeErrorResponse(w, fmt.Sprintf("can not update password: %v", err), http.StatusBadRequest)
 			return
 		}
 
-		w.Write([]byte(fmt.Sprintf("{\"token\" : %v}", newToken)))
-	} else {
-		if updateUser.Name == "" || updateUser.Surname == "" || updateUser.Mail == "" || updateUser.Phone == "" {
-			makeErrorResponse(w, "can not set empty value to update", http.StatusBadRequest)
+		JSON, err = json.Marshal(newToken)
+		if err != nil {
+			makeErrorResponse(w, "can't parse json", http.StatusInternalServerError)
 			return
 		}
 
-		err = userDatabaseAdapter.UpdateUser(&updateUser, id)
+	} else if adapter.IsUpdateDataUserChangeRequest(&updateUser) {
+		makeErrorResponse(w, "can not set empty value to update", http.StatusBadRequest)
+		return
+	} else {
+		newToken, err = userDatabaseAdapter.UpdateUser(&updateUser, token)
 		if err != nil {
 			makeErrorResponse(w, fmt.Sprintf("can not update data of user: %v", err), http.StatusBadRequest)
 			return
 		}
+
+		JSON, err = json.Marshal(newToken)
+		if err != nil {
+			makeErrorResponse(w, "can't parse json", http.StatusInternalServerError)
+			return
+		}
 	}
+
+	w.Write([]byte(fmt.Sprintf("{\"token\" : %v}", string(JSON))))
 }
