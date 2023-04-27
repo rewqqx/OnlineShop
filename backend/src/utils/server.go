@@ -30,6 +30,9 @@ func (server *Server) prepare() {
 	createHandler := http.HandlerFunc(userServer.CreateUser)
 	http.Handle("/users/create", createHandler)
 
+	updateHandler := http.HandlerFunc(userServer.UpdateUser)
+	http.Handle("/users/update/", updateHandler)
+
 	// Bind Items
 
 	itemServer := requests.NewItemServer(server.Database)
