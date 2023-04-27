@@ -3,6 +3,7 @@ package adapter
 import (
 	"backend/src/utils/database"
 	"fmt"
+	"time"
 )
 
 type ItemCartDatabase struct {
@@ -36,17 +37,46 @@ func (adapter *ItemCartDatabase) AddItem(item *CartItem) error {
 	}
 
 	input := make(map[string]interface{})
-	input[itemKey] = curCount
+	input[itemKey] = curCount + item.Count
 
 	pipe.HMSet(key, input)
 	_, err := pipe.Exec()
-	return err
+
+	if err != nil {
+		return cmd.Err()
+	}
+
+	boolCmd := adapter.redis.Client.Expire(key, 24*7*time.Hour)
+	return boolCmd.Err()
 }
 
-func (adapter *ItemCartDatabase) DeleteItem(item *CartItem) {
+func (adapter *ItemCartDatabase) DeleteItem(item *CartItem) error {
+	key := item.getRedisKey()
+	itemKey := item.getItemKey()
 
+	cmd := adapter.redis.Client.HDel(key, itemKey)
+
+	if cmd.Err() != nil {
+		return cmd.Err()
+	}
+
+	boolCmd := adapter.redis.Client.Expire(key, 24*7*time.Hour)
+	return boolCmd.Err()
 }
 
-func (adapter *ItemCartDatabase) SetItem(item *CartItem) {
+func (adapter *ItemCartDatabase) SetItem(item *CartItem) error {
+	key := item.getRedisKey()
+	itemKey := item.getItemKey()
 
+	input := make(map[string]interface{})
+	input[itemKey] = item.Count
+
+	cmd := adapter.redis.Client.HMSet(key, input)
+
+	if cmd.Err() != nil {
+		return cmd.Err()
+	}
+
+	boolCmd := adapter.redis.Client.Expire(key, 24*7*time.Hour)
+	return boolCmd.Err()
 }
