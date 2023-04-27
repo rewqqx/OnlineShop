@@ -9,10 +9,11 @@ import (
 
 type Server struct {
 	Database *database.DBConnect
+	Redis    *database.Redis
 }
 
-func New(database *database.DBConnect) *Server {
-	webServer := &Server{Database: database}
+func New(database *database.DBConnect, redis *database.Redis) *Server {
+	webServer := &Server{Database: database, Redis: redis}
 	webServer.prepare()
 	return webServer
 }
