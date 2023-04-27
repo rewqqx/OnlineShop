@@ -4,10 +4,7 @@ import (
 	"backend/src/utils/crypto"
 	"backend/src/utils/database"
 	"backend/src/utils/timestamp"
-	"database/sql"
-	"errors"
 	"fmt"
-	"strings"
 )
 
 type UserDatabase struct {
@@ -43,54 +40,6 @@ type AuthToken struct {
 type AuthData struct {
 	Mail     string `json:"mail" db:"mail"`
 	Password string `json:"password" db:"password_hash"`
-}
-
-func UpdateUserValid(user *User) (err error) {
-	if len(user.Name) < 4 {
-		return errors.New("name must contains more than 3 symbols")
-	} else if len(user.Surname) < 4 {
-		return errors.New("surname must contains more than 3 symbols")
-	} else if len(user.Phone) < 6 || !strings.Contains(user.Phone, "+") {
-		return errors.New("phone must contains more than 5 symbols or have +")
-	} else if len(user.Mail) < 4 || !strings.Contains(user.Mail, "@") || !strings.Contains(user.Mail, ".") {
-		return errors.New("mail must contains more than 3 symbols or have @ or .*")
-	}
-
-	return nil
-}
-
-func UpdateUserWithPasswordValid(user *ChangePassword) (err error) {
-	if len(user.Password) < 8 {
-		return errors.New("password must contains more than 7 symbols")
-	}
-
-	if user.Password != user.PasswordConfirmation {
-		return errors.New("passwords must match")
-	}
-
-	return nil
-}
-
-func IsPasswordChangeRequest(updatePassword *ChangePassword) bool {
-	if updatePassword.Password != "" && updatePassword.PasswordConfirmation != "" {
-		return true
-	}
-
-	return false
-}
-
-func IsUpdateDataUserChangeRequest(user *User) bool {
-	if user.Name == "" {
-		return true
-	} else if user.Surname == "" {
-		return true
-	} else if user.Mail == "" {
-		return true
-	} else if user.Phone == "" {
-		return true
-	}
-
-	return false
 }
 
 func CreateUserDatabaseAdapter(database *database.DBConnect) *UserDatabase {
@@ -134,23 +83,9 @@ func (adapter *UserDatabase) UpdateUserWithPassword(user *ChangePassword, token 
 		return token, err
 	}
 
-	begin, err := adapter.database.Connection.Begin()
-	if err != nil {
-		return token, err
-	}
-
-	defer func(begin *sql.Tx) { _ = begin.Rollback() }(begin)
-
-	_, err = begin.Exec(fmt.Sprintf("UPDATE online_shop.%v SET password_hash = $1 WHERE id = $2", USER_TABLE_NAME), crypto.HashPassword(user.Password), token.ID)
-
 	token.Token = crypto.GenerateToken(32)
 
-	_, err = begin.Exec(fmt.Sprintf("UPDATE online_shop.%v SET token = $1 WHERE id = $2", USER_TABLE_NAME), token.Token, token.ID)
-
-	err = begin.Commit()
-	if err != nil {
-		return token, err
-	}
+	_, err = adapter.database.Connection.Exec(fmt.Sprintf("UPDATE online_shop.%v SET password_hash = $1, token = $2 WHERE id = $3", USER_TABLE_NAME), crypto.HashPassword(user.Password), token.Token, token.ID)
 
 	return token, err
 }
