@@ -63,7 +63,7 @@ func (adapter *ItemDatabase) DeleteUser(id int) (err error) {
 }
 
 func (adapter *UserDatabase) CreateUser(user *User) (token AuthToken, err error) {
-	_, err = adapter.database.Connection.Exec(fmt.Sprintf("INSERT INTO online_shop.%v (user_name, user_surname,user_patronymic, phone, birthdate, password_hash, mail, role_id, token) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", USER_TABLE_NAME), user.Name, user.Surname, user.Patronymic, user.Phone, user.Birthdate, crypto.HashPassword(user.Password), user.Mail, user.RoleId, user.Token)
+	_, err = adapter.database.Connection.Exec(fmt.Sprintf("INSERT INTO online_shop.%v (user_name, user_surname,user_patronymic, phone, birthdate, sex, password_hash, mail, role_id, token) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)", USER_TABLE_NAME), user.Name, user.Surname, user.Patronymic, user.Phone, user.Birthdate, user.Sex, crypto.HashPassword(user.Password), user.Mail, user.RoleId, user.Token)
 	return adapter.AuthUser(AuthData{Mail: user.Mail, Password: user.Password})
 }
 
