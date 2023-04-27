@@ -6,18 +6,8 @@ import (
 )
 
 func UpdateUserValid(name, surname, phone, mail string) (err error) {
-	if len(name) < 4 {
-		return errors.New("name must contains more than 3 symbols")
-	} else if len(surname) < 4 {
-		return errors.New("surname must contains more than 3 symbols")
-	} else if len(phone) < 6 || !strings.Contains(phone, "+") {
-		return errors.New("phone must contains more than 5 symbols or have +")
-	} else if len(mail) < 4 {
-		return errors.New("mail must contains more than 3 symbols")
-	} else if !strings.Contains(mail, "@") {
-		return errors.New("mail must contains @")
-	} else if !strings.Contains(mail, ".") {
-		return errors.New("mail must contains .*")
+	if len(name) < 4 || len(surname) < 4 || len(phone) < 6 || !strings.Contains(phone, "+") || len(mail) < 4 || !strings.Contains(mail, "@") || !strings.Contains(mail, ".") {
+		return errors.New("invalid data in fields")
 	}
 
 	return nil
@@ -44,13 +34,7 @@ func IsPasswordChangeRequest(password, passwordConfirmation string) bool {
 }
 
 func IsUpdateDataUserChangeRequest(name, surname, phone, mail string) bool {
-	if name == "" {
-		return true
-	} else if surname == "" {
-		return true
-	} else if mail == "" {
-		return true
-	} else if phone == "" {
+	if name == "" || surname == "" || mail == "" || phone == "" {
 		return true
 	}
 
