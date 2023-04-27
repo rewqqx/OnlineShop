@@ -4,6 +4,7 @@ import (
 	"backend/src/utils/crypto"
 	"backend/src/utils/database"
 	"backend/src/utils/timestamp"
+	"backend/src/validation"
 	"fmt"
 )
 
@@ -67,7 +68,7 @@ func (adapter *UserDatabase) CreateUser(user *User) (token AuthToken, err error)
 }
 
 func (adapter *UserDatabase) UpdateUser(user *User, token AuthToken) (r AuthToken, err error) {
-	err = UpdateUserValid(user)
+	err = validation.UpdateUserValid(user.Name, user.Surname, user.Phone, user.Mail)
 	if err != nil {
 		return
 	}
@@ -78,7 +79,7 @@ func (adapter *UserDatabase) UpdateUser(user *User, token AuthToken) (r AuthToke
 }
 
 func (adapter *UserDatabase) UpdateUserWithPassword(user *ChangePassword, token AuthToken) (r AuthToken, err error) {
-	err = UpdateUserWithPasswordValid(user)
+	err = validation.UpdateUserWithPasswordValid(user.Password, user.PasswordConfirmation)
 	if err != nil {
 		return token, err
 	}

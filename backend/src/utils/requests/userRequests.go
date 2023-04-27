@@ -3,6 +3,7 @@ package requests
 import (
 	"backend/src/utils/adapter"
 	"backend/src/utils/database"
+	"backend/src/validation"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -191,7 +192,7 @@ func (server *UserServer) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	updateUser := request.User
 	updatePassword := request.ChangePassword
 
-	if adapter.IsPasswordChangeRequest(&updatePassword) {
+	if validation.IsPasswordChangeRequest(updatePassword.Password, updatePassword.PasswordConfirmation) {
 		newToken, err = userDatabaseAdapter.UpdateUserWithPassword(&updatePassword, token)
 		if err != nil {
 			makeErrorResponse(w, fmt.Sprintf("can not update password: %v", err), http.StatusBadRequest)
@@ -204,7 +205,7 @@ func (server *UserServer) UpdateUser(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-	} else if adapter.IsUpdateDataUserChangeRequest(&updateUser) {
+	} else if validation.IsUpdateDataUserChangeRequest(updateUser.Name, updateUser.Surname, updateUser.Phone, updateUser.Mail) {
 		makeErrorResponse(w, "can not set empty value to update", http.StatusBadRequest)
 		return
 	} else {
