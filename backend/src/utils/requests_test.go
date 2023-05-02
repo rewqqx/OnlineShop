@@ -29,10 +29,20 @@ type Create struct {
 	} `json:"token"`
 }
 
-func startingServer() (err error, databaseConnection database.DBConnect) {
-	databaseConnection = database.DBConnect{Ip: HOST, Port: "5432", Password: "pgpass", User: "postgres", Database: "postgres"}
+func startingServer() (databaseConnection *database.DBConnect, err error) {
+	databaseConnection = &database.DBConnect{Ip: HOST, Port: "5432", Password: "pgpass", User: "postgres", Database: "postgres"}
 	err = databaseConnection.Open()
-	server := New(&databaseConnection)
+	if err != nil {
+		return nil, err
+	}
+
+	rds := database.New("127.0.0.1", "6379", "")
+	err = rds.Ping()
+	if err != nil {
+		return nil, err
+	}
+
+	server := New(databaseConnection, rds)
 	go server.Start(8080)
 	return
 }
@@ -44,7 +54,7 @@ func ReadBody(respCreateUser *http.Response) (bodyString string, err error) {
 }
 
 func TestPing(t *testing.T) {
-	err, _ := startingServer()
+	_, err := startingServer()
 	require.Equal(t, nil, err, "Error in DB connection: %v", err)
 
 	resp, err := http.Get("http://" + HOST + ":8080/")
@@ -60,7 +70,7 @@ func TestPing(t *testing.T) {
 }
 
 func TestGetItem(t *testing.T) {
-	err, db := startingServer()
+	db, err := startingServer()
 	require.Equal(t, nil, err, "Error in DB connection: %v", err)
 
 	resp, err := http.Get("http://" + HOST + ":8080/items/1/")
@@ -80,7 +90,7 @@ func TestGetItem(t *testing.T) {
 }
 
 func TestGetItemsSuccess(t *testing.T) {
-	err, _ := startingServer()
+	_, err := startingServer()
 	require.Equal(t, nil, err, "Error in DB connection: %v", err)
 
 	jsonPayload, err := json.Marshal(adapter.Pagination{Offset: 0, Limit: 5})
@@ -103,7 +113,7 @@ func TestGetItemsSuccess(t *testing.T) {
 }
 
 func TestGetItemsSuccessOneItem(t *testing.T) {
-	err, _ := startingServer()
+	_, err := startingServer()
 	require.Equal(t, nil, err, "Error in DB connection: %v", err)
 
 	jsonPayload, err := json.Marshal(adapter.Pagination{Offset: 1, Limit: 1})
@@ -126,7 +136,7 @@ func TestGetItemsSuccessOneItem(t *testing.T) {
 }
 
 func TestGetItemsUnsuccessful(t *testing.T) {
-	err, _ := startingServer()
+	_, err := startingServer()
 	require.Equal(t, nil, err, "Error in DB connection: %v", err)
 
 	jsonPayload, err := json.Marshal(adapter.Pagination{Offset: 0, Limit: -1})
@@ -138,7 +148,7 @@ func TestGetItemsUnsuccessful(t *testing.T) {
 }
 
 func TestCreateUserSuccess(t *testing.T) {
-	err, _ := startingServer()
+	_, err := startingServer()
 	require.Equal(t, nil, err, "Error in DB connection: %v", err)
 
 	jsonPayload, err := json.Marshal(&adapter.User{ID: -1, Name: "Bogdan", Surname: "Madzhuga", Patronymic: "Andreevich", Phone: "", Birthdate: nil, Mail: "madzhuga@mail.ru", Password: "bogdan0308", RoleId: 2, Token: "", Sex: 1})
@@ -152,7 +162,7 @@ func TestCreateUserSuccess(t *testing.T) {
 }
 
 func TestCreateUserSuccessAndAuthSuccess(t *testing.T) {
-	err, _ := startingServer()
+	_, err := startingServer()
 	require.Equal(t, nil, err, "Error in DB connection: %v", err)
 
 	jsonPayload, err := json.Marshal(&adapter.User{ID: -1, Name: "Bogdan", Surname: "Madzhuga", Patronymic: "Andreevich", Phone: "", Birthdate: nil, Mail: "madzhuga@mail.ru", Password: "bogdan0308", RoleId: 2, Token: "", Sex: 1})

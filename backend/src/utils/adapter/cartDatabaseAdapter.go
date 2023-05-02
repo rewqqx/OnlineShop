@@ -16,6 +16,11 @@ type CartItem struct {
 	Count  int `json:"count" db:"count"`
 }
 
+func CreateCartDatabaseAdapter(redis *database.Redis) *ItemCartDatabase {
+	adapter := &ItemCartDatabase{redis: redis}
+	return adapter
+}
+
 func (item *CartItem) getRedisKey() string {
 	return fmt.Sprintf("cart::%v", item.UserID)
 }
