@@ -11,25 +11,40 @@ func main() {
 
 	fmt.Println("Start Service:")
 
-	host := os.Getenv("POSTGRES_HOST")
-	if host == "" {
-		host = "127.0.0.1"
+	pgHost := os.Getenv("POSTGRES_HOST")
+	if pgHost == "" {
+		pgHost = "127.0.0.1"
 	}
 
-	fmt.Println("Postgres Host: " + host)
+	rdsHost := os.Getenv("REDIS_HOST")
 
-	database := database.DBConnect{Ip: host, Port: "5432", Password: "pgpass", User: "postgres", Database: "postgres"}
+	if rdsHost == "" {
+		rdsHost = "127.0.0.1"
+	}
 
-	err := database.Open()
+	fmt.Println("Postgres Host: " + pgHost)
+	fmt.Println("Redis Host: " + rdsHost)
+
+	db := database.DBConnect{Ip: pgHost, Port: "5432", Password: "pgpass", User: "postgres", Database: "postgres"}
+	rds := database.New(rdsHost, "6379", "")
+
+	err := db.Open()
 
 	if err != nil {
 		fmt.Println("<---- Can't Open Database ---->")
 		panic(err)
 	}
 
+	err = rds.Ping()
+
+	if err != nil {
+		fmt.Println("<---- Can't Ping Redis ---->")
+		panic(err)
+	}
+
 	fmt.Println("<---- Success Open Database ---->")
 
-	server := utils.New(&database)
+	server := utils.New(&db, rds)
 	server.Start(8080)
 
 }
