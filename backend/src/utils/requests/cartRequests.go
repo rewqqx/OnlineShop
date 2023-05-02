@@ -18,6 +18,97 @@ func NewCartServer(database *database.Redis) *CartServer {
 	return &CartServer{Database: database}
 }
 
+func (server *CartServer) GetHandler(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodPost:
+		server.SetCart(w, r)
+	case http.MethodPut:
+		server.AddToCart(w, r)
+	case http.MethodDelete:
+		server.DeleteFromCart(w, r)
+	case http.MethodGet:
+		server.GetCart(w, r)
+	}
+}
+
+func (server *CartServer) SetCart(w http.ResponseWriter, r *http.Request) {
+	setSuccessHeader(w)
+
+	setItem := adapter.CartItem{}
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+
+	err := decoder.Decode(&setItem)
+
+	if err != nil {
+		makeErrorResponse(w, "can't parse json", http.StatusBadRequest)
+		return
+	}
+
+	userDatabaseAdapter := adapter.CreateCartDatabaseAdapter(server.Database)
+	err = userDatabaseAdapter.SetItem(setItem)
+
+	if err != nil {
+		makeErrorResponse(w, "bad auth", http.StatusBadRequest)
+		return
+	}
+
+	w.Write([]byte(fmt.Sprintf("{\"status\" : \"success\"}")))
+}
+
+func (server *CartServer) AddToCart(w http.ResponseWriter, r *http.Request) {
+	setSuccessHeader(w)
+
+	setItem := adapter.CartItem{}
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+
+	err := decoder.Decode(&setItem)
+
+	if err != nil {
+		makeErrorResponse(w, "can't parse json", http.StatusBadRequest)
+		return
+	}
+
+	userDatabaseAdapter := adapter.CreateCartDatabaseAdapter(server.Database)
+	err = userDatabaseAdapter.AddItem(setItem)
+
+	if err != nil {
+		makeErrorResponse(w, "bad auth", http.StatusBadRequest)
+		return
+	}
+
+	w.Write([]byte(fmt.Sprintf("{\"status\" : \"success\"}")))
+}
+
+func (server *CartServer) DeleteFromCart(w http.ResponseWriter, r *http.Request) {
+	setSuccessHeader(w)
+
+	setItem := adapter.CartItem{}
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+
+	err := decoder.Decode(&setItem)
+
+	if err != nil {
+		makeErrorResponse(w, "can't parse json", http.StatusBadRequest)
+		return
+	}
+
+	userDatabaseAdapter := adapter.CreateCartDatabaseAdapter(server.Database)
+	err = userDatabaseAdapter.DeleteItem(setItem)
+
+	if err != nil {
+		makeErrorResponse(w, "bad auth", http.StatusBadRequest)
+		return
+	}
+
+	w.Write([]byte(fmt.Sprintf("{\"status\" : \"success\"}")))
+}
+
 func (server *CartServer) GetCart(w http.ResponseWriter, r *http.Request) {
 	setSuccessHeader(w)
 
