@@ -21,11 +21,6 @@ type Response struct {
 	Items  []adapter.Item `json:"items"`
 }
 
-	host := "127.0.0.1"
-	database := database.DBConnect{Ip: host, Port: "6000", Password: "pgpass", User: "postgres", Database: "postgres"}
-	err := database.Open()
-
-
 type Create struct {
 	Status string `json:"status"`
 	Token  struct {

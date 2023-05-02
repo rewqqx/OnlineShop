@@ -3,6 +3,7 @@ package adapter
 import (
 	"backend/src/utils/database"
 	"fmt"
+	"strconv"
 	"time"
 )
 
@@ -23,7 +24,7 @@ func (item *CartItem) getItemKey() string {
 	return fmt.Sprintf("%v", item.ItemID)
 }
 
-func (adapter *ItemCartDatabase) AddItem(item *CartItem) error {
+func (adapter *ItemCartDatabase) AddItem(item CartItem) error {
 	key := item.getRedisKey()
 	itemKey := item.getItemKey()
 
@@ -50,7 +51,7 @@ func (adapter *ItemCartDatabase) AddItem(item *CartItem) error {
 	return boolCmd.Err()
 }
 
-func (adapter *ItemCartDatabase) DeleteItem(item *CartItem) error {
+func (adapter *ItemCartDatabase) DeleteItem(item CartItem) error {
 	key := item.getRedisKey()
 	itemKey := item.getItemKey()
 
@@ -64,7 +65,7 @@ func (adapter *ItemCartDatabase) DeleteItem(item *CartItem) error {
 	return boolCmd.Err()
 }
 
-func (adapter *ItemCartDatabase) SetItem(item *CartItem) error {
+func (adapter *ItemCartDatabase) SetItem(item CartItem) error {
 	key := item.getRedisKey()
 	itemKey := item.getItemKey()
 
@@ -79,4 +80,30 @@ func (adapter *ItemCartDatabase) SetItem(item *CartItem) error {
 
 	boolCmd := adapter.redis.Client.Expire(key, 24*7*time.Hour)
 	return boolCmd.Err()
+}
+
+func (adapter *ItemCartDatabase) GetCart(userID int) (output []CartItem, err error) {
+	key := fmt.Sprintf("cart::%v", userID)
+
+	cmd := adapter.redis.Client.HGetAll(key)
+
+	result, err := cmd.Result()
+
+	if err != nil {
+		return
+	}
+
+	for k, v := range result {
+		itemID, subErr := strconv.Atoi(k)
+		if err != nil {
+			return output, subErr
+		}
+		count, subErr := strconv.Atoi(v)
+		if err != nil {
+			return output, subErr
+		}
+		output = append(output, CartItem{itemID, userID, count})
+	}
+
+	return
 }
