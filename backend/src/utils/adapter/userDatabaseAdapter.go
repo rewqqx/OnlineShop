@@ -4,6 +4,7 @@ import (
 	"backend/src/utils/crypto"
 	"backend/src/utils/database"
 	"backend/src/utils/timestamp"
+	"backend/src/validation"
 	"fmt"
 )
 
@@ -25,6 +26,11 @@ type User struct {
 	RoleId     int                  `json:"role_id" db:"role_id"`
 	Token      string               `json:"token" db:"token"`
 	Sex        int                  `json:"sex" db:"sex"`
+}
+
+type ChangePassword struct {
+	Password             string `json:"password_hash_change" `
+	PasswordConfirmation string `json:"password_confirmation_hash"`
 }
 
 type AuthToken struct {
@@ -57,13 +63,32 @@ func (adapter *ItemDatabase) DeleteUser(id int) (err error) {
 }
 
 func (adapter *UserDatabase) CreateUser(user *User) (token AuthToken, err error) {
-	_, err = adapter.database.Connection.Exec(fmt.Sprintf("INSERT INTO online_shop.%v (user_name, user_surname,user_patronymic, phone, birthdate, password_hash, mail, role_id, token) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)", USER_TABLE_NAME), user.Name, user.Surname, user.Patronymic, user.Phone, user.Birthdate, crypto.HashPassword(user.Password), user.Mail, user.RoleId, user.Token)
+	_, err = adapter.database.Connection.Exec(fmt.Sprintf("INSERT INTO online_shop.%v (user_name, user_surname,user_patronymic, phone, birthdate, sex, password_hash, mail, role_id, token) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)", USER_TABLE_NAME), user.Name, user.Surname, user.Patronymic, user.Phone, user.Birthdate, user.Sex, crypto.HashPassword(user.Password), user.Mail, user.RoleId, user.Token)
 	return adapter.AuthUser(AuthData{Mail: user.Mail, Password: user.Password})
 }
 
-func (adapter *UserDatabase) UpdateUser(user *User) (token AuthToken, err error) {
-	_, err = adapter.database.Connection.Exec(fmt.Sprintf("UPDATE online_shop.%v SET user_name = $1, user_surname = $2, user_patronymic = $3, phone = $4, birthdate = $5, mail = $6, role_id = $7 WHERE id = $8", USER_TABLE_NAME), user.Name, user.Surname, user.Patronymic, user.Phone, user.Birthdate, user.Mail, user.RoleId, user.ID)
-	return adapter.AuthUser(AuthData{Mail: user.Mail, Password: user.Password})
+func (adapter *UserDatabase) UpdateUser(user *User, token AuthToken) (r AuthToken, err error) {
+	err = validation.UpdateUserValid(user.Name, user.Surname, user.Phone, user.Mail)
+	if err != nil {
+		return
+	}
+
+	_, err = adapter.database.Connection.Exec(fmt.Sprintf("UPDATE online_shop.%v SET user_name = $1, user_surname = $2, phone = $3, mail = $4 WHERE id = $5", USER_TABLE_NAME), user.Name, user.Surname, user.Phone, user.Mail, token.ID)
+
+	return token, nil
+}
+
+func (adapter *UserDatabase) UpdateUserWithPassword(user *ChangePassword, token AuthToken) (r AuthToken, err error) {
+	err = validation.UpdateUserWithPasswordValid(user.Password, user.PasswordConfirmation)
+	if err != nil {
+		return token, err
+	}
+
+	token.Token = crypto.GenerateToken(32)
+
+	_, err = adapter.database.Connection.Exec(fmt.Sprintf("UPDATE online_shop.%v SET password_hash = $1, token = $2 WHERE id = $3", USER_TABLE_NAME), crypto.HashPassword(user.Password), token.Token, token.ID)
+
+	return token, err
 }
 
 func (adapter *UserDatabase) UpdatePassword(user *User) (token AuthToken, err error) {

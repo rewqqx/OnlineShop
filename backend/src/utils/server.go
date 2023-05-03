@@ -9,10 +9,11 @@ import (
 
 type Server struct {
 	Database *database.DBConnect
+	Redis    *database.Redis
 }
 
-func New(database *database.DBConnect) *Server {
-	webServer := &Server{Database: database}
+func New(database *database.DBConnect, redis *database.Redis) *Server {
+	webServer := &Server{Database: database, Redis: redis}
 	webServer.prepare()
 	return webServer
 }
@@ -30,12 +31,22 @@ func (server *Server) prepare() {
 	createHandler := http.HandlerFunc(userServer.CreateUser)
 	http.Handle("/users/create", createHandler)
 
+	updateHandler := http.HandlerFunc(userServer.UpdateUser)
+	http.Handle("/users/update/", updateHandler)
+
 	// Bind Items
 
 	itemServer := requests.NewItemServer(server.Database)
 
 	itemHandler := http.HandlerFunc(itemServer.GetItem)
 	http.Handle("/items/", itemHandler)
+
+	// Bind Cart
+
+	cartServer := requests.NewCartServer(server.Redis)
+
+	cartHandler := http.HandlerFunc(cartServer.GetHandler)
+	http.Handle("/cart/", cartHandler)
 
 	// Bind Ping
 

@@ -8,9 +8,12 @@ services:
       - 8080:8080
     depends_on:
       - postgres
+      - redis
     environment:
       - WAIT_HOSTS=postgres:6000
+      - WAIT_HOSTS=redis:6379
       - POSTGRES_HOST=postgres
+      - REDIS_HOST=redis
       - PORT=8080
       - DBFLAG=true
   image-service:
@@ -33,9 +36,21 @@ services:
       - POSTGRES_PASSWORD=pgpass
     ports:
       - 6000:5432
+  redis:
+    image: redis:alpine
+    command: redis-server
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/data
+      - redis-conf:/usr/local/etc/redis/redis.conf
   frontend:
     build: ./frontend
     hostname: frontend
     tty: true
     ports:
       - 80:80
+
+volumes:
+    redis-data:
+    redis-conf:
