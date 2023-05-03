@@ -246,7 +246,17 @@ class Button extends DOM
         }
 
         $url = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+        if ($url == null) {
+            return;
+        }
+
         $parts = parse_url($url);
+
+        if (!array_key_exists("query", $parts)) {
+            return;
+        }
+
         parse_str($parts['query'], $query);
 
         if (array_key_exists($this->name, $query)) {
