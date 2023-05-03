@@ -28,6 +28,7 @@ function GetItem($id): Item
 {
     $response = GETRequest("http://127.0.0.1:8080/items/" . $id);
 
+
     if ($response["status"] != "200") {
         return array();
     }
