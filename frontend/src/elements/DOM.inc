@@ -242,6 +242,15 @@ class Button extends DOM
     {
         if (array_key_exists($this->name, $_POST)) {
             $this->clickEvent();
+            return;
+        }
+
+        $url = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+        $parts = parse_url($url);
+        parse_str($parts['query'], $query);
+
+        if (array_key_exists($this->name, $query)) {
+            $this->clickEvent();
         }
     }
 
@@ -276,7 +285,7 @@ class Icon extends DOM
     function __construct($path = "")
     {
         $this->setTag("img");
-        $this->setURL( "/OnlineShop/frontend/resources/icons/" . $path);
+        $this->setURL("/OnlineShop/frontend/resources/icons/" . $path);
         $this->createElement();
     }
 
@@ -296,7 +305,7 @@ class IconButton extends Button
     protected function createElement(): DOM
     {
         parent::createElement();
-        $this->setAttribute("background","transparent");
+        $this->setAttribute("background", "transparent");
         $icon = new Icon($this->path);
         $icon->setStyle("white-filter");
         $this->append($icon);

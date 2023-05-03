@@ -10,6 +10,7 @@ class Header extends DOM
 
     protected function createElement(): DOM
     {
+        $this->setTag("form");
         $this->title = new Text("Online shop");
         $this->title->setStyle("header-text");
 
@@ -19,7 +20,13 @@ class Header extends DOM
         $link = "/OnlineShop/frontend/src/pages/auth/AuthPage.inc";
 
         $this->cart = new IconButton("ic_cart_24x24.svg");
+        $this->cart->setName("cart");
+        $this->cart->setValue("1");
         $this->cart->setAttribute("margin-right", "10px");
+        $this->cart->setAction(function ()  {
+            echo "1234";
+            header('Location: /OnlineShop/frontend/src/pages/cart/CartPage.inc');
+        });
 
         if ($token->isValid()) {
             $buttonName = "Profile";
