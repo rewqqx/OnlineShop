@@ -5,7 +5,7 @@ class ItemComponent extends DOM
     private ItemHeader $header;
     private Container $container;
 
-    protected function createElement()
+    protected function createElement(): DOM
     {
         $this->header = new ItemHeader();
         $this->container = new Container();
@@ -57,5 +57,6 @@ class ItemComponent extends DOM
 
         });
         $horizontalContainer->append($confirm);
+        return $this;
     }
 }

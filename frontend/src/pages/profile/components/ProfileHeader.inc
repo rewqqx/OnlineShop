@@ -6,7 +6,7 @@ class ProfileHeader extends DOM
     private Link $profile;
     private Text $title;
 
-    protected function createElement()
+    protected function createElement(): DOM
     {
         $this->title = new Text("Profile");
         $this->title->setStyle("header-text");

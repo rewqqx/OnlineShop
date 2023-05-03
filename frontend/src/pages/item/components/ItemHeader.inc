@@ -6,7 +6,7 @@ class ItemHeader extends DOM
     private Link $profile;
     private Text $title;
 
-    protected function createElement()
+    protected function createElement(): DOM
     {
         $this->title = new Text("Item");
         $this->title->setStyle("header-text");

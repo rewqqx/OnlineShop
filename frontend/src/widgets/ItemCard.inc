@@ -12,7 +12,7 @@ class ItemCard extends DOM
         $this->createElement();
     }
 
-    protected function createElement()
+    protected function createElement(): DOM
     {
         parent::createElement();
 

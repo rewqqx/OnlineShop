@@ -2,7 +2,7 @@
 
 class ItemGrid extends DOM
 {
-    protected function createElement()
+    protected function createElement(): DOM
     {
         $this->setStyle("grid");
 

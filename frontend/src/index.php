@@ -3,6 +3,7 @@
 <link href='styles/Auth.css' rel='stylesheet' type='text/css'>
 <link href='styles/Item.css' rel='stylesheet' type='text/css'>
 <link href='styles/Grid.css' rel='stylesheet' type='text/css'>
+<link href='styles/Filters.css' rel='stylesheet' type='text/css'>
 
 <?php
 require_once("./app/App.inc");

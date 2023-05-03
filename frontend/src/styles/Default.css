@@ -11,6 +11,11 @@ a, u {
     text-decoration: none;
 }
 
+button{
+    border: 0px;
+    outline: none;
+}
+
 .container {
     display: flex;
     height: calc(100vh - 60px);

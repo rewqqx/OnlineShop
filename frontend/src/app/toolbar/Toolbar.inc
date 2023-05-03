@@ -2,7 +2,7 @@
 
 class Toolbar extends DOM
 {
-    protected function createElement()
+    protected function createElement(): DOM
     {
         $this->setStyle("toolbar");
         return $this;

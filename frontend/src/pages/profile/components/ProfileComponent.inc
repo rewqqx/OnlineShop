@@ -5,7 +5,7 @@ class ProfileComponent extends DOM
     private ProfileHeader $header;
     private Container $container;
 
-    protected function createElement()
+    protected function createElement(): DOM
     {
         $this->header = new ProfileHeader();
         $this->container = new Container();
@@ -88,5 +88,6 @@ class ProfileComponent extends DOM
 
         });
         $panel->append($confirm);
+        return $this;
     }
 }

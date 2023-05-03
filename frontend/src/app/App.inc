@@ -9,7 +9,7 @@ class App extends DOM
     private Header $header;
     private Container $container;
 
-    protected function createElement()
+    protected function createElement(): DOM
     {
         $this->header = new Header();
         $this->container = new Container();
