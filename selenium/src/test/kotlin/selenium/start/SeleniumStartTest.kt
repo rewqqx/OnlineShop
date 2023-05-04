@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 
 class SeleniumStartTest {
 
-    private val url: String = "http://localhost:63344/OnlineShop/frontend/src/index.php?_ijt=4m0t3ult0grkiopiomhphkppmc&_ij_reload=RELOAD_ON_SAVE"
+    private val url: String = "http://localhost:63344/OnlineShop/frontend/src/index.php?_ijt=edgin57dokc0gs1qfq6ru08b24&_ij_reload=RELOAD_ON_SAVE"
 
 //    private val options: ChromeOptions = getDriverOptions()
 //    private val driver: WebDriver = ChromeDriver(options)
