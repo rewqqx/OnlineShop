@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test
 import org.openqa.selenium.By
 import org.openqa.selenium.WebDriver
 import org.openqa.selenium.chrome.ChromeDriver
+import org.openqa.selenium.chrome.ChromeDriverService
 import org.openqa.selenium.chrome.ChromeOptions
 import selenium.utils.*
 import java.io.File
@@ -16,10 +17,13 @@ import java.util.concurrent.TimeUnit
 
 class SeleniumStartTest {
 
-    private val url: String = "http://157.230.77.165:8080/"
+    private val url: String = "http://localhost:63344/OnlineShop/frontend/src/index.php?_ijt=vh9bqvi0g6u4ci38l3vqub1c00&_ij_reload=RELOAD_ON_SAVE"
 
+//    private val options: ChromeOptions = getDriverOptions()
+//    private val driver: WebDriver = ChromeDriver(options)
+    private val driverPath = "C:\\Users\\misha\\chrome\\chromedriver.exe"
     private val options: ChromeOptions = getDriverOptions()
-    private val driver: WebDriver = ChromeDriver(options)
+    private val driver: WebDriver = ChromeDriver(ChromeDriverService.Builder().usingDriverExecutable(File(driverPath)).build(), options)
 
     init {
         driver.manage()?.timeouts()?.implicitlyWait(50, TimeUnit.MILLISECONDS)
@@ -30,7 +34,7 @@ class SeleniumStartTest {
     fun startTest() {
         driver.run {
             get(url)
-            pageSource.shouldContain("Interactive picture creator")
+            pageSource.shouldContain("Online shop")
             quit()
         }
     }
