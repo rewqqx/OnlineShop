@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit
 
 class SeleniumStartTest {
 
-    private val url: String = "http://localhost:63344/OnlineShop/frontend/src/index.php?_ijt=vh9bqvi0g6u4ci38l3vqub1c00&_ij_reload=RELOAD_ON_SAVE"
+    private val url: String = "http://localhost:63344/OnlineShop/frontend/src/index.php?_ijt=4m0t3ult0grkiopiomhphkppmc&_ij_reload=RELOAD_ON_SAVE"
 
 //    private val options: ChromeOptions = getDriverOptions()
 //    private val driver: WebDriver = ChromeDriver(options)
@@ -30,42 +30,60 @@ class SeleniumStartTest {
         driver.manage()?.window()?.maximize()
     }
 
+
     @Test
-    fun startTest() {
-        driver.run {
+    fun startShopTest(){
+        driver.run{
             get(url)
             pageSource.shouldContain("Online shop")
-            quit()
+        }
+    }
+
+
+    @Test
+    fun checkItem(){
+        driver.run{
+            get(url)
+            pageSource.shouldContain("Apple")
         }
     }
 
     @Test
-    fun uploadJSONTest() {
-        driver.get(url)
-
-        val importJSONInput = driver.findButtonByType(EButtonTypes.UPLOAD_JSON_BUTTON)
-        importJSONInput.shouldNotBe(null)
-        importJSONInput!!.sendKeys(path + "/src/test/resources/jsons/rout_from_a_to_b.json")
-
-        driver.quit()
+    fun checkSigInTest() {
+        driver.run {
+            get(url)
+            pageSource.shouldContain("Sign In")
+            quit()
+        }
     }
 
-    @Test
-    fun loadHTMLTest() {
-        driver.get(url)
-
-        val importJSONInput = driver.findButtonByType(EButtonTypes.UPLOAD_JSON_BUTTON)
-        importJSONInput.shouldNotBe(null)
-        importJSONInput!!.sendKeys(path + "/src/test/resources/jsons/rout_from_a_to_b.json")
-
-        driver.tryClickElement(EButtonTypes.EXPORT_COLLAPSE)
-        driver.tryClickElement(EButtonTypes.DOWNLOAD_HTML_BUTTON)
-
-        waitForFileDownload()
-        clearDownloadedFiles()
-
-        driver.quit()
-    }
+//    @Test
+//    fun uploadJSONTest() {
+//        driver.get(url)
+//
+//        val importJSONInput = driver.findButtonByType(EButtonTypes.UPLOAD_JSON_BUTTON)
+//        importJSONInput.shouldNotBe(null)
+//        importJSONInput!!.sendKeys(path + "/src/test/resources/jsons/rout_from_a_to_b.json")
+//
+//        driver.quit()
+//    }
+//
+//    @Test
+//    fun loadHTMLTest() {
+//        driver.get(url)
+//
+//        val importJSONInput = driver.findButtonByType(EButtonTypes.UPLOAD_JSON_BUTTON)
+//        importJSONInput.shouldNotBe(null)
+//        importJSONInput!!.sendKeys(path + "/src/test/resources/jsons/rout_from_a_to_b.json")
+//
+//        driver.tryClickElement(EButtonTypes.EXPORT_COLLAPSE)
+//        driver.tryClickElement(EButtonTypes.DOWNLOAD_HTML_BUTTON)
+//
+//        waitForFileDownload()
+//        clearDownloadedFiles()
+//
+//        driver.quit()
+//    }
 
     @Test
     fun openHTMLTest() {
