@@ -48,9 +48,14 @@ services:
     build: ./frontend
     hostname: frontend
     tty: true
+    environment:
+      - WAIT_HOSTS=server:8080
+      - WAIT_HOSTS=image-service:8081
+      - SERVER_HOST=server
+      - IMAGE_HOST=image-service
     ports:
       - 80:80
 
 volumes:
-    redis-data:
-    redis-conf:
+  redis-data:
+  redis-conf:
