@@ -1,6 +1,6 @@
 <?php
 
-require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/objects/Item.inc");
+require_once( "./objects/Item.inc");
 
 
 function GetItems(): array

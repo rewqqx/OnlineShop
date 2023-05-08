@@ -14,7 +14,7 @@ function HeadersJSON(): array
 
 function GetURL($key)
 {
-    $ip = getenv($key, true) ?: "127.0.0.1";
+    $ip = getenv($key, true) ?: "217.25.88.166";
     return $ip;
 }
 
