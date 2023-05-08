@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.3'
 
 services:
   server:
@@ -20,11 +20,11 @@ services:
     build: ./image-service
     restart: always
     ports:
-      - 8081:8081
+      - 9081:9081
     depends_on:
       - postgres
     environment:
-      - PORT=8081
+      - PORT=9081
       - DBFLAG=true
   postgres:
     restart: always
@@ -44,17 +44,6 @@ services:
     volumes:
       - redis-data:/data
       - redis-conf:/usr/local/etc/redis/redis.conf
-  frontend:
-    build: ./frontend
-    hostname: frontend
-    tty: true
-    environment:
-      - WAIT_HOSTS=server:8080
-      - WAIT_HOSTS=image-service:8081
-      - SERVER_HOST=server
-      - IMAGE_HOST=image-service
-    ports:
-      - 80:80
 
 volumes:
   redis-data:

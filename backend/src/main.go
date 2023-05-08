@@ -44,7 +44,11 @@ func main() {
 
 	fmt.Println("<---- Success Open Database ---->")
 
+	port := 8080
+
+	fmt.Println(fmt.Sprintf("Start on: %v", port))
+
 	server := utils.New(&db, rds)
-	server.Start(8080)
+	server.Start(port)
 
 }

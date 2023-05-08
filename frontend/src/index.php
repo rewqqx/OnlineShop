@@ -5,12 +5,15 @@
 <link href='styles/Grid.css' rel='stylesheet' type='text/css'>
 
 <?php
-require_once("./app/App.inc");
-require_once("./requests/Requests.inc");
-require_once("./objects/Auth.inc");
-require_once("./widgets/ItemCard.inc");
-require_once("./requests/adapters/UserDatabaseAdapter.inc");
-require_once("./requests/adapters/ItemDatabaseAdapter.inc");
+
+echo $_SERVER['DOCUMENT_ROOT'] . "/frontend/src" ."/app/App.inc";
+
+require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" ."/app/App.inc");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" ."/requests/Requests.inc");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" ."/objects/Auth.inc");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" ."/widgets/ItemCard.inc");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" ."/requests/adapters/UserDatabaseAdapter.inc");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" ."/requests/adapters/ItemDatabaseAdapter.inc");
 require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/app/toolbar/Toolbar.inc");
 require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" .  "/app/grid/ItemGrid.inc");
 require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/cookie/CookieStorage.inc");
