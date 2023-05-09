@@ -3,7 +3,7 @@
 class ItemCard extends DOM
 {
 
-    private Item|null $item = null;
+    private $item = null;
 
     public function __construct($item)
     {
