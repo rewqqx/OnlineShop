@@ -45,6 +45,6 @@ func main() {
 	fmt.Println("<---- Success Open Database ---->")
 
 	server := utils.New(&db, rds)
-	server.Start(8080)
+	server.Start(9080)
 
 }

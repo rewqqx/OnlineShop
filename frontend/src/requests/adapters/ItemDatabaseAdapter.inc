@@ -5,7 +5,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/objects/Item.inc");
 
 function GetItems(): array
 {
-    $response = GETRequest("http://" . getURL("SERVER_HOST") . ":8080/items/");
+    $response = GETRequest("http://" . getURL("SERVER_HOST") . ":9080/items/");
 
     if ($response["status"] != "200") {
         return array();
@@ -28,7 +28,7 @@ function GetItems(): array
 
 function GetItem($id): Item
 {
-    $response = GETRequest("http://" . getURL("SERVER_HOST") . ":8080/items/" . $id);
+    $response = GETRequest("http://" . getURL("SERVER_HOST") . ":9080/items/" . $id);
 
     if ($response["status"] != "200") {
         return array();

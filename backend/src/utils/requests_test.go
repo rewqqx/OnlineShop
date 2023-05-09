@@ -43,7 +43,7 @@ func startingServer() (databaseConnection *database.DBConnect, err error) {
 	}
 
 	server := New(databaseConnection, rds)
-	go server.Start(8080)
+	go server.Start(9080)
 	return
 }
 
@@ -57,7 +57,7 @@ func TestPing(t *testing.T) {
 	_, err := startingServer()
 	require.Equal(t, nil, err, "Error in DB connection: %v", err)
 
-	resp, err := http.Get("http://" + HOST + ":8080/")
+	resp, err := http.Get("http://" + HOST + ":9080/")
 
 	require.Equal(t, nil, err, "Error in request: %v", err)
 	require.Equal(t, http.StatusOK, resp.StatusCode, "Error in request: %v", http.StatusOK)
@@ -73,7 +73,7 @@ func TestGetItem(t *testing.T) {
 	db, err := startingServer()
 	require.Equal(t, nil, err, "Error in DB connection: %v", err)
 
-	resp, err := http.Get("http://" + HOST + ":8080/items/1/")
+	resp, err := http.Get("http://" + HOST + ":9080/items/1/")
 
 	require.Equal(t, nil, err, "Error in request: %v", err)
 	require.Equal(t, http.StatusOK, resp.StatusCode, "Error in request: %v", http.StatusOK)
@@ -96,7 +96,7 @@ func TestGetItemsSuccess(t *testing.T) {
 	jsonPayload, err := json.Marshal(adapter.Pagination{Offset: 0, Limit: 5})
 	require.Equal(t, nil, err, "Error in Marshal: %v", err)
 
-	resp, err := http.Post("http://"+HOST+":8080/items/", "application/json", bytes.NewBuffer(jsonPayload))
+	resp, err := http.Post("http://"+HOST+":9080/items/", "application/json", bytes.NewBuffer(jsonPayload))
 	require.Equal(t, nil, err, "Error in request: %v", err)
 	require.Equal(t, http.StatusOK, resp.StatusCode, "Error in request: %v", http.StatusOK)
 	require.Equal(t, contentType, resp.Header.Get("Content-Type"), "Error in header Content-Type: %v",
@@ -119,7 +119,7 @@ func TestGetItemsSuccessOneItem(t *testing.T) {
 	jsonPayload, err := json.Marshal(adapter.Pagination{Offset: 1, Limit: 1})
 	require.Equal(t, nil, err, "Error in Marshal: %v", err)
 
-	resp, err := http.Post("http://"+HOST+":8080/items/", "application/json", bytes.NewBuffer(jsonPayload))
+	resp, err := http.Post("http://"+HOST+":9080/items/", "application/json", bytes.NewBuffer(jsonPayload))
 	require.Equal(t, nil, err, "Error in request: %v", err)
 	require.Equal(t, http.StatusOK, resp.StatusCode, "Error in request: %v", http.StatusOK)
 	require.Equal(t, contentType, resp.Header.Get("Content-Type"), "Error in header Content-Type: %v",
@@ -142,7 +142,7 @@ func TestGetItemsUnsuccessful(t *testing.T) {
 	jsonPayload, err := json.Marshal(adapter.Pagination{Offset: 0, Limit: -1})
 	require.Equal(t, nil, err, "Error in Marshal: %v", err)
 
-	resp, err := http.Post("http://"+HOST+":8080/items/", "application/json", bytes.NewBuffer(jsonPayload))
+	resp, err := http.Post("http://"+HOST+":9080/items/", "application/json", bytes.NewBuffer(jsonPayload))
 	require.Equal(t, nil, err, "Error in request: %v", err)
 	require.Equal(t, http.StatusInternalServerError, resp.StatusCode, "Error in request: %v", http.StatusOK)
 }
@@ -154,7 +154,7 @@ func TestCreateUserSuccess(t *testing.T) {
 	jsonPayload, err := json.Marshal(&adapter.User{ID: -1, Name: "Bogdan", Surname: "Madzhuga", Patronymic: "Andreevich", Phone: "", Birthdate: nil, Mail: "madzhuga@mail.ru", Password: "bogdan0308", RoleId: 2, Token: "", Sex: 1})
 	require.Equal(t, nil, err, "Error in Marshal: %v", err)
 
-	resp, err := http.Post("http://"+HOST+":8080/users/create", "application/json", bytes.NewBuffer(jsonPayload))
+	resp, err := http.Post("http://"+HOST+":9080/users/create", "application/json", bytes.NewBuffer(jsonPayload))
 	require.Equal(t, nil, err, "Error in request: %v", err)
 	require.Equal(t, http.StatusOK, resp.StatusCode, "Error in request: %v", http.StatusOK)
 	require.Equal(t, contentType, resp.Header.Get("Content-Type"), "Error in header Content-Type: %v",
@@ -168,7 +168,7 @@ func TestCreateUserSuccessAndAuthSuccess(t *testing.T) {
 	jsonPayload, err := json.Marshal(&adapter.User{ID: -1, Name: "Bogdan", Surname: "Madzhuga", Patronymic: "Andreevich", Phone: "", Birthdate: nil, Mail: "madzhuga@mail.ru", Password: "bogdan0308", RoleId: 2, Token: "", Sex: 1})
 	require.Equal(t, nil, err, "Error in Marshal: %v", err)
 
-	respCreateUser, err := http.Post("http://"+HOST+":8080/users/create", "application/json", bytes.NewBuffer(jsonPayload))
+	respCreateUser, err := http.Post("http://"+HOST+":9080/users/create", "application/json", bytes.NewBuffer(jsonPayload))
 	require.Equal(t, nil, err, "Error in request: %v", err)
 	require.Equal(t, http.StatusOK, respCreateUser.StatusCode, "Error in request: %v", http.StatusOK)
 	require.Equal(t, contentType, respCreateUser.Header.Get("Content-Type"), "Error in header Content-Type: %v",
@@ -179,7 +179,7 @@ func TestCreateUserSuccessAndAuthSuccess(t *testing.T) {
 	var create Create
 	err = json.Unmarshal([]byte(bodyString), &create)
 
-	respAuth, err := http.Get("http://" + HOST + ":8080/?token=" + create.Token.Token)
+	respAuth, err := http.Get("http://" + HOST + ":9080/?token=" + create.Token.Token)
 	require.Equal(t, nil, err, "Error in request: %v", err)
 	require.Equal(t, http.StatusOK, respAuth.StatusCode, "Error in request: %v", http.StatusOK)
 	require.Equal(t, contentType, respAuth.Header.Get("Content-Type"), "Error in header Content-Type: %v",
