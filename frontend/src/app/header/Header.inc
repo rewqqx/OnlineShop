@@ -14,11 +14,11 @@ class Header extends DOM
         $token = getTokenFromCookie();
 
         $buttonName = "Sign In";
-        $link = "/OnlineShop/frontend/src/pages/auth/AuthPage.inc";
+        $link = "/frontend/src/pages/auth/AuthPage.inc";
 
         if ($token->isValid()) {
             $buttonName = "Profile";
-            $link = "/OnlineShop/frontend/src/pages/profile/ProfilePage.inc";
+            $link = "/frontend/src/pages/profile/ProfilePage.inc";
         }
 
         $this->profile = new Link($buttonName);
