@@ -55,19 +55,19 @@ func (adapter *ItemDatabase) GetItemsRange(pagination Pagination) (items []*Item
 func parseItemsFromRows(rows *sql.Rows) (items []*Item, err error) {
 	for rows.Next() {
 		var id int
-		var item_name string
+		var itemName string
 		var price int
 		var desc string
 		var imageIds pq.Int64Array
 		var tagIds pq.Int64Array
 
-		err = rows.Scan(&id, &item_name, &price, &desc, &imageIds)
+		err = rows.Scan(&id, &itemName, &price, &desc, &imageIds)
 
 		if err != nil {
 			return
 		}
 
-		item := &Item{id, item_name, price, desc, imageIds, tagIds}
+		item := &Item{id, itemName, price, desc, imageIds, tagIds}
 		items = append(items, item)
 	}
 
