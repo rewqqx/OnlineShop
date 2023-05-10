@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-const TAGS_TABLE_NAME = "items"
+const TAGS_TABLE_NAME = "tags"
 
 type TagDatabase struct {
 	database *database.DBConnect

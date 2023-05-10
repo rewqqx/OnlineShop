@@ -506,15 +506,15 @@ COPY online_shop.payments (id, payment_value, type_id, status_id, creation_date)
 --
 
 COPY online_shop.tags (id, tag_name, parent_id) FROM stdin;
-2	Electronics	\N
-3	Cars	\N
-4	Buildings	\N
-5	Clothes	\N
 6	Phones	2
 7	House	4
-1	Food	\N
 8	Fruits	1
-9	Education	\N
+9	Education	-1
+1	Food	-1
+5	Clothes	-1
+4	Buildings	-1
+2	Electronics	-1
+3	Cars	-1
 \.
 
 
