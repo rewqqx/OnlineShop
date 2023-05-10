@@ -61,7 +61,7 @@ func parseItemsFromRows(rows *sql.Rows) (items []*Item, err error) {
 		var imageIds pq.Int64Array
 		var tagIds pq.Int64Array
 
-		err = rows.Scan(&id, &itemName, &price, &desc, &imageIds)
+		err = rows.Scan(&id, &itemName, &price, &desc, &imageIds, &tagIds)
 
 		if err != nil {
 			return
