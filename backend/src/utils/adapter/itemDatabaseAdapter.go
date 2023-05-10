@@ -19,6 +19,7 @@ type Item struct {
 	Price       int           `json:"price" db:"price"`
 	Description string        `json:"description" db:"description"`
 	ImageIDS    pq.Int64Array `json:"image_ids" db:"image_ids"`
+	TagIDS      pq.Int64Array `json:"tag_ids" db:"tag_ids"`
 }
 
 type Pagination struct {
@@ -58,6 +59,7 @@ func parseItemsFromRows(rows *sql.Rows) (items []*Item, err error) {
 		var price int
 		var desc string
 		var imageIds pq.Int64Array
+		var tagIds pq.Int64Array
 
 		err = rows.Scan(&id, &item_name, &price, &desc, &imageIds)
 
@@ -65,7 +67,7 @@ func parseItemsFromRows(rows *sql.Rows) (items []*Item, err error) {
 			return
 		}
 
-		item := &Item{id, item_name, price, desc, imageIds}
+		item := &Item{id, item_name, price, desc, imageIds, tagIds}
 		items = append(items, item)
 	}
 
