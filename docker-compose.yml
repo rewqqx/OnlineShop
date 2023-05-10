@@ -54,7 +54,7 @@ services:
       - SERVER_HOST=server
       - IMAGE_HOST=image-service
     ports:
-      - 9050:9050
+      - 9050:80
 
 volumes:
   redis-data:

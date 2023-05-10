@@ -4,4 +4,4 @@ COPY ./src/ /var/www/frontend/src/
 COPY ./resources/ /var/www/frontend/resources/
 
 
-EXPOSE 9050:9050
+EXPOSE 80:80
