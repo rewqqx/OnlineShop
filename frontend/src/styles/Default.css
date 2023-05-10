@@ -16,6 +16,38 @@ a, u {
     height: calc(100vh - 60px);
 }
 
+.tag-link {
+    padding: 8px;
+    border-radius: 5px;
+
+    color: #2D2D2D;
+
+    font-family: 'Inter';
+    font-weight: 400;
+    font-size: 16px;
+    line-height: calc(125%);
+}
+
+.tag-link:hover {
+    background: #f0f0f0;
+}
+
+.tag-link-selected {
+    padding: 8px;
+    border-radius: 5px;
+
+    background: #E8F8F0;
+
+    font-family: 'Inter';
+    font-weight: 400;
+    font-size: 16px;
+    line-height: calc(125%);
+}
+
+.tag-link-selected:hover {
+    background: #f0f0f0;
+}
+
 .container-vertical {
     display: flex;
     flex-direction: column;
