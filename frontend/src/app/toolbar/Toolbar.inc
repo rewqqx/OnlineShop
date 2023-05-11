@@ -12,8 +12,11 @@ class Toolbar extends DOM
         $parts = parse_url($url);
         parse_str($parts['query'], $query);
 
-        $selectedID = $query['tag_id'];
-
+        if (isset($query['tag_id'])) {
+            $selectedID = $query['tag_id'];
+        } else {
+            $selectedID = -1;
+        }
         foreach ($tags as $tag) {
             $tagDOM = new Link();
             if ($selectedID != $tag->getId()) {
