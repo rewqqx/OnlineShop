@@ -41,6 +41,13 @@ func (server *Server) prepare() {
 	itemHandler := http.HandlerFunc(itemServer.GetItem)
 	http.Handle("/items/", itemHandler)
 
+	// Bind Tags
+
+	tagServer := requests.NewTagServer(server.Database)
+
+	tagHandler := http.HandlerFunc(tagServer.GetTag)
+	http.Handle("/tags/", tagHandler)
+
 	// Bind Cart
 
 	cartServer := requests.NewCartServer(server.Redis)

@@ -17,7 +17,7 @@ class Header extends DOM
         $token = getTokenFromCookie();
 
         $buttonName = "Sign In";
-        $link = "/OnlineShop/frontend/src/pages/auth/AuthPage.inc";
+        $link = "/frontend/src/pages/auth/AuthPage.php";
 
         $this->cart = new IconButton("ic_cart_24x24.svg");
         $this->cart->setName("cart");
@@ -30,7 +30,7 @@ class Header extends DOM
 
         if ($token->isValid()) {
             $buttonName = "Profile";
-            $link = "/OnlineShop/frontend/src/pages/profile/ProfilePage.inc";
+            $link = "/frontend/src/pages/profile/ProfilePage.php";
         }
 
         $this->profile = new Link($buttonName);

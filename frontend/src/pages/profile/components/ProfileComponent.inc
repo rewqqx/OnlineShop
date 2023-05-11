@@ -14,7 +14,7 @@ class ProfileComponent extends DOM
         $token = getTokenFromCookie();
 
         if (!$token->isValid()) {
-            header('Location: /OnlineShop/frontend/src/index.php');
+            header('Location: /frontend/src/index.php');
         }
 
         $this->container->setTag("form");

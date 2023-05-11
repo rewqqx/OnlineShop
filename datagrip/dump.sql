@@ -76,6 +76,7 @@ CREATE TABLE online_shop.items (
     price integer DEFAULT 100,
     description character varying,
     image_ids integer[],
+    tag_ids integer[],
     CONSTRAINT items_price CHECK ((price > 0))
 );
 
@@ -258,6 +259,41 @@ ALTER SEQUENCE online_shop.payments_id_seq OWNED BY online_shop.payments.id;
 
 
 --
+-- Name: tags; Type: TABLE; Schema: online_shop; Owner: postgres
+--
+
+CREATE TABLE online_shop.tags (
+    id integer NOT NULL,
+    tag_name character varying,
+    parent_id integer
+);
+
+
+ALTER TABLE online_shop.tags OWNER TO postgres;
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE; Schema: online_shop; Owner: postgres
+--
+
+CREATE SEQUENCE online_shop.tags_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE online_shop.tags_id_seq OWNER TO postgres;
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE OWNED BY; Schema: online_shop; Owner: postgres
+--
+
+ALTER SEQUENCE online_shop.tags_id_seq OWNED BY online_shop.tags.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: online_shop; Owner: postgres
 --
 
@@ -268,7 +304,7 @@ CREATE TABLE online_shop.users (
     user_patronymic character varying,
     phone character varying NOT NULL,
     birthdate timestamp without time zone,
-    sex integer default 0,
+    sex integer DEFAULT 0,
     password_hash character varying,
     mail character varying,
     role_id integer,
@@ -380,6 +416,13 @@ ALTER TABLE ONLY online_shop.payments ALTER COLUMN id SET DEFAULT nextval('onlin
 
 
 --
+-- Name: tags id; Type: DEFAULT; Schema: online_shop; Owner: postgres
+--
+
+ALTER TABLE ONLY online_shop.tags ALTER COLUMN id SET DEFAULT nextval('online_shop.tags_id_seq'::regclass);
+
+
+--
 -- Name: users id; Type: DEFAULT; Schema: online_shop; Owner: postgres
 --
 
@@ -405,17 +448,17 @@ COPY online_shop.deliveries (id, order_id, address_id, target_date, type_id) FRO
 -- Data for Name: items; Type: TABLE DATA; Schema: online_shop; Owner: postgres
 --
 
-COPY online_shop.items (id, item_name, price, description, image_ids) FROM stdin;
-1	Apple	1	Sweee Apple	{1,2}
-2	Orange	1	Soar Orange	{3,4}
-3	Computer	1	Powerful Computer	{5}
-4	Sweeter	15	Usual One	{6,7,8}
-5	Ford	30	Very Fast Car	{9,10}
-6	Book	50	Can Be Useful	{11}
-7	Candy	60	Berry Candy	{12}
-8	Iphone	90	The Last Iphone	{13,14}
-9	Pizza	40	Still Hot	{15}
-10	Pencil	30	Blue Pencil	{16}
+COPY online_shop.items (id, item_name, price, description, image_ids, tag_ids) FROM stdin;
+10	Pencil	30	Blue Pencil	{16}	{9}
+4	Sweeter	15	Usual One	{6,7,8}	{5}
+5	Ford	30	Very Fast Car	{9,10}	{3}
+1	Apple	1	Sweee Apple	{1,2}	{1,8}
+8	Iphone	90	The Last Iphone	{13,14}	{2,6}
+6	Book	50	Can Be Useful	{11}	{9}
+7	Candy	60	Berry Candy	{12}	{1}
+9	Pizza	40	Still Hot	{15}	{1}
+2	Orange	1	Soar Orange	{3,4}	{1,8}
+3	Computer	1	Powerful Computer	{5}	{2}
 \.
 
 
@@ -455,6 +498,23 @@ COPY online_shop.orders (id, display_number, user_id, status_id, cancel_reason, 
 --
 
 COPY online_shop.payments (id, payment_value, type_id, status_id, creation_date) FROM stdin;
+\.
+
+
+--
+-- Data for Name: tags; Type: TABLE DATA; Schema: online_shop; Owner: postgres
+--
+
+COPY online_shop.tags (id, tag_name, parent_id) FROM stdin;
+6	Phones	2
+7	House	4
+8	Fruits	1
+9	Education	-1
+1	Food	-1
+5	Clothes	-1
+4	Buildings	-1
+2	Electronics	-1
+3	Cars	-1
 \.
 
 
@@ -515,6 +575,13 @@ SELECT pg_catalog.setval('online_shop.orders_id_seq', 1, false);
 --
 
 SELECT pg_catalog.setval('online_shop.payments_id_seq', 1, false);
+
+
+--
+-- Name: tags_id_seq; Type: SEQUENCE SET; Schema: online_shop; Owner: postgres
+--
+
+SELECT pg_catalog.setval('online_shop.tags_id_seq', 9, true);
 
 
 --
@@ -601,6 +668,14 @@ ALTER TABLE ONLY online_shop.orders
 
 ALTER TABLE ONLY online_shop.payments
     ADD CONSTRAINT payments_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tags tags_pkey; Type: CONSTRAINT; Schema: online_shop; Owner: postgres
+--
+
+ALTER TABLE ONLY online_shop.tags
+    ADD CONSTRAINT tags_pkey PRIMARY KEY (id);
 
 
 --

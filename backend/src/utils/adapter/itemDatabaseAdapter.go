@@ -19,11 +19,13 @@ type Item struct {
 	Price       int           `json:"price" db:"price"`
 	Description string        `json:"description" db:"description"`
 	ImageIDS    pq.Int64Array `json:"image_ids" db:"image_ids"`
+	TagIDS      pq.Int64Array `json:"tag_ids" db:"tag_ids"`
 }
 
-type Pagination struct {
-	Offset int `json:"offset" db:"offset"`
-	Limit  int `json:"limit" db:"limit"`
+type ItemFilters struct {
+	Offset *int `json:"offset" db:"offset"`
+	Limit  *int `json:"limit" db:"limit"`
+	Tag    *int `json:"tag" db:"tag"`
 }
 
 func CreateItemDatabaseAdapter(database *database.DBConnect) *ItemDatabase {
@@ -41,8 +43,23 @@ func (adapter *ItemDatabase) GetItems() (items []*Item, err error) {
 	return parseItemsFromRows(rows)
 }
 
-func (adapter *ItemDatabase) GetItemsRange(pagination Pagination) (items []*Item, err error) {
-	rows, err := adapter.database.Connection.Query(fmt.Sprintf("SELECT * FROM online_shop.%v OFFSET $1 ROWS FETCH NEXT $2 ROWS ONLY;", ITEMS_TABLE_NAME), pagination.Offset, pagination.Limit)
+func (adapter *ItemDatabase) GetItemsRange(filters ItemFilters) (items []*Item, err error) {
+
+	var rows *sql.Rows
+
+	offset := 0
+
+	if filters.Offset != nil {
+		offset = *filters.Offset
+	}
+
+	if filters.Limit != nil && filters.Tag == nil {
+		rows, err = adapter.database.Connection.Query(fmt.Sprintf("SELECT * FROM online_shop.%v OFFSET $1 ROWS FETCH NEXT $2 ROWS ONLY;", ITEMS_TABLE_NAME), offset, *filters.Limit)
+	} else if filters.Limit == nil && filters.Tag != nil {
+		rows, err = adapter.database.Connection.Query(fmt.Sprintf("SELECT * FROM online_shop.%v WHERE $1 = ANY(tag_ids);", ITEMS_TABLE_NAME), *filters.Tag)
+	} else if filters.Limit != nil && filters.Tag != nil {
+		rows, err = adapter.database.Connection.Query(fmt.Sprintf("SELECT * FROM online_shop.%v WHERE $1 = ANY(tag_ids) OFFSET $2 ROWS FETCH NEXT $3 ROWS ONLY;", ITEMS_TABLE_NAME), *filters.Tag, offset, *filters.Limit)
+	}
 
 	if err != nil {
 		return
@@ -54,18 +71,19 @@ func (adapter *ItemDatabase) GetItemsRange(pagination Pagination) (items []*Item
 func parseItemsFromRows(rows *sql.Rows) (items []*Item, err error) {
 	for rows.Next() {
 		var id int
-		var item_name string
+		var itemName string
 		var price int
 		var desc string
 		var imageIds pq.Int64Array
+		var tagIds pq.Int64Array
 
-		err = rows.Scan(&id, &item_name, &price, &desc, &imageIds)
+		err = rows.Scan(&id, &itemName, &price, &desc, &imageIds, &tagIds)
 
 		if err != nil {
 			return
 		}
 
-		item := &Item{id, item_name, price, desc, imageIds}
+		item := &Item{id, itemName, price, desc, imageIds, tagIds}
 		items = append(items, item)
 	}
 

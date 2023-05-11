@@ -3,7 +3,7 @@
 class ItemCard extends DOM
 {
 
-    private Item|null $item = null;
+    private $item = null;
 
     public function __construct($item)
     {
@@ -17,7 +17,7 @@ class ItemCard extends DOM
         parent::createElement();
 
         $this->setStyle("item-card");
-        $image = new Image("http://localhost:8081/image/" . $this->item->getImageIDs()[0]);
+        $image = new Image("http://" . getURL("IMAGE_HOST") . ":9081/image/" . $this->item->getImageIDs()[0]);
         $image->setStyle("item-image");
         $this->append($image);
 

@@ -12,6 +12,12 @@ function HeadersJSON(): array
     return $headers;
 }
 
+function GetURL($key)
+{
+    $ip = getenv($key, true) ?: "127.0.0.1";
+    return $ip;
+}
+
 function GETRequest($url)
 {
     return RequestSpecifyHeaders($url, "", HeadersJSON(), "GET");

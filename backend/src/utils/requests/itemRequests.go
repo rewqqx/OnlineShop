@@ -68,17 +68,17 @@ func (server *ItemServer) GetItems(w http.ResponseWriter, r *http.Request) {
 
 	itemDatabaseAdapter := adapter.CreateItemDatabaseAdapter(server.Database)
 
-	pagination := adapter.Pagination{}
+	filters := adapter.ItemFilters{}
 
 	decoder := json.NewDecoder(r.Body)
 	decoder.DisallowUnknownFields()
 
-	err := decoder.Decode(&pagination)
+	err := decoder.Decode(&filters)
 
 	var items []*adapter.Item
 
 	if err == nil {
-		items, err = itemDatabaseAdapter.GetItemsRange(pagination)
+		items, err = itemDatabaseAdapter.GetItemsRange(filters)
 	} else {
 		items, err = itemDatabaseAdapter.GetItems()
 	}

@@ -56,7 +56,7 @@ class AuthComponent extends DOM
             $token = GetUserToken($auth);
             if ($token != null) {
                 setTokenCookie($token);
-                header('Location: /OnlineShop/frontend/src/index.php');
+                header('Location: /frontend/src/index.php');
             }
         });
 

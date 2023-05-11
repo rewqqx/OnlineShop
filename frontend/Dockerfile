@@ -1,7 +1,7 @@
 FROM edofede/nginx-php-fpm
 
-COPY ./src/ /var/www/
-COPY ./resources/ /var/www/
+COPY ./src/ /var/www/frontend/src/
+COPY ./resources/ /var/www/frontend/resources/
 
 
 EXPOSE 80:80

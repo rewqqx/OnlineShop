@@ -12,7 +12,7 @@ class ProfileHeader extends DOM
         $this->title->setStyle("header-text");
 
         $buttonName = "Shop";
-        $link = "/OnlineShop/frontend/src/index.php";
+        $link = "/frontend/src/index.php";
 
         $this->profile = new Link($buttonName);
         $this->profile->setAttribute("margin-left", "auto");

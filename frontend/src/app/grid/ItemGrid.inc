@@ -8,7 +8,7 @@ class ItemGrid extends DOM
 
 
         foreach (GetItems() as $item) {
-            $link = "/OnlineShop/frontend/src/pages/item/ItemPage.inc?item_id=" . $item->getId();
+            $link = "/frontend/src/pages/item/ItemPage.php?item_id=" . $item->getId();
             $item->toJson();
             $itemCard = new ItemCard($item);
             $itemCard->setLink($link);
