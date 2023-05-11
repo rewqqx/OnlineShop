@@ -10,7 +10,10 @@ class Toolbar extends DOM
 
         $url = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
         $parts = parse_url($url);
-        parse_str($parts['query'], $query);
+
+        if (isset($parts['query'])) {
+            parse_str($parts['query'], $query);
+        }
 
         if (isset($query['tag_id'])) {
             $selectedID = $query['tag_id'];

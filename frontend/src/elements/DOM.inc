@@ -295,7 +295,7 @@ class Icon extends DOM
     function __construct($path = "")
     {
         $this->setTag("img");
-        $this->setURL("/OnlineShop/frontend/resources/icons/" . $path);
+        $this->setURL("/frontend/resources/icons/" . $path);
         $this->createElement();
     }
 
