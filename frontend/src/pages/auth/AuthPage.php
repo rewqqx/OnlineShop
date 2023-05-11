@@ -13,7 +13,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/elements/DOM.inc");
 require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/cookie/CookieStorage.inc");
 require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/requests/adapters/UserDatabaseAdapter.inc");
 
-require_once("./components/AuthComponent.inc");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" ."/pages/auth/components/AuthComponent.inc");
 
 $auth = new AuthComponent();
 echo $auth->getDOM();
