@@ -1,6 +1,6 @@
 <?php
 
-class ProfileComponent extends DOM
+class CartComponent extends DOM
 {
     private CartHeader $header;
     private Container $container;

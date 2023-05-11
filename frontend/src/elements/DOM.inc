@@ -27,86 +27,87 @@ class DOM
     }
 
 
-    protected function createElement()
+    protected function createElement(): DOM
     {
         return $this;
     }
 
-    protected function setTag(string $tag)
+    protected function setTag(string $tag): DOM
     {
         $this->uid = uniqid($this->tag . "_");
         $this->tag = $tag;
+        return $this;
     }
 
-    protected function setValue(string $value)
+    protected function setValue(string $value): DOM
     {
         $this->value = $value;
         return $this;
     }
 
-    protected function setMethod(string $method)
+    protected function setMethod(string $method): DOM
     {
         $this->method = $method;
         return $this;
     }
 
-    protected function setName(string $name)
+    protected function setName(string $name): DOM
     {
         $this->name = $this->tag . "_" . strtolower(strtr($name, array(' ' => '_')));
         return $this;
     }
 
-    public function setStyle(string $style)
+    public function setStyle(string $style): DOM
     {
         $this->style = $style;
         return $this;
     }
 
-    public function setText(string $text)
+    public function setText(string $text): DOM
     {
         $this->text = $text;
         return $this;
     }
 
 
-    public function setID(string $id)
+    public function setID(string $id): DOM
     {
         $this->id = $id;
         return $this;
     }
 
-    public function setAttribute(string $name, string $value)
+    public function setAttribute(string $name, string $value): DOM
     {
         $this->attributes[$name] = $value;
         return $this;
     }
 
 
-    public function append(DOM $child)
+    public function append(DOM $child): DOM
     {
         array_push($this->children, $child);
         return $this;
     }
 
-    public function setLink(string $link)
+    public function setLink(string $link): DOM
     {
         $this->href = $link;
         return $this;
     }
 
-    public function setURL(string $link)
+    public function setURL(string $link): DOM
     {
         $this->url = $link;
         return $this;
     }
 
-    public function setType(string $type)
+    public function setType(string $type): DOM
     {
         $this->type = $type;
         return $this;
     }
 
-    public function getDOM()
+    public function getDOM(): string
     {
         $result = "<" . $this->tag;
 
@@ -214,14 +215,14 @@ class Button extends DOM
 
     function __construct($text = "")
     {
-        $this->setTag("input");
+        $this->setTag("button");
         $this->setValue($text);
         $this->setName($text);
 
         $this->createElement();
     }
 
-    protected function createElement()
+    protected function createElement(): DOM
     {
         $this->setType("submit");
         $this->setStyle("button");
@@ -229,7 +230,7 @@ class Button extends DOM
         return $this;
     }
 
-    public function setAction($action)
+    public function setAction($action): DOM
     {
         $this->action = $action;
         $this->processClickEvent();
@@ -237,14 +238,33 @@ class Button extends DOM
         return $this;
     }
 
-    protected function processClickEvent()
+    protected function processClickEvent(): void
     {
         if (array_key_exists($this->name, $_POST)) {
+            $this->clickEvent();
+            return;
+        }
+
+        $url = (empty($_SERVER['HTTPS']) ? 'http' : 'https') . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+        if ($url == null) {
+            return;
+        }
+
+        $parts = parse_url($url);
+
+        if (!array_key_exists("query", $parts)) {
+            return;
+        }
+
+        parse_str($parts['query'], $query);
+
+        if (array_key_exists($this->name, $query)) {
             $this->clickEvent();
         }
     }
 
-    private function clickEvent()
+    private function clickEvent(): void
     {
         if ($this->action == null) {
             echo 'Name [' . $this->name . "] is clicked";
@@ -261,8 +281,47 @@ class Input extends DOM
         $this->setTag("input");
         $this->setName($text);
         $this->setStyle("input");
+
+        $this->createElement();
     }
 
+}
+
+class Icon extends DOM
+{
+
+    protected ?string $path = null;
+
+    function __construct($path = "")
+    {
+        $this->setTag("img");
+        $this->setURL("/frontend/resources/icons/" . $path);
+        $this->createElement();
+    }
+
+
+}
+
+class IconButton extends Button
+{
+    protected ?string $path = null;
+
+    function __construct($path = "")
+    {
+        $this->path = $path;
+        parent::__construct();
+    }
+
+    protected function createElement(): DOM
+    {
+        parent::createElement();
+        $this->setAttribute("background", "transparent");
+        $icon = new Icon($this->path);
+        $icon->setStyle("white-filter");
+        $this->append($icon);
+
+        return $this;
+    }
 }
 
 ?>

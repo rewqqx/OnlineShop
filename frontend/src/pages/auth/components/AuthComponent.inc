@@ -19,7 +19,7 @@ class AuthComponent extends DOM
      * чтобы уменьшить это необходимо разработать
      * стайл код, чтобы максимально переиспользовать стили
      */
-    protected function createElement()
+    protected function createElement(): DOM
     {
         $this->setTag("form");
         $this->setStyle("auth-page");

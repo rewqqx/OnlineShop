@@ -19,6 +19,6 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/pages/profile/compo
 
 require_once("./components/ProfileComponent.inc");
 
-$profile = new ProfileComponent();
+$profile = new CartComponent();
 echo $profile->getDOM();
 ?>

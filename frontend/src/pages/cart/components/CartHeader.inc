@@ -1,6 +1,6 @@
 <?php
 
-class ProfileHeader extends DOM
+class CartHeader extends DOM
 {
 
     private Link $profile;
@@ -11,7 +11,7 @@ class ProfileHeader extends DOM
         $this->title = new Text("Profile");
         $this->title->setStyle("header-text");
 
-        $buttonName = "Shop";
+        $buttonName = "Cart";
         $link = "/frontend/src/index.php";
 
         $this->profile = new Link($buttonName);
