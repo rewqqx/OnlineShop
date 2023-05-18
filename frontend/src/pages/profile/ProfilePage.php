@@ -17,8 +17,10 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/elements/DOM.inc");
 require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/app/container/Container.inc");
 require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/pages/profile/components/ProfileHeader.inc");
 
+require_once(".././cart/components/CartComponent.inc");
 require_once("./components/ProfileComponent.inc");
 
 $profile = new CartComponent();
+//$profile = new ProfileComponent();
 echo $profile->getDOM();
 ?>

@@ -218,6 +218,7 @@ class Button extends DOM
         $this->setTag("button");
         $this->setValue($text);
         $this->setName($text);
+        $this->setText($text);
 
         $this->createElement();
     }
