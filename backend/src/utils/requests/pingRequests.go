@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"backend/src/utils/prom"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -38,6 +39,7 @@ func makeResponse(w http.ResponseWriter, status string) error {
 }
 
 func Ping(w http.ResponseWriter, r *http.Request) {
+	prom.MetricOnPing.Inc()
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 
