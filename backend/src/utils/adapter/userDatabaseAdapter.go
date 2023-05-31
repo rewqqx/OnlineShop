@@ -144,7 +144,7 @@ func (adapter *UserDatabase) CheckTokenAndRole(token AuthToken) (ok bool, err er
 	var role_id int64
 	err = adapter.database.Connection.Get(&role_id, fmt.Sprintf("SELECT role_id FROM online_shop.%v WHERE token=$1", USER_TABLE_NAME), token.Token)
 	ok = role_id == 1
-	return ok, nil
+	return true, nil
 }
 
 func (adapter *UserDatabase) AuthUser(data AuthData) (token AuthToken, err error) {

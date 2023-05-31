@@ -20,8 +20,8 @@ func setSuccessHeader(w http.ResponseWriter) {
 }
 
 func makeErrorResponse(w http.ResponseWriter, body string, status int) {
-	http.Error(w, fmt.Sprintf("{\"status\":\"%v\"}", body), status)
 	w.WriteHeader(status)
+	http.Error(w, fmt.Sprintf("{\"status\":\"%v\"}", body), status)
 }
 func makeResponse(w http.ResponseWriter, status string) error {
 	response := StatusResponse{Status: status}
