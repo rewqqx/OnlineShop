@@ -31,14 +31,12 @@ func (server *UserServer) GetUser(w http.ResponseWriter, r *http.Request) {
 
 	path := r.URL.Path[1:]
 	dirs := strings.Split(path, "/")
-	fmt.Println("pathhhh", path)
-	fmt.Println("dirs", dirs)
+
 	if len(dirs) < 2 {
 		makeErrorResponse(w, "bad path", http.StatusBadRequest)
 		return
 	}
-	fmt.Println("lennn", len(dirs))
-	fmt.Println("lebnn", dirs[1])
+
 	val, err := strconv.Atoi(dirs[1])
 
 	if err != nil {

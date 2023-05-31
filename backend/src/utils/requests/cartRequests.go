@@ -93,13 +93,13 @@ func (server *CartServer) DeleteFromCart(w http.ResponseWriter, r *http.Request)
 
 	err := decoder.Decode(&setItem)
 
-	if err != nil {
-		makeErrorResponse(w, "can't parse json", http.StatusBadRequest)
-		return
-	}
-
 	userDatabaseAdapter := adapter.CreateCartDatabaseAdapter(server.Database)
-	err = userDatabaseAdapter.DeleteItem(setItem)
+
+	if err == nil {
+		err = userDatabaseAdapter.DeleteItem(setItem)
+	} else {
+		err = userDatabaseAdapter.DeleteItems(setItem)
+	}
 
 	if err != nil {
 		makeErrorResponse(w, "bad auth", http.StatusBadRequest)

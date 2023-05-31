@@ -64,9 +64,6 @@ func (server *Server) prepare() {
 	http.Handle("/", pingHandler)
 
 	// Bind Metrics
-	//http.Handle("/metrics", promhttp.Handler())
-
-	//ready
 	prometheus.MustRegister(prom.MetricOnGETItems)
 	prometheus.MustRegister(prom.MetricOnCreateItems)
 	prometheus.MustRegister(prom.MetricOnPing)
@@ -76,10 +73,6 @@ func (server *Server) prepare() {
 	prometheus.MustRegister(prom.MetricOnUpdateUser)
 
 	http.Handle("/metrics", promhttp.Handler())
-	//go func() {
-	//	http.ListenAndServe(":2112", nil)
-	//
-	//}()
 }
 
 func (server *Server) Start(port int) {
