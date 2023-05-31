@@ -2,12 +2,12 @@
 
 class ProfileComponent extends DOM
 {
-    private CartHeader $header;
+    private ProfileHeader $header;
     private Container $container;
 
     protected function createElement(): DOM
     {
-        $this->header = new CartHeader();
+        $this->header = new ProfileHeader();
         $this->container = new Container();
         $this->append($this->header)->append($this->container);
 

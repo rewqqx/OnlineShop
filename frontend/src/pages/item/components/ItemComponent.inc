@@ -50,15 +50,17 @@ class ItemComponent extends DOM
         $verticalItemRight->setStyle("container-vertical");
         $horizontalContainer->append($verticalItemRight);
 
-        $parent = $this;
+
+        $token = getTokenFromCookie();
 
         $confirm = new Button("ADD TO CART");
-//        $confirm->setText("ADD")
         $confirm->setAttribute("align-self", "center")->setAttribute("background", "#fafafa")->setAttribute("margin-top", "auto")->setAttribute("margin-bottom", "16px");
-        $confirm->setAction(function () use ($parent) {
-
+        $confirm->setAction(function () use ($item, $token) {
+            $data = array("item_id" => $item->getID(), "user_id" => $token->getID(), "count" => 1);
+            $cartItem = new CartItem($data);
+            PutCartItem($cartItem);
         });
-//        $horizontalContainer->append($confirm);
+
         $panel->append($confirm);
         return $this;
     }

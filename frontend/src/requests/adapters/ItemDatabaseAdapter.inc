@@ -33,7 +33,7 @@ function GetItems(): array
 
     $result = array();
 
-    if ($response === null) {
+    if ($response == null) {
         return $result;
     }
 
