@@ -5,6 +5,7 @@ import (
 	"backend/src/utils/database"
 	"backend/src/utils/timestamp"
 	"backend/src/validation"
+	"database/sql"
 	"fmt"
 )
 
@@ -57,6 +58,42 @@ func (adapter *UserDatabase) GetUser(id int) (user *User, err error) {
 	return
 }
 
+func (adapter *UserDatabase) GetUsers() (users []*User, err error) {
+	rows, err := adapter.database.Connection.Query(fmt.Sprintf("SELECT * FROM online_shop.%v", USER_TABLE_NAME))
+	if err != nil {
+		return nil, err
+	}
+
+	return parseUsersFromRows(rows)
+}
+
+func parseUsersFromRows(rows *sql.Rows) (users []*User, err error) {
+	for rows.Next() {
+		var id int
+		var name string
+		var surname string
+		var patronymic string
+		var phone string
+		var birthdate *timestamp.Timestamp
+		var sex int
+		var password string
+		var mail string
+		var roleId int
+		var token string
+
+		err = rows.Scan(&id, &name, &surname, &patronymic, &phone, &birthdate, &sex, &password, &mail, &roleId, &token)
+
+		if err != nil {
+			return
+		}
+
+		user := &User{id, name, surname, patronymic, phone, birthdate, password, mail, roleId, token, sex}
+		users = append(users, user)
+	}
+
+	return
+}
+
 func (adapter *ItemDatabase) DeleteUser(id int) (err error) {
 	_, err = adapter.database.Connection.Exec(fmt.Sprintf("DELETE FROM online_shop.%v WHERE id=$1", USER_TABLE_NAME), id)
 	return
@@ -100,6 +137,13 @@ func (adapter *UserDatabase) CheckToken(token AuthToken) (ok bool, err error) {
 	compareToken := AuthToken{}
 	err = adapter.database.Connection.Get(&compareToken, fmt.Sprintf("SELECT token FROM online_shop.%v WHERE id=$1", USER_TABLE_NAME), token.ID)
 	ok = compareToken.Token == token.Token
+	return ok, nil
+}
+
+func (adapter *UserDatabase) CheckTokenAndRole(token AuthToken) (ok bool, err error) {
+	var role_id int64
+	err = adapter.database.Connection.Get(&role_id, fmt.Sprintf("SELECT role_id FROM online_shop.%v WHERE token=$1", USER_TABLE_NAME), token.Token)
+	ok = role_id == 1
 	return ok, nil
 }
 

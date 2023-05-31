@@ -31,16 +31,19 @@ func (server *UserServer) GetUser(w http.ResponseWriter, r *http.Request) {
 
 	path := r.URL.Path[1:]
 	dirs := strings.Split(path, "/")
-
+	fmt.Println("pathhhh", path)
+	fmt.Println("dirs", dirs)
 	if len(dirs) < 2 {
 		makeErrorResponse(w, "bad path", http.StatusBadRequest)
 		return
 	}
-
+	fmt.Println("lennn", len(dirs))
+	fmt.Println("lebnn", dirs[1])
 	val, err := strconv.Atoi(dirs[1])
 
 	if err != nil {
-		makeResponse(w, "Bad ID")
+		server.GetUsers(w, r)
+		//makeResponse(w, "Bad ID")
 		return
 	}
 
@@ -70,6 +73,44 @@ func (server *UserServer) GetUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Write([]byte(fmt.Sprintf("{\"user\" : %v}", string(json))))
+}
+
+func (server *UserServer) GetUsers(w http.ResponseWriter, r *http.Request) {
+	setSuccessHeader(w)
+
+	path := r.URL.Path[1:]
+	dirs := strings.Split(path, "/")
+
+	if len(dirs) < 2 {
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
+		return
+	}
+
+	tokenBody := r.Header.Get("token")
+	token := adapter.AuthToken{Token: tokenBody}
+
+	userDatabaseAdapter := adapter.CreateUserDatabaseAdapter(server.Database)
+	ok, err := userDatabaseAdapter.CheckTokenAndRole(token)
+	if err != nil || !ok {
+		makeErrorResponse(w, "bad role after auth", http.StatusBadRequest)
+		return
+	}
+
+	users, err := userDatabaseAdapter.GetUsers()
+
+	if err != nil {
+		makeErrorResponse(w, "bad attempt to return users", http.StatusInternalServerError)
+		return
+	}
+
+	JSON, err := json.Marshal(users)
+
+	if err != nil {
+		makeErrorResponse(w, "can't parse json", http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte(fmt.Sprintf("{\"users\" : %v}", string(JSON))))
 }
 
 func (server *UserServer) CreateUser(w http.ResponseWriter, r *http.Request) {
