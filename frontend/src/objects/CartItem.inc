@@ -20,12 +20,12 @@ class CartItem
     }
 
 
-    public function getUserID(): string
+    public function getUserID(): int
     {
         return $this->userID;
     }
 
-    public function getCount(): array
+    public function getCount(): int
     {
         return $this->count;
     }

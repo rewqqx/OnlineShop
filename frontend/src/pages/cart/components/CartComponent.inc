@@ -22,6 +22,7 @@ class CartComponent extends DOM
         $this->container->setMethod("POST");
 
         $user = GetUser($token);
+        $cart = GetCartItems($user->getId());
 
         $panelLeft = new DOM();
         $panelLeft->setStyle("cart-panel");
@@ -32,6 +33,11 @@ class CartComponent extends DOM
         $panelRight->setStyle("cart-filler");
         $this->container->append($panelRight);
 
+        foreach ($cart as $item) {
+            $item->toJson();
+            $itemRow = new ItemCartRow($item);
+            $panelRight->append($itemRow);
+        }
 
         return $this;
     }
