@@ -1,4 +1,4 @@
-.profile-page {
+.cart-page {
     display: flex;
     flex-direction: row;
 
@@ -11,7 +11,7 @@
     background: #f0f0f0;
 }
 
-.profile-panel {
+.cart-panel {
     display: flex;
     flex-direction: column;
 
@@ -19,6 +19,24 @@
     padding: 64px;
 
     width: 460px;
+    height: calc(100% - 256px);
+
+    justify-content: left;
+    align-items: start;
+
+    border-radius: 15px;
+
+    background: #fafafa;
+}
+
+.cart-filler {
+    display: flex;
+    flex-direction: column;
+
+    margin: 64px;
+    padding: 64px;
+
+    width: calc(100% - 128px);
     height: calc(100% - 256px);
 
     justify-content: left;
