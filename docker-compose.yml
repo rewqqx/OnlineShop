@@ -55,6 +55,17 @@ services:
       - IMAGE_HOST=image-service
     ports:
       - 9050:80
+  admin:
+    build: ./admin
+    hostname: admin
+    tty: true
+    environment:
+      - WAIT_HOSTS=server:9080
+      - WAIT_HOSTS=image-service:9081
+      - SERVER_HOST=server
+      - IMAGE_HOST=image-service
+    ports:
+      - 9093:9093
 
   prometheus:
     image: prom/prometheus:v2.30.0

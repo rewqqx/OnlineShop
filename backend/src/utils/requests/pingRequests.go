@@ -14,7 +14,8 @@ type StatusResponse struct {
 
 func setSuccessHeader(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT, GET, POST")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, token")
 	w.Header().Set("Content-Type", "application/json")
 }
 
