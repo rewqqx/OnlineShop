@@ -13,6 +13,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/elements/DOM.inc");
 require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/cookie/CookieStorage.inc");
 require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/requests/adapters/UserDatabaseAdapter.inc");
 require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/requests/adapters/ItemDatabaseAdapter.inc");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/requests/adapters/CartDatabaseAdapter.inc");
 
 require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/elements/DOM.inc");
 require_once($_SERVER['DOCUMENT_ROOT'] . "/frontend/src" . "/app/container/Container.inc");

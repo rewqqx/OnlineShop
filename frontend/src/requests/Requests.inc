@@ -23,6 +23,11 @@ function GETRequest($url)
     return RequestSpecifyHeaders($url, "", HeadersJSON(), "GET");
 }
 
+function PUTRequest($url, $body)
+{
+    return RequestSpecifyHeaders($url, $body, HeadersJSON(), "PUT");
+}
+
 function POSTRequest($url, $body)
 {
     return RequestSpecifyHeaders($url, $body, HeadersJSON(), "POST");

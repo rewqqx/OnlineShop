@@ -8,7 +8,7 @@ class CartHeader extends DOM
 
     protected function createElement(): DOM
     {
-        $this->title = new Text("Profile");
+        $this->title = new Text("Cart");
         $this->title->setStyle("header-text");
 
         $buttonName = "Cart";
