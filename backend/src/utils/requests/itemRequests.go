@@ -113,6 +113,22 @@ func (server *ItemServer) CreateItem(w http.ResponseWriter, r *http.Request) {
 		makeErrorResponse(w, "bad path", http.StatusBadRequest)
 		return
 	}
+
+	newItem := adapter.Item{}
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+
+	err := decoder.Decode(&newItem)
+
+	itemDatabaseAdapter := adapter.CreateItemDatabaseAdapter(server.Database)
+	err = itemDatabaseAdapter.CreateItem(&newItem)
+	if err != nil {
+		makeErrorResponse(w, "can't create item", http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte(fmt.Sprintf("{\"status\" : \"success\"}")))
 }
 
 func (server *ItemServer) DeleteItem(w http.ResponseWriter, r *http.Request) {

@@ -97,9 +97,10 @@ func (adapter *ItemDatabase) GetItem(id int) (item *Item, err error) {
 	return
 }
 
-func (adapter *ItemDatabase) CreateItem(item *Item) (id int64, err error) {
-	res, err := adapter.database.Connection.Exec(fmt.Sprintf("INSERT INTO online_shop.%v (iterm_name,price,description,image_ids) VALUES ($1, $2, $3, $4)", ITEMS_TABLE_NAME), item.Name, item.Price, item.Description, item.ImageIDS)
-	return res.LastInsertId()
+func (adapter *ItemDatabase) CreateItem(item *Item) (err error) {
+	_, err = adapter.database.Connection.Exec(fmt.Sprintf("INSERT INTO online_shop.%v (item_name,price,description,image_ids,tag_ids) VALUES ($1, $2, $3, $4, $5)", ITEMS_TABLE_NAME), item.Name, item.Price, item.Description, item.ImageIDS, item.TagIDS)
+	return
+	//return res.LastInsertId()
 }
 
 func (adapter *ItemDatabase) DeleteItem(id int) (err error) {

@@ -50,6 +50,9 @@ func (server *Server) prepare() {
 	deleteItemHandler := http.HandlerFunc(itemServer.DeleteItem)
 	http.Handle("/items/delete/", deleteItemHandler)
 
+	createItemHadler := http.HandlerFunc(itemServer.CreateItem)
+	http.Handle("/items/create/", createItemHadler)
+
 	// Bind Tags
 
 	tagServer := requests.NewTagServer(server.Database)
