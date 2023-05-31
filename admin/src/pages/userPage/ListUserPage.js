@@ -7,11 +7,13 @@ data.forEach(rowData => {
     const rowDiv = document.createElement('div');
     rowDiv.setAttribute("class", "table-row");
     Object.keys(rowData).forEach(key => {
-        const rowCol = document.createElement('div');
-        rowCol.setAttribute("class", "table-row-column");
-        const value = rowData[key];
-        rowCol.textContent = value;
-        rowDiv.append(rowCol);
+        if (key !== "password_hash" && key !== "token") {
+            const rowCol = document.createElement('div');
+            rowCol.setAttribute("class", "table-row-column");
+            const value = rowData[key];
+            rowCol.textContent = value;
+            rowDiv.append(rowCol);
+        }
     });
 
     const rowCol = document.createElement('div');
