@@ -204,7 +204,7 @@ func (server *UserServer) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err := strconv.Atoi(dirs[2])
+	id, _ := strconv.Atoi(dirs[2])
 
 	tokenBody := r.Header.Get("token")
 	token := adapter.AuthToken{ID: id, Token: tokenBody}

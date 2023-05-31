@@ -114,3 +114,27 @@ func (server *ItemServer) CreateItem(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+
+func (server *ItemServer) DeleteItem(w http.ResponseWriter, r *http.Request) {
+	setSuccessHeader(w)
+
+	path := r.URL.Path[1:]
+	dirs := strings.Split(path, "/")
+
+	if len(dirs) < 2 {
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
+		return
+	}
+
+	id, _ := strconv.Atoi(dirs[2])
+
+	itemDatabaseAdapter := adapter.CreateItemDatabaseAdapter(server.Database)
+
+	err := itemDatabaseAdapter.DeleteItem(id)
+	if err != nil {
+		makeErrorResponse(w, "can't find item", http.StatusInternalServerError)
+		return
+	}
+
+	w.Write([]byte(fmt.Sprintf("{\"status\" : \"success\"}")))
+}
