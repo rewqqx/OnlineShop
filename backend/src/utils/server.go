@@ -37,6 +37,9 @@ func (server *Server) prepare() {
 	updateHandler := http.HandlerFunc(userServer.UpdateUser)
 	http.Handle("/users/update/", updateHandler)
 
+	deleteHandler := http.HandlerFunc(userServer.DeleteUser)
+	http.Handle("/users/delete/", deleteHandler)
+
 	// Bind Items
 
 	itemServer := requests.NewItemServer(server.Database)

@@ -94,7 +94,7 @@ func parseUsersFromRows(rows *sql.Rows) (users []*User, err error) {
 	return
 }
 
-func (adapter *ItemDatabase) DeleteUser(id int) (err error) {
+func (adapter *UserDatabase) DeleteUser(id int) (err error) {
 	_, err = adapter.database.Connection.Exec(fmt.Sprintf("DELETE FROM online_shop.%v WHERE id=$1", USER_TABLE_NAME), id)
 	return
 }
