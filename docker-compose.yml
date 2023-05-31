@@ -56,6 +56,15 @@ services:
     ports:
       - 9050:80
 
+  prometheus:
+    image: prom/prometheus:v2.30.0
+    ports:
+      - 2112:9090
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+
 volumes:
   redis-data:
   redis-conf:

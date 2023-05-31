@@ -49,4 +49,6 @@ func main() {
 	server := utils.New(&db, rds)
 	server.Start(9080)
 
+	//prom.New()
+
 }

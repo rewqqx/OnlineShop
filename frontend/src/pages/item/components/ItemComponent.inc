@@ -25,6 +25,7 @@ class ItemComponent extends DOM
         $panel->setStyle("item-panel");
         $this->container->append($panel);
 
+
         $itemHeader = new DOM();
         $itemHeader->setStyle("item-header")->setText($item->getName());
         $panel->append($itemHeader);
@@ -52,11 +53,13 @@ class ItemComponent extends DOM
         $parent = $this;
 
         $confirm = new Button("ADD TO CART");
+//        $confirm->setText("ADD")
         $confirm->setAttribute("align-self", "center")->setAttribute("background", "#fafafa")->setAttribute("margin-top", "auto")->setAttribute("margin-bottom", "16px");
         $confirm->setAction(function () use ($parent) {
 
         });
-        $horizontalContainer->append($confirm);
+//        $horizontalContainer->append($confirm);
+        $panel->append($confirm);
         return $this;
     }
 }

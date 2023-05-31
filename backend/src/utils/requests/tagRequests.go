@@ -3,6 +3,7 @@ package requests
 import (
 	"backend/src/utils/adapter"
 	"backend/src/utils/database"
+	"backend/src/utils/prom"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -19,6 +20,7 @@ func NewTagServer(database *database.DBConnect) *TagServer {
 }
 
 func (server *TagServer) GetTag(w http.ResponseWriter, r *http.Request) {
+	prom.MetricOnGETTegs.Inc()
 	setSuccessHeader(w)
 
 	path := r.URL.Path[1:]
@@ -56,6 +58,7 @@ func (server *TagServer) GetTag(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *TagServer) GetTags(w http.ResponseWriter, r *http.Request) {
+	prom.MetricOnGETTegs.Inc()
 	setSuccessHeader(w)
 
 	path := r.URL.Path[1:]

@@ -85,9 +85,9 @@ class CartComponent extends DOM
         $confirm = new Button("SAVE");
         $confirm->setAttribute("align-self", "center")->setAttribute("background", "#fafafa")->setAttribute("margin-top", "auto");
         $confirm->setAction(function () use ($parent) {
-
+//                функцию чтобы добавлял item и количестов ссылка на рэдис
         });
-        $panel->append($confirm);
+        $panel->append($confirmPassword);
         return $this;
     }
 }

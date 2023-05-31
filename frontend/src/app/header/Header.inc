@@ -24,7 +24,7 @@ class Header extends DOM
         $this->cart->setValue("1");
         $this->cart->setAttribute("margin-right", "10px");
         $this->cart->setAction(function ()  {
-            header('Location: /frontend/src/pages/cart/CartPage.inc');
+            header('Location: /frontend/src/pages/cart/CartPage.php');
         });
 
         if ($token->isValid()) {

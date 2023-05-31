@@ -3,6 +3,7 @@ package requests
 import (
 	"backend/src/utils/adapter"
 	"backend/src/utils/database"
+	"backend/src/utils/prom"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -19,6 +20,8 @@ func NewItemServer(database *database.DBConnect) *ItemServer {
 }
 
 func (server *ItemServer) GetItem(w http.ResponseWriter, r *http.Request) {
+	//ready
+	prom.MetricOnGETItems.Inc()
 	setSuccessHeader(w)
 
 	path := r.URL.Path[1:]
@@ -56,6 +59,7 @@ func (server *ItemServer) GetItem(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *ItemServer) GetItems(w http.ResponseWriter, r *http.Request) {
+	prom.MetricOnGETItems.Inc()
 	setSuccessHeader(w)
 
 	path := r.URL.Path[1:]
@@ -99,6 +103,7 @@ func (server *ItemServer) GetItems(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *ItemServer) CreateItem(w http.ResponseWriter, r *http.Request) {
+	prom.MetricOnCreateItems.Inc()
 	setSuccessHeader(w)
 
 	path := r.URL.Path[1:]

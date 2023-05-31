@@ -3,6 +3,7 @@ package requests
 import (
 	"backend/src/utils/adapter"
 	"backend/src/utils/database"
+	"backend/src/utils/prom"
 	"backend/src/validation"
 	"encoding/json"
 	"fmt"
@@ -25,6 +26,7 @@ func NewUserServer(database *database.DBConnect) *UserServer {
 }
 
 func (server *UserServer) GetUser(w http.ResponseWriter, r *http.Request) {
+	prom.MetricOnGetUser.Inc()
 	setSuccessHeader(w)
 
 	path := r.URL.Path[1:]
@@ -71,6 +73,7 @@ func (server *UserServer) GetUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *UserServer) CreateUser(w http.ResponseWriter, r *http.Request) {
+	prom.MetricOnCreateUser.Inc()
 	setSuccessHeader(w)
 
 	path := r.URL.Path[1:]
@@ -152,6 +155,7 @@ func (server *UserServer) GetToken(w http.ResponseWriter, r *http.Request) {
 }
 
 func (server *UserServer) UpdateUser(w http.ResponseWriter, r *http.Request) {
+	prom.MetricOnUpdateUser.Inc()
 	var (
 		request  UpdateUserRequest
 		newToken adapter.AuthToken

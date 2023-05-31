@@ -2,8 +2,11 @@ package utils
 
 import (
 	"backend/src/utils/database"
+	"backend/src/utils/prom"
 	"backend/src/utils/requests"
 	"fmt"
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"net/http"
 )
 
@@ -59,8 +62,27 @@ func (server *Server) prepare() {
 
 	pingHandler := http.HandlerFunc(requests.Ping)
 	http.Handle("/", pingHandler)
+
+	// Bind Metrics
+	//http.Handle("/metrics", promhttp.Handler())
+
+	//ready
+	prometheus.MustRegister(prom.MetricOnGETItems)
+	prometheus.MustRegister(prom.MetricOnCreateItems)
+	prometheus.MustRegister(prom.MetricOnPing)
+	prometheus.MustRegister(prom.MetricOnGETTegs)
+	prometheus.MustRegister(prom.MetricOnCreateUser)
+	prometheus.MustRegister(prom.MetricOnGetUser)
+	prometheus.MustRegister(prom.MetricOnUpdateUser)
+
+	http.Handle("/metrics", promhttp.Handler())
+	//go func() {
+	//	http.ListenAndServe(":2112", nil)
+	//
+	//}()
 }
 
 func (server *Server) Start(port int) {
 	http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
+
 }
