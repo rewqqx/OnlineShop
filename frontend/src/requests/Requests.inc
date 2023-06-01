@@ -28,6 +28,11 @@ function PUTRequest($url, $body)
     return RequestSpecifyHeaders($url, $body, HeadersJSON(), "PUT");
 }
 
+function DELETERequest($url)
+{
+    return RequestSpecifyHeaders($url, "", HeadersJSON(), "DELETE");
+}
+
 function POSTRequest($url, $body)
 {
     return RequestSpecifyHeaders($url, $body, HeadersJSON(), "POST");

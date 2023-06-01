@@ -28,16 +28,36 @@ class CartComponent extends DOM
         $panelLeft->setStyle("cart-panel");
         $this->container->append($panelLeft);
 
+        $cartHeader = new DOM();
+        $cartHeader->setText("Cart");
+        $panelLeft->append($cartHeader);
+
+        $cartSum = new DOM();
+        $sum = 0;
+        $panelLeft->append($cartSum);
+
 
         $panelRight = new DOM();
         $panelRight->setStyle("cart-filler");
         $this->container->append($panelRight);
 
-        foreach ($cart as $item) {
-            $item->toJson();
-            $itemRow = new ItemCartRow($item);
+        foreach ($cart as $itemCart) {
+            //$item->toJson();
+            $itemRow = new ItemCartRow($itemCart);
+            $item = GetItem($itemCart->getID());
+            $sum += $itemCart->getCount() * $item->getPrice();
             $panelRight->append($itemRow);
         }
+
+        $cartSum->setText("Total: " . $sum);
+
+        $buyButton = new Button("BUY");
+        $buyButton->setText("Buy");
+        $buyButton->setAttribute("margin-top", "auto")->setStyle("buy-button");
+        $buyButton->setAction(function () use ($user) {
+            BuyCart($user->getId());
+        });
+        $panelLeft->append($buyButton);
 
         return $this;
     }

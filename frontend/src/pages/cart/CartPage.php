@@ -1,6 +1,7 @@
 <link href='../../styles/DOM.css' rel='stylesheet' type='text/css'>
 <link href='../../styles/Default.css' rel='stylesheet' type='text/css'>
 <link href='../../styles/Cart.css' rel='stylesheet' type='text/css'>
+<link href='../../styles/Item.css' rel='stylesheet' type='text/css'>
 
 <?php
 ini_set('display_errors', '1');
