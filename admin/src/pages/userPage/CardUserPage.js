@@ -39,7 +39,7 @@ save.onclick = function () {
     const roleID = inputRole.value;
     const password = inputPassword.value;
 
-    if (id !== -1) {
+    if (id === -1) {
         user.createRow({
             id: -1,
             user_name: name,
@@ -52,7 +52,7 @@ save.onclick = function () {
             role_id: roleID,
             token: ""
         })
-        window.location.href = "./../itemPage/ListItemPage.html";
+        window.location.href = "./../userPage/ListUserPage.html";
     } else {
         user.updateRow(id, {
             user_name: name,
