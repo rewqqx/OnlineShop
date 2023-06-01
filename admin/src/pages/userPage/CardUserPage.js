@@ -15,7 +15,7 @@ const inputGender = document.getElementById("gender");
 const inputRole = document.getElementById("role");
 //const inputBirthday = document.getElementById("role");
 
-if (id !== -1) {
+if (parseInt(id) !== -1) {
     const data = user.getRowByID(id);
 
     inputName.value = data.user_name;
@@ -39,7 +39,7 @@ save.onclick = function () {
     const roleID = inputRole.value;
     const password = inputPassword.value;
 
-    if (id === -1) {
+    if (parseInt(id) === -1) {
         user.createRow({
             id: -1,
             user_name: name,
@@ -49,7 +49,7 @@ save.onclick = function () {
             phone: phone,
             birthdate: null,
             mail: mail,
-            role_id: roleID,
+            role_id: parseInt(roleID),
             token: ""
         })
         window.location.href = "./../userPage/ListUserPage.html";
