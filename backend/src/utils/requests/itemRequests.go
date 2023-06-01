@@ -122,13 +122,14 @@ func (server *ItemServer) CreateItem(w http.ResponseWriter, r *http.Request) {
 	err := decoder.Decode(&newItem)
 
 	itemDatabaseAdapter := adapter.CreateItemDatabaseAdapter(server.Database)
-	id, _ := itemDatabaseAdapter.CreateItem(&newItem)
+	id, err := itemDatabaseAdapter.CreateItem(&newItem)
+	fmt.Println("err", err)
 	if err != nil {
 		makeErrorResponse(w, "can't create item", http.StatusInternalServerError)
 		return
 	}
 
-	w.Write([]byte(fmt.Sprintf("{\"id\" : \"%v\"}", id)))
+	w.Write([]byte(fmt.Sprintf("{\"id\" : %v}", id)))
 }
 
 func (server *ItemServer) DeleteItem(w http.ResponseWriter, r *http.Request) {
