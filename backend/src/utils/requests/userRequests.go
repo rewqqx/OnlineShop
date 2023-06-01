@@ -188,6 +188,39 @@ func (server *UserServer) GetToken(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(fmt.Sprintf("{\"token\" : %v}", string(json))))
 }
 
+func (server *UserServer) DeleteUser(w http.ResponseWriter, r *http.Request) {
+	setSuccessHeader(w)
+
+	path := r.URL.Path[1:]
+	dirs := strings.Split(path, "/")
+
+	if len(dirs) < 3 {
+		makeErrorResponse(w, "bad path", http.StatusBadRequest)
+		return
+	}
+
+	id, _ := strconv.Atoi(dirs[2])
+
+	tokenBody := r.Header.Get("token")
+	token := adapter.AuthToken{ID: id, Token: tokenBody}
+
+	userDatabaseAdapter := adapter.CreateUserDatabaseAdapter(server.Database)
+	ok, err := userDatabaseAdapter.CheckToken(token)
+	if err != nil || !ok {
+		makeErrorResponse(w, "bad auth", http.StatusBadRequest)
+		return
+	}
+
+	err = userDatabaseAdapter.DeleteUser(id)
+
+	if err != nil {
+		makeErrorResponse(w, "bad auth", http.StatusBadRequest)
+		return
+	}
+
+	w.Write([]byte(fmt.Sprintf("{\"status\" : \"success\"}")))
+}
+
 func (server *UserServer) UpdateUser(w http.ResponseWriter, r *http.Request) {
 	prom.MetricOnUpdateUser.Inc()
 	var (

@@ -37,12 +37,21 @@ func (server *Server) prepare() {
 	updateHandler := http.HandlerFunc(userServer.UpdateUser)
 	http.Handle("/users/update/", updateHandler)
 
+	deleteHandler := http.HandlerFunc(userServer.DeleteUser)
+	http.Handle("/users/delete/", deleteHandler)
+
 	// Bind Items
 
 	itemServer := requests.NewItemServer(server.Database)
 
 	itemHandler := http.HandlerFunc(itemServer.GetItem)
 	http.Handle("/items/", itemHandler)
+
+	deleteItemHandler := http.HandlerFunc(itemServer.DeleteItem)
+	http.Handle("/items/delete/", deleteItemHandler)
+
+	createItemHadler := http.HandlerFunc(itemServer.CreateItem)
+	http.Handle("/items/create/", createItemHadler)
 
 	// Bind Tags
 
@@ -64,9 +73,6 @@ func (server *Server) prepare() {
 	http.Handle("/", pingHandler)
 
 	// Bind Metrics
-	//http.Handle("/metrics", promhttp.Handler())
-
-	//ready
 	prometheus.MustRegister(prom.MetricOnGETItems)
 	prometheus.MustRegister(prom.MetricOnCreateItems)
 	prometheus.MustRegister(prom.MetricOnPing)
@@ -76,10 +82,6 @@ func (server *Server) prepare() {
 	prometheus.MustRegister(prom.MetricOnUpdateUser)
 
 	http.Handle("/metrics", promhttp.Handler())
-	//go func() {
-	//	http.ListenAndServe(":2112", nil)
-	//
-	//}()
 }
 
 func (server *Server) Start(port int) {
