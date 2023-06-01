@@ -61,7 +61,7 @@ save.onclick = function () {
             phone: phone,
             birthdate: null,
             mail: mail,
-            role_id: roleID,
+            role_id: parseInt(roleID),
         })
         window.location.href = currentUrl;
     }
