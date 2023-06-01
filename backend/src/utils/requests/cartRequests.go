@@ -95,9 +95,14 @@ func (server *CartServer) DeleteFromCart(w http.ResponseWriter, r *http.Request)
 
 	userDatabaseAdapter := adapter.CreateCartDatabaseAdapter(server.Database)
 
+	path := r.URL.Path[1:]
+	dirs := strings.Split(path, "/")
+
 	if err == nil {
 		err = userDatabaseAdapter.DeleteItem(setItem)
 	} else {
+		id, _ := strconv.Atoi(dirs[1])
+		setItem.UserID = id
 		err = userDatabaseAdapter.DeleteItems(setItem)
 	}
 

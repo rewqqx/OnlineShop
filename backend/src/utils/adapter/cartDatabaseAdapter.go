@@ -72,13 +72,12 @@ func (adapter *ItemCartDatabase) DeleteItem(item CartItem) error {
 
 func (adapter *ItemCartDatabase) DeleteItems(item CartItem) error {
 	key := item.getRedisKey()
-
-	cmd := adapter.redis.Client.Del(key)
-	if cmd.Err() != nil {
-		return cmd.Err()
+	delCmd := adapter.redis.Client.Del(key)
+	if delCmd.Err() != nil {
+		return delCmd.Err()
 	}
 
-	return cmd.Err()
+	return delCmd.Err()
 }
 
 func (adapter *ItemCartDatabase) SetItem(item CartItem) error {
