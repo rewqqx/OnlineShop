@@ -39,3 +39,14 @@ function PutCartItem($item): bool
 
     return true;
 }
+
+function BuyCart($id): bool
+{
+    $response = DELETERequest("http://" . getURL("SERVER_HOST") . ":9080/cart/" . $id);
+
+    if ($response["status"] != "200") {
+        return false;
+    }
+
+    return true;
+}
