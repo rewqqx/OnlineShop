@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: #E7E7E7;
+    height: 100vh;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    background: #2E2E2E;
+    color: white;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 32px;
+    line-height: calc(125%);
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+
+.container {
+    display: flex;
+    height: calc(100vh - 50px);
+    z-index: -3;
+}
+
+.navigation {
+    padding: 10px;
+    gap: 10px;
+    display: flex;
+    flex-direction: column;
+    width: 240px;
+    background: #FFFFFF;
+}
+
+.widget-nav-button {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+
+    color: #2E2E2E;
+
+    padding: 5px;
+    padding-left: 10px;
+    border-radius: 10px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: calc(125%);
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.widget-nav-button:hover {
+    background: #F7F7F7;
+}
+
+.group-icon {
+    width: 24px;
+    height: 24px;
+
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 100% auto;
+}
+
+.vertical-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.horizontal-container {
+    display: flex;
+    flex-direction: row;
+}
+
+
+.page-icon {
+    width: 24px;
+    height: 24px;
+
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 100% auto;
+}
+
+.unselectable {
+    gap: 8px;
+
+    padding: 5px;
+    padding-left: 10px;
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: calc(125%);
+
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.unselectable:hover {
+    background: #F7F7F7;
+}

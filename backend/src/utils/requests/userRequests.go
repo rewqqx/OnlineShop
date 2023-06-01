@@ -29,6 +29,8 @@ func (server *UserServer) GetUser(w http.ResponseWriter, r *http.Request) {
 	prom.MetricOnGetUser.Inc()
 	setSuccessHeader(w)
 
+	tokenBody := r.Header.Get("token")
+
 	path := r.URL.Path[1:]
 	dirs := strings.Split(path, "/")
 
@@ -45,7 +47,6 @@ func (server *UserServer) GetUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tokenBody := r.Header.Get("token")
 	token := adapter.AuthToken{ID: val, Token: tokenBody}
 
 	userDatabaseAdapter := adapter.CreateUserDatabaseAdapter(server.Database)
@@ -76,20 +77,14 @@ func (server *UserServer) GetUser(w http.ResponseWriter, r *http.Request) {
 func (server *UserServer) GetUsers(w http.ResponseWriter, r *http.Request) {
 	setSuccessHeader(w)
 
-	path := r.URL.Path[1:]
-	dirs := strings.Split(path, "/")
-
-	if len(dirs) < 2 {
-		makeErrorResponse(w, "bad path", http.StatusBadRequest)
-		return
-	}
-
 	tokenBody := r.Header.Get("token")
 	token := adapter.AuthToken{Token: tokenBody}
 
 	userDatabaseAdapter := adapter.CreateUserDatabaseAdapter(server.Database)
 	ok, err := userDatabaseAdapter.CheckTokenAndRole(token)
+
 	if err != nil || !ok {
+		fmt.Println(fmt.Sprintf("bad token: %v", tokenBody))
 		makeErrorResponse(w, "bad role after auth", http.StatusBadRequest)
 		return
 	}
