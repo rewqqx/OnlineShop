@@ -14,13 +14,14 @@ type StatusResponse struct {
 
 func setSuccessHeader(w http.ResponseWriter) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
-	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type, token")
 	w.Header().Set("Content-Type", "application/json")
 }
 
 func makeErrorResponse(w http.ResponseWriter, body string, status int) {
-	http.Error(w, fmt.Sprintf("{\"status\":\"%v\"}", body), status)
 	w.WriteHeader(status)
+	http.Error(w, fmt.Sprintf("{\"status\":\"%v\"}", body), status)
 }
 func makeResponse(w http.ResponseWriter, status string) error {
 	response := StatusResponse{Status: status}
