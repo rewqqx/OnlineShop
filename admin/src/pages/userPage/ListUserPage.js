@@ -1,4 +1,5 @@
 import * as user from "../../adapters/user/User.js";
+import * as item from "../../adapters/item/Item.js";
 
 const container = document.getElementById('table-container');
 const data = user.getRows();
@@ -31,6 +32,12 @@ data.forEach(rowData => {
     const deleteIcon = document.createElement('div');
     deleteIcon.setAttribute("class", "delete-icon");
     deleteButton.append(deleteIcon);
+
+    deleteButton.onclick = function () {
+        user.deleteRow(rowData.id);
+        rowDiv.parentNode.removeChild(rowDiv);
+    }
+
     rowCol.append(deleteButton);
 
     container.append(rowDiv);

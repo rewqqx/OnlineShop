@@ -26,6 +26,12 @@ data.forEach(rowData => {
     rowCol.append(editButton);
     const deleteButton = document.createElement('div');
     deleteButton.setAttribute("class", "row-delete-button");
+
+    deleteButton.onclick = function () {
+        item.deleteRow(rowData.id);
+        rowDiv.parentNode.removeChild(rowDiv);
+    }
+
     const deleteIcon = document.createElement('div');
     deleteIcon.setAttribute("class", "delete-icon");
     deleteButton.append(deleteIcon);
