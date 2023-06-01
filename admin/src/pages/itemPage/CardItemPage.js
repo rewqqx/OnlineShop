@@ -11,7 +11,7 @@ const inputImages = document.getElementById("images");
 const inputDescription = document.getElementById("description");
 const inputTags = document.getElementById("tags");
 
-if (id !== -1) {
+if (parseInt(id) !== -1) {
     const data = item.getRowByID(id);
 
     inputName.value = data.name;
@@ -29,7 +29,7 @@ save.onclick = function () {
     const images = inputImages.value;
     const tags = inputTags.value;
 
-    if (id !== -1) {
+    if (parseInt(id) === -1) {
         item.createRow({name: name, price: price, description: description, images_ids: images, tag_ids: tags})
     } else {
 
