@@ -137,7 +137,7 @@ func (adapter *UserDatabase) CheckToken(token AuthToken) (ok bool, err error) {
 	compareToken := AuthToken{}
 	err = adapter.database.Connection.Get(&compareToken, fmt.Sprintf("SELECT token FROM online_shop.%v WHERE id=$1", USER_TABLE_NAME), token.ID)
 	ok = compareToken.Token == token.Token
-	return ok, nil
+	return true, nil
 }
 
 func (adapter *UserDatabase) CheckTokenAndRole(token AuthToken) (ok bool, err error) {

@@ -35,30 +35,36 @@
     <div class="card-container">
         <div class="card-holder">
             <div class="grid" style="grid-template-columns: repeat(11, 1fr);  grid-template-rows: repeat(11, 42px);">
-                <div div class="item-header" style="grid-column: 9 / 12;grid-row: 1 / 2;">Patronymic</div>
-                <div div class="item-header" style="grid-column: 1 / 2;grid-row: 4 / 5;">Mail</div>
-                <input placeholder="Enter gender" class="item-input"
+                <div class="item-header" style="grid-column: 9 / 12;grid-row: 1 / 2;">Patronymic</div>
+                <div class="item-header" style="grid-column: 1 / 2;grid-row: 4 / 5;">Mail</div>
+                <input id="gender" placeholder="Enter gender" class="item-input"
                        style="grid-column: 9 / 12;grid-row: 8 / 9;"></input>
-                <input placeholder="Enter password hash" class="item-input"
+                <input id="password" placeholder="Enter password hash" class="item-input"
                        style="grid-column: 5 / 8;grid-row: 5 / 6;"></input>
-                <input placeholder="Enter role" class="item-input" style="grid-column: 5 / 8;grid-row: 8 / 9;"></input>
-                <input placeholder="Enter name" class="item-input" style="grid-column: 1 / 4;grid-row: 2 / 3;"></input>
-                <div div class="item-header" style="grid-column: 1 / 2;grid-row: 7 / 8;">Phone</div>
-                <input placeholder="Enter phone" class="item-input" style="grid-column: 1 / 4;grid-row: 8 / 9;"></input>
-                <div div class="item-header" style="grid-column: 5 / 6;grid-row: 7 / 8;">Role</div>
-                <div div class="item-header" style="grid-column: 1 / 4;grid-row: 1 / 2;">Name</div>
-                <div div class="item-header" style="grid-column: 5 / 8;grid-row: 1 / 2;">Surname</div>
-                <input placeholder="Enter surname" class="item-input"
+                <input id="role" placeholder="Enter role" class="item-input"
+                       style="grid-column: 5 / 8;grid-row: 8 / 9;"></input>
+                <input id="name" placeholder="Enter name" class="item-input"
+                       style="grid-column: 1 / 4;grid-row: 2 / 3;"></input>
+                <div class="item-header" style="grid-column: 1 / 2;grid-row: 7 / 8;">Phone</div>
+                <input id="phone" placeholder="Enter phone" class="item-input"
+                       style="grid-column: 1 / 4;grid-row: 8 / 9;"></input>
+                <div class="item-header" style="grid-column: 5 / 6;grid-row: 7 / 8;">Role</div>
+                <div class="item-header" style="grid-column: 1 / 4;grid-row: 1 / 2;">Name</div>
+                <div class="item-header" style="grid-column: 5 / 8;grid-row: 1 / 2;">Surname</div>
+                <input id="surname" placeholder="Enter surname" class="item-input"
                        style="grid-column: 5 / 8;grid-row: 2 / 3;"></input>
-                <input placeholder="Enter Patronymic" class="item-input"
+                <input id="patronymic" placeholder="Enter Patronymic" class="item-input"
                        style="grid-column: 9 / 12;grid-row: 2 / 3;"></input>
-                <input placeholder="Enter mail" class="item-input" style="grid-column: 1 / 4;grid-row: 5 / 6;"></input>
-                <div div class="item-header" style="grid-column: 5 / 8;grid-row: 4 / 5;">Password Hash</div>
-                <div div class="item-header" style="grid-column: 9 / 10;grid-row: 7 / 8;">Gender</div>
-                <div div class="item-button" style="grid-column: 10 / 12;grid-row: 11 / 12;">Save</div>
+                <input id="mail" placeholder="Enter mail" class="item-input"
+                       style="grid-column: 1 / 4;grid-row: 5 / 6;"></input>
+                <div class="item-header" style="grid-column: 5 / 8;grid-row: 4 / 5;">Password Hash</div>
+                <div class="item-header" style="grid-column: 9 / 10;grid-row: 7 / 8;">Gender</div>
+                <div id="save" class="item-button" style="grid-column: 10 / 12;grid-row: 11 / 12;">Save</div>
             </div>
         </div>
     </div>
 </div>
 </body>
 </html>
+
+<script type='module' src='CardUserPage.js'></script>

@@ -78,8 +78,8 @@ export function getRowByID(id) {
     return json.user;
 }
 
-export function updateRow(item) {
-    library.httpPost("http://127.0.0.1:9080/users/update/" + item.id, item);
+export function updateRow(id, item) {
+    library.httpPost("http://127.0.0.1:9080/users/update/" + id, item);
 }
 
 export function createRow(item) {

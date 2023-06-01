@@ -1,5 +1,4 @@
 import * as user from "../../adapters/user/User.js";
-import * as item from "../../adapters/item/Item.js";
 
 const container = document.getElementById('table-container');
 const data = user.getRows();
