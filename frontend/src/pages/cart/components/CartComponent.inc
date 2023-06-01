@@ -51,7 +51,7 @@ class CartComponent extends DOM
 
         $cartSum->setText("Total: " . $sum);
 
-        $buyButton = new Button();
+        $buyButton = new Button("BUY");
         $buyButton->setText("Buy");
         $buyButton->setAttribute("margin-top", "auto")->setStyle("buy-button");
         $buyButton->setAction(function () use ($user) {
